@@ -1,6 +1,7 @@
 import "./globals.css"
 import type { Metadata } from "next"
 import { Playfair_Display, Inter } from "next/font/google"
+import Script from "next/script"
 
 const serif = Playfair_Display({
   subsets: ["latin"],
@@ -22,7 +23,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="business" className={`${serif.variable} ${sans.variable}`}>
-      <body className="font-sans text-base-content bg-base-100">{children}</body>
+      <body className="font-sans text-base-content bg-base-100">
+        {children}
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id="274c83f6-0775-49a8-824c-da380cf7535b"
+          strategy="afterInteractive"
+        />
+      </body>
     </html>
   )
 }
