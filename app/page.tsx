@@ -32,28 +32,34 @@ export default function Page() {
               Transforming how teams build, deploy, and scale modern applications.
             </p>
 
-            <div className="flex flex-wrap gap-3 mt-8 justify-center md:justify-start">
-              <a
-                href="mailto:kevin@reporacers.com"
-                className="btn btn-primary btn-sm"
-              >
-                Get in Touch
-              </a>
+            <div className="flex gap-6 mt-8 justify-center md:justify-start items-center">
               <a
                 href="https://github.com/devopskev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-outline btn-sm"
+                className="opacity-70 hover:opacity-100 transition-opacity"
               >
-                GitHub
+                <Image
+                  src="/github_logo_black.png"
+                  alt="GitHub"
+                  width={40}
+                  height={40}
+                  className="h-10 w-auto"
+                />
               </a>
               <a
                 href="https://linkedin.com/in/devopskev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-outline btn-sm"
+                className="opacity-70 hover:opacity-100 transition-opacity"
               >
-                LinkedIn
+                <Image
+                  src="/linkedin_black_logo.png"
+                  alt="LinkedIn"
+                  width={40}
+                  height={40}
+                  className="h-10 w-auto"
+                />
               </a>
             </div>
           </div>
