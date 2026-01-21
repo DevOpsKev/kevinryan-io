@@ -1,21 +1,24 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       fontFamily: {
-        serif: ["var(--font-serif)", "Georgia", "serif"],
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ['var(--font-crimson-pro)', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
     },
   },
-
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["corporate", "lofi", "winter", "business", "night"],
-    darkTheme: "business",
+    themes: false, // Let CSS handle the theme
+    styled: true,
+    base: true,
+    utils: true,
   },
 };
+
+export default config;

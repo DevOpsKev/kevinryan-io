@@ -1,28 +1,32 @@
-import "./globals.css"
-import type { Metadata } from "next"
-import { Playfair_Display, Inter } from "next/font/google"
-import Script from "next/script"
+import type { Metadata } from "next";
+import { Crimson_Pro, Inter } from "next/font/google";
+import Script from "next/script";
+import "./globals.css";
 
-const serif = Playfair_Display({
+const serif = Crimson_Pro({
   subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-})
+  variable: "--font-crimson-pro",
+  display: 'swap',
+});
 
 const sans = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-})
+  variable: "--font-inter",
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: "Kevin Ryan",
-  description: "Technologist · Engineer · Author · Technical Writer",
-}
+  title: "Kevin Ryan | DevOps Leader & AI Architect",
+  description: "Dynamic technology leader specializing in AI-native and cloud-native software development, DevOps transformation, and enterprise automation.",
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" data-theme="business" className={`${serif.variable} ${sans.variable}`}>
+    <html lang="en" data-theme="minimal" className={`${serif.variable} ${sans.variable}`}>
       <body className="font-sans text-base-content bg-base-100">
         {children}
         <Script
@@ -32,5 +36,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </body>
     </html>
-  )
+  );
 }
