@@ -12,7 +12,7 @@ export default function Page() {
         <div className="mt-2 mb-5 flex justify-center md:justify-start">
           <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-60 lg:h-60 rounded-full overflow-hidden border border-base-content/15">
             <Image
-              src="/kevin.jpg"
+              src="./kevin.jpg"
               alt="Kevin Ryan"
               fill
               sizes="(max-width: 640px) 176px, (max-width: 768px) 208px, 240px"
