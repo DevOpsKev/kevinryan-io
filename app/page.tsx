@@ -27,7 +27,7 @@ export default function Page() {
               DevOps & Agile Coach · AI Adoption & Governance · Author
             </p>
             <p className="text-lg leading-relaxed text-base-content/80 max-w-2xl">
-              I help organizations adopt AI responsibly—balancing technical
+              I help organizations adopt AI responsibly — balancing technical
               implementation with ethical frameworks and governance, while
               empowering development teams to leverage AI tools for better
               code quality and productivity.
