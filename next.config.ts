@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
 
   // Set base path if deploying to a repo subdirectory (e.g., https://username.github.io/repo-name/)
   // Remove or comment out if deploying to root domain (e.g., https://username.github.io/)
-  // basePath: '/kevinryan-io',
+  basePath: '/kevinryan-io',
 
   // Ensure trailing slashes for GitHub Pages compatibility
   trailingSlash: true,
