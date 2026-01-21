@@ -83,9 +83,9 @@ export default function Page() {
       <section className="bg-base-200/50 py-16">
         <div className="max-w-4xl mx-auto px-6">
           <blockquote className="text-2xl md:text-3xl font-light text-center italic text-base-content/90 leading-relaxed">
-            "I believe that technology should empower human potential rather than replace it,
-            and I'm passionate about building solutions that combine the best of human ingenuity
-            with cutting-edge innovation."
+            "Good technology makes people more effective, not obsolete.
+            I focus on AI tools that enhance human judgment rather than
+            bypass it."
           </blockquote>
         </div>
       </section>
