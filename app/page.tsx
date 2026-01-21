@@ -24,12 +24,25 @@ export default function Page() {
               Kevin Ryan
             </h1>
             <p className="text-xl md:text-2xl text-base-content/70 mb-6">
-              DevOps Leader · AI & Cloud Architect · Technology Strategist
+              DevOps & Agile Coach · AI Adoption & Governance · Author
             </p>
             <p className="text-lg leading-relaxed text-base-content/80 max-w-2xl">
-              I work at the intersection of software engineering, artificial intelligence,
-              and technical leadership—focusing on clarity, systems, and long-term thinking.
-              Transforming how teams build, deploy, and scale modern applications.
+              I help organizations adopt AI responsibly—balancing technical
+              implementation with ethical frameworks and governance, while
+              empowering development teams to leverage AI tools for better
+              code quality and productivity.
+            </p>
+
+            <p className="text-lg leading-relaxed text-base-content/80 max-w-2xl mt-6">
+              Author of "AI Immigrants" and founder of{' '}
+              <a
+                href="https://distributedequity.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                DistributedEquity.org
+              </a>.
             </p>
 
             <div className="flex gap-6 mt-8 justify-center md:justify-start items-center">
