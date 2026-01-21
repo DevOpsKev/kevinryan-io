@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Cormorant', Georgia, serif;
+}
 
 @plugin "daisyui/theme" {
   name: "minimal";

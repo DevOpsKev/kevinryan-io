@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Crimson_Pro, Inter } from "next/font/google";
+import { Cormorant, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-const serif = Crimson_Pro({
+const serif = Cormorant({
   subsets: ["latin"],
-  variable: "--font-crimson-pro",
+  variable: "--font-cormorant",
   display: 'swap',
+  weight: ['400', '600', '700'],
 });
 
 const sans = Inter({
@@ -27,6 +28,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="minimal" className={`${serif.variable} ${sans.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      </head>
       <body className="font-sans text-base-content bg-base-100">
         {children}
         <Script

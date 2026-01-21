@@ -20,7 +20,7 @@ export default function Page() {
           </div>
 
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-serif">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-serif leading-tight pb-2">
               Kevin Ryan
             </h1>
             <p className="text-xl md:text-2xl text-base-content/70 mb-6">
