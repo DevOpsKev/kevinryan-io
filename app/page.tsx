@@ -178,9 +178,9 @@ export default function Page() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-2 text-primary font-serif">Repo Racers</h3>
+              <h3 className="text-xl font-bold mb-2 text-primary font-serif">HelloFresh</h3>
               <p className="text-base-content/80">
-                Founded Repo Racers a community platform for developers that draws 3,000-4,000 visitors monthly. Created a space where people share knowledge and push each other to write better code.
+                Agile coach for the Berlin-based startup during the critical period leading to their €1.5 billion IPO. Coached engineering teams on delivery practices and collaboration as they scaled from startup to public company.
               </p>
             </div>
           </div>
