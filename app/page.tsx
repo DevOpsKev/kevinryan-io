@@ -180,7 +180,7 @@ export default function Page() {
             <div>
               <h3 className="text-xl font-bold mb-2 text-primary font-serif">Repo Racers</h3>
               <p className="text-base-content/80">
-                Built a community platform for developers that draws 3,000-4,000 visitors monthly. Created a space where people share knowledge and push each other to write better code.
+                Founded <a href="https://reporacers.com" target="_blank">Repo Racers</a> a community platform for developers that draws 3,000-4,000 visitors monthly. Created a space where people share knowledge and push each other to write better code.
               </p>
             </div>
           </div>
