@@ -92,7 +92,7 @@ export default function Page() {
 
       {/* About Section */}
       <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-        <h2 className="text-3xl md:text-4xl font-bold mb-8 font-serif">About</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-8 font-serif">About Kevin</h2>
         <div className="prose prose-lg max-w-none">
           <p className="text-lg leading-relaxed text-base-content/80">
             Dynamic and innovative technology leader with extensive experience in AI-native
@@ -291,8 +291,8 @@ export default function Page() {
                 Trinity College Dublin (HCI CPD)
               </li>
               <li>
-                <strong>MS in Computational Linguistics</strong> (Planned)<br />
-                University of Washington, Seattle
+                <strong>MA in Applied Linguistics</strong> (Planned)<br />
+                University of Pannonia, Hungary
               </li>
             </ul>
           </div>
