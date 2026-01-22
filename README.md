@@ -182,11 +182,3 @@ The site targets modern browsers with ES2017+ support.
 ## License
 
 © 2026 Kevin Ryan. All rights reserved.
-
-## Contact
-
-- Email: kevin@reporacers.com
-- Phone: +44 7402 083261
-- GitHub: [@devopskev](https://github.com/devopskev)
-- LinkedIn: [/in/devopskev](https://linkedin.com/in/devopskev)
-- Website: [distributedequity.org](https://distributedequity.org)
