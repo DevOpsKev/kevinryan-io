@@ -2,8 +2,22 @@
 @plugin "daisyui";
 
 @theme {
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-serif: 'Cormorant', Georgia, serif;
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-serif: Cormorant, Georgia, serif;
+}
+
+/* Link styling */
+a:not(.btn) {
+  color: #FF6266;
+  text-decoration: none;
+}
+
+a:not(.btn):visited {
+  color: #FF6266;
+}
+
+a:not(.btn):hover {
+  text-decoration: underline;
 }
 
 @plugin "daisyui/theme" {
