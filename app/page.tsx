@@ -113,30 +113,9 @@ export default function Page() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow">
               <div className="card-body">
-                <h3 className="card-title text-primary font-serif">Cloud Architecture</h3>
+                <h3 className="card-title text-primary font-serif">Platform Engineering</h3>
                 <p className="text-base-content/80">
-                  Designing and implementing scalable, secure, and cost-efficient cloud
-                  solutions across Azure, AWS, and GCP to support enterprise workloads.
-                </p>
-              </div>
-            </div>
-
-            <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow">
-              <div className="card-body">
-                <h3 className="card-title text-primary font-serif">AI & Machine Learning Integration</h3>
-                <p className="text-base-content/80">
-                  Leveraging AI to optimize development workflows, observability,
-                  and operational intelligence across the software development lifecycle.
-                </p>
-              </div>
-            </div>
-
-            <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow">
-              <div className="card-body">
-                <h3 className="card-title text-primary font-serif">DevOps Transformation</h3>
-                <p className="text-base-content/80">
-                  Driving cultural and technical change toward high-performance delivery
-                  teams through agile, lean, and DevOps methodologies.
+                  Building internal platforms that make development teams more productive. I create tooling, workflows, and infrastructure abstractions that let engineers focus on shipping features instead of fighting with deployment pipelines and environment configurations.
                 </p>
               </div>
             </div>
@@ -145,8 +124,25 @@ export default function Page() {
               <div className="card-body">
                 <h3 className="card-title text-primary font-serif">Infrastructure as Code</h3>
                 <p className="text-base-content/80">
-                  Automating provisioning, configuration, and drift management with
-                  Terraform and Bicep for reproducible infrastructure.
+                  Automating infrastructure with Terraform and Bicep so you can provision consistently, track changes, and eliminate configuration drift. I treat infrastructure like software—versioned, tested, and repeatable.
+                </p>
+              </div>
+            </div>
+
+            <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="card-body">
+                <h3 className="card-title text-primary font-serif">DevOps & Transformation</h3>
+                <p className="text-base-content/80">
+                  Helping teams ship better software faster by improving how they work together and what they automate. I've guided organizations through cultural and technical shifts toward continuous delivery, focusing on sustainable change rather than quick fixes.
+                </p>
+              </div>
+            </div>
+
+            <div className="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="card-body">
+                <h3 className="card-title text-primary font-serif">AI Integration</h3>
+                <p className="text-base-content/80">
+                  Integrating AI where it makes practical sense—improving developer workflows, enhancing observability, and giving teams better operational insight. I focus on applications that solve real problems, not AI for its own sake.
                 </p>
               </div>
             </div>
@@ -154,32 +150,9 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Current Role Section */}
-      <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-        <h2 className="text-3xl md:text-4xl font-bold mb-8 font-serif">Current Role</h2>
-        <div className="border-l-4 border-primary pl-6">
-          <h3 className="text-2xl font-bold mb-2 font-serif">Interim Head of DevOps EMEA</h3>
-          <p className="text-xl text-primary mb-4">Cprime</p>
-          <p className="text-base-content/80 leading-relaxed mb-4">
-            Established GitLab and GitHub Professional Services Practices, mentoring engineering
-            teams through training and certification to build internal capabilities and ensure
-            client success. Leading pre-sales initiatives and delivering transformative outcomes
-            for enterprise clients.
-          </p>
-          <div className="mt-6">
-            <h4 className="font-semibold mb-3 text-lg font-serif">Recent Client Work:</h4>
-            <ul className="space-y-2 text-base-content/80">
-              <li>• <strong>Becton Dickinson:</strong> Architected cloud-native modernization from legacy .NET to containerized Azure solutions</li>
-              <li>• <strong>Gilead Sciences:</strong> Led productionization of Real World Evidence GitHub repository at scale</li>
-              <li>• <strong>NatWest:</strong> Delivered AI-assisted developer assessment framework and productivity analysis</li>
-              <li>• <strong>Nestlé:</strong> Established platform engineering team for on-demand cloud infrastructure</li>
-            </ul>
-          </div>
-        </div>
-      </section>
 
       {/* Career Highlights Section */}
-      <section className="bg-base-200/30 py-16 md:py-24">
+      <section className="py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 font-serif">Career Highlights</h2>
           <div className="grid md:grid-cols-2 gap-8">
@@ -219,24 +192,26 @@ export default function Page() {
       </section>
 
       {/* Notable Clients Section */}
-      <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center font-serif">Notable Clients</h2>
-        <div className="flex flex-wrap justify-center gap-4 text-base-content/60 text-sm md:text-base">
-          {[
-            "Accenture", "Barclays", "CBRE", "CERN", "Deloitte Digital",
-            "Elsevier", "EY", "Financial Times", "Heathrow Airport", "HelloFresh",
-            "Lloyds Bank", "Maersk", "McKinsey & Company", "NatWest", "Nestlé",
-            "Pearson", "Sky", "TU Delft", "Vodafone", "Volkswagen"
-          ].map((client) => (
-            <span key={client} className="badge badge-lg badge-outline">
-              {client}
-            </span>
-          ))}
+      <section className="bg-base-200/30 py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center font-serif">Notable Clients</h2>
+          <div className="flex flex-wrap justify-center gap-4 text-base-content/60 text-sm md:text-base">
+            {[
+              "Accenture", "Barclays", "CBRE", "CERN", "Deloitte Digital",
+              "Elsevier", "EY", "Financial Times", "Heathrow Airport", "HelloFresh",
+              "Lloyds Bank", "Maersk", "McKinsey & Company", "NatWest", "Nestlé",
+              "Pearson", "Sky", "TU Delft", "Vodafone", "Volkswagen"
+            ].map((client) => (
+              <span key={client} className="badge badge-lg badge-outline">
+                {client}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Certifications Section */}
-      <section className="bg-base-200/30 py-16 md:py-24">
+      <section className="py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 font-serif">Certifications</h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -275,40 +250,42 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Education & Interests Section */}
-      <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-        <div className="grid md:grid-cols-2 gap-12">
-          <div>
-            <h2 className="text-3xl font-bold mb-6 font-serif">Education</h2>
-            <ul className="space-y-3 text-base-content/80">
-              <li>
-                <strong>Hons, Digital Media</strong><br />
-                Birmingham City University
-              </li>
-              <li>
-                <strong>AI and Ethics</strong><br />
-                Trinity College Dublin (HCI CPD)
-              </li>
-              <li>
-                <strong>MA in Applied Linguistics</strong> (Planned)<br />
-                University of Pannonia, Hungary
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="text-3xl font-bold mb-6 font-serif">Personal Interests</h2>
-            <div className="flex flex-wrap gap-2">
-              <span className="badge badge-primary badge-lg">Sailing & Liveaboard</span>
-              <span className="badge badge-primary badge-lg">SciFi & Futurism</span>
-              <span className="badge badge-primary badge-lg">AI Ethics</span>
-              <span className="badge badge-primary badge-lg">Technology</span>
+{/* Education & Interests Section */}
+      <section className="bg-base-200/30 py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h2 className="text-3xl font-bold mb-6 font-serif">Education</h2>
+              <ul className="space-y-3 text-base-content/80">
+                <li>
+                  <strong>Hons, Digital Media</strong><br />
+                  Birmingham City University
+                </li>
+                <li>
+                  <strong>AI and Ethics</strong><br />
+                  Trinity College Dublin (HCI CPD)
+                </li>
+                <li>
+                  <strong>MA in Applied Linguistics</strong> (Planned)<br />
+                  University of Pannonia, Hungary
+                </li>
+              </ul>
             </div>
-            <div className="mt-6">
-              <h3 className="font-semibold mb-2">Notable Achievement</h3>
-              <p className="text-base-content/80 text-sm">
-                Awarded 'Best Use of Agile in the Private Sector' at the UK Agile Awards (2014)
-              </p>
+
+            <div>
+              <h2 className="text-3xl font-bold mb-6 font-serif">Personal Interests</h2>
+              <div className="flex flex-wrap gap-2">
+                <span className="badge badge-primary badge-lg">Sailing & Liveaboard</span>
+                <span className="badge badge-primary badge-lg">SciFi & Futurism</span>
+                <span className="badge badge-primary badge-lg">AI Ethics</span>
+                <span className="badge badge-primary badge-lg">Technology</span>
+              </div>
+              <div className="mt-6">
+                <h3 className="font-semibold mb-2">Notable Achievement</h3>
+                <p className="text-base-content/80 text-sm">
+                  Awarded 'Best Use of Agile in the Private Sector' at the UK Agile Awards (2014)
+                </p>
+              </div>
             </div>
           </div>
         </div>
