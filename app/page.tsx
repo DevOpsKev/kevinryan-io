@@ -41,7 +41,7 @@ export default function Page() {
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                DistributedEquity.org
+                DistributedEquity
               </a>.
             </p>
 
@@ -250,7 +250,7 @@ export default function Page() {
         </div>
       </section>
 
-{/* Education & Interests Section */}
+      {/* Education & Interests Section */}
       <section className="bg-base-200/30 py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12">
@@ -273,23 +273,17 @@ export default function Page() {
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold mb-6 font-serif">Personal Interests</h2>
-              <div className="flex flex-wrap gap-2">
-                <span className="badge badge-primary badge-lg">Sailing & Liveaboard</span>
-                <span className="badge badge-primary badge-lg">SciFi & Futurism</span>
-                <span className="badge badge-primary badge-lg">AI Ethics</span>
-                <span className="badge badge-primary badge-lg">Technology</span>
-              </div>
-              <div className="mt-6">
-                <h3 className="font-semibold mb-2">Notable Achievement</h3>
-                <p className="text-base-content/80 text-sm">
+              <h2 className="text-3xl font-bold mb-6 font-serif">Notable Achievement</h2>
+               <ul className="space-y-3 text-base-content/80">
+                <li>
                   Awarded 'Best Use of Agile in the Private Sector' at the UK Agile Awards (2014)
-                </p>
-              </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Contact Section */}
       <section className="bg-gradient-to-br from-primary/10 to-secondary/10 py-16 md:py-24">
@@ -300,14 +294,14 @@ export default function Page() {
             advisory roles. Based in UK/Hungary with international travel capability.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <a
-              href="mailto:kevin@reporacers.com"
+
+            <a href="mailto:kevin@reporacers.com"
               className="btn btn-primary btn-lg"
             >
               Email Me
             </a>
-            <a
-              href="tel:+447402083261"
+
+            <a href="tel:+447402083261"
               className="btn btn-outline btn-lg"
             >
               +44 7402 083261
@@ -338,12 +332,12 @@ export default function Page() {
               LinkedIn
             </a>
             <a
-              href="https://reporacers.com"
+              href="https://distributedequity.org"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-primary transition-colors"
             >
-              Repo Racers
+              DistributedEquity
             </a>
           </div>
         </div>
