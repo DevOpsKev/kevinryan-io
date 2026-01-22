@@ -159,32 +159,28 @@ export default function Page() {
             <div>
               <h3 className="text-xl font-bold mb-2 text-primary font-serif">CERN</h3>
               <p className="text-base-content/80">
-                Worked on architectural design for control systems for the Large Hadron Collider,
-                focusing on Kubernetes architectures and CI/CD implementations.
+                Consultancy for control system architecture for the Large Hadron Collider. Architectural review of Kubernetes platforms and CI/CD pipelines for one of the world's most complex scientific instruments.
               </p>
             </div>
 
             <div>
               <h3 className="text-xl font-bold mb-2 text-primary font-serif">Financial Times</h3>
               <p className="text-base-content/80">
-                Made significant improvements to FT.com, paving the way for its $1.3 billion
-                sale to the Nikkei index.
+                Rebuilt core infrastructure for FT.com during the period leading to Nikkei's £844 million acquisition of the Financial Times from Pearson. Helped modernize how one of the world's leading publications delivers content.
               </p>
             </div>
 
             <div>
               <h3 className="text-xl font-bold mb-2 text-primary font-serif">Lunar Zebro (TU Delft)</h3>
               <p className="text-base-content/80">
-                Served as DevOps Coach and mentor for a moon lander project, contributing
-                to cutting-edge space exploration technology.
+                Coached the DevOps team building Europe's first student-led moon rover. Helped university engineers apply professional practices to space exploration.
               </p>
             </div>
 
             <div>
               <h3 className="text-xl font-bold mb-2 text-primary font-serif">Repo Racers</h3>
               <p className="text-base-content/80">
-                Founded community platform attracting 3,000-4,000 monthly visitors worldwide,
-                promoting technical excellence and knowledge sharing.
+                Built a community platform for developers that draws 3,000-4,000 visitors monthly. Created a space where people share knowledge and push each other to write better code.
               </p>
             </div>
           </div>
@@ -218,32 +214,32 @@ export default function Page() {
             <div>
               <h3 className="text-xl font-bold mb-4 text-primary font-serif">GitHub</h3>
               <ul className="space-y-2 text-base-content/80 text-sm">
-                <li>• GitHub Administration</li>
-                <li>• GitHub Actions</li>
-                <li>• GitHub Advanced Security</li>
-                <li>• GitHub Foundations</li>
+                <li>• <a href="https://www.credly.com/badges/02e9c449-9385-4c95-9cfa-e72765f0d4de" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub Administration</a></li>
+                <li>• <a href="https://www.credly.com/badges/b4a9987d-3a31-4cf3-8ee9-53607a4ef572" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub Actions</a></li>
+                <li>• <a href="https://www.credly.com/badges/74bdfd55-a572-46a9-9c00-5d4158385ca9" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub Advanced Security</a></li>
+                <li>• <a href="https://www.credly.com/badges/2cf756b5-013f-4336-adda-1af6ce3c11c8/public_url" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub Foundations</a></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-xl font-bold mb-4 text-primary font-serif">GitLab</h3>
               <ul className="space-y-2 text-base-content/80 text-sm">
-                <li>• Partner Technical Engineer</li>
-                <li>• DevOps Professional</li>
-                <li>• Security Specialist</li>
-                <li>• Services Engineer Professional</li>
-                <li>• Migration Services Specialist</li>
-                <li>• CI/CD Associate</li>
+                <li>• <a href="https://www.credly.com/badges/60bf5ece-b4b0-4bec-9c56-fc4d227fc689" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Partner Technical Engineer</a></li>
+                <li>• <a href="https://www.credly.com/badges/73b62343-d671-4477-b412-2d833dc4ea42/public_url" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">DevOps Professional</a></li>
+                <li>• <a href="https://www.credly.com/badges/a64f651f-aa8c-4000-bf6e-9e5d3070dcb6/public_url" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Security Specialist</a></li>
+                <li>• <a href="https://www.credly.com/badges/90be4ffc-c869-4d0c-8143-99fcbe7099d5/public_url" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Services Engineer Professional</a></li>
+                <li>• <a href="https://www.credly.com/badges/5ed58594-5438-45df-b57a-f2f8ef7435eb/public_url" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Migration Services Specialist</a></li>
+                <li>• <a href="https://www.credly.com/badges/9340463c-a5d4-418e-9342-c18b145344e4/public_url" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">CI/CD Associate</a></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-xl font-bold mb-4 text-primary font-serif">LaunchDarkly</h3>
               <ul className="space-y-2 text-base-content/80 text-sm">
-                <li>• Platinum Developer</li>
-                <li>• Gold Developer</li>
-                <li>• Silver Developer</li>
-                <li>• Bronze Developer</li>
+                <li>• <a href="https://verify.skilljar.com/c/b7tc7cjjjdv9" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Platinum Developer</a></li>
+                <li>• <a href="https://verify.skilljar.com/c/xvvkdsp227on" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Gold Developer</a></li>
+                <li>• <a href="https://verify.skilljar.com/c/cw4ix2japf23" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Silver Developer</a></li>
+                <li>• <a href="https://verify.skilljar.com/c/8m35pkrme9s8" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Bronze Developer</a></li>
               </ul>
             </div>
           </div>
@@ -274,7 +270,7 @@ export default function Page() {
 
             <div>
               <h2 className="text-3xl font-bold mb-6 font-serif">Notable Achievement</h2>
-               <ul className="space-y-3 text-base-content/80">
+              <ul className="space-y-3 text-base-content/80">
                 <li>
                   Awarded 'Best Use of Agile in the Private Sector' at the UK Agile Awards (2014)
                 </li>
