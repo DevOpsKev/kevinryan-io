@@ -74,20 +74,6 @@ export default function Page() {
                   className="h-10 w-auto"
                 />
               </a>
-              <a
-                href="https://substack.com/@devopskev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="opacity-100 hover:opacity-100 transition-opacity"
-              >
-                <Image
-                  src="/substack_logo_greyscale.png"
-                  alt="Substack"
-                  width={40}
-                  height={40}
-                  className="h-10 w-auto"
-                />
-              </a>
             </div>
           </div>
         </div>
