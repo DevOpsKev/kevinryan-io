@@ -92,7 +92,7 @@ export default function Page() {
 
       {/* About Section */}
       <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-        <h2 className="text-3xl md:text-4xl font-bold mb-8 font-serif">About Kevin</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-8 font-serif">About</h2>
         <div className="prose prose-lg max-w-none">
           <p className="text-lg leading-relaxed text-base-content/80">
             I build AI-powered software and help companies modernize how they develop and deploy technology. Over the years, I've worked with clients ranging from startups to multinational corporations across Europe, wearing different hats depending on what they needed—agile coach, engineer, product owner, enterprise consultant. But software engineering has always been my foundation. It's where I started, and it's what keeps me grounded when I'm helping organizations transform.
