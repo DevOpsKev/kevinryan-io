@@ -95,14 +95,13 @@ export default function Page() {
         <h2 className="text-3xl md:text-4xl font-bold mb-8 font-serif">About Kevin</h2>
         <div className="prose prose-lg max-w-none">
           <p className="text-lg leading-relaxed text-base-content/80">
-            Dynamic and innovative technology leader with extensive experience in AI-native
-            and cloud-native software development, DevOps transformation, and enterprise automation.
-            Proven track record of delivering high-impact solutions for international clients,
-            leveraging advanced automation, AI integration, and modern cloud practices.
+            I build AI-powered software and help companies modernize how they develop and deploy technology. Over the years, I've worked with clients ranging from startups to multinational corporations across Europe, wearing different hats depending on what they needed—agile coach, engineer, product owner, enterprise consultant. But software engineering has always been my foundation. It's where I started, and it's what keeps me grounded when I'm helping organizations transform.
           </p>
           <p className="text-lg leading-relaxed text-base-content/80 mt-4">
-            Based in the UK and Hungary with full remote capability and open to international
-            travel for client engagements and conferences.
+            I'm based between the UK and Hungary, work remotely, and travel when projects or conferences need me there in person.
+          </p>
+          <p className="text-lg leading-relaxed text-base-content/80 mt-4">
+            Right now, I'm focused on the ethical application of AI and exploring frameworks like Specification-Driven Development that amplify what developers can do rather than replace them.
           </p>
         </div>
       </section>
