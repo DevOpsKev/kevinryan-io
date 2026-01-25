@@ -291,7 +291,7 @@ export default function Page() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
 
-            <a href="mailto:kevin@reporacers.com"
+            <a href="mailto:kevin@kevinryan.io"
               className="btn btn-primary btn-lg"
             >
               Email Me
