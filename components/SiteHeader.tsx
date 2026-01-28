@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -16,12 +16,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'SpecMCP', href: 'https://github.com/specmcp/specmcp', external: true },
   { label: 'Distributed Equity', href: 'https://distributedequity.org', external: true },
 ]
-
-function closeDropdown(ref: React.RefObject<HTMLUListElement | null>) {
-  if (ref.current) {
-    ref.current.blur()
-  }
-}
 
 function HamburgerIcon({ className }: { className?: string }) {
   return (
@@ -63,7 +57,6 @@ function ExternalLinkIcon({ className }: { className?: string }) {
 
 export default function SiteHeader(): React.JSX.Element {
   const pathname = usePathname()
-  const dropdownRef = useRef<HTMLUListElement>(null)
 
   return (
     <header className="navbar bg-base-100 px-4">
@@ -113,7 +106,6 @@ export default function SiteHeader(): React.JSX.Element {
           <HamburgerIcon className="w-6 h-6" />
         </button>
         <ul
-          ref={dropdownRef}
           tabIndex={0}
           className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow"
         >
@@ -124,7 +116,6 @@ export default function SiteHeader(): React.JSX.Element {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => closeDropdown(dropdownRef)}
                   className={`transition-colors duration-200 ${
                     pathname === item.href
                       ? 'text-primary font-semibold'
@@ -137,7 +128,6 @@ export default function SiteHeader(): React.JSX.Element {
               ) : (
                 <Link
                   href={item.href}
-                  onClick={() => closeDropdown(dropdownRef)}
                   className={`transition-colors duration-200 ${
                     pathname === item.href
                       ? 'text-primary font-semibold'
