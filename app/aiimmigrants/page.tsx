@@ -59,9 +59,6 @@ export default function AIImmigrantsPage() {
                 <a href="/aiimmigrants.epub" download className="btn btn-primary">
                   Download EPUB
                 </a>
-                <a href="/aiimmigrants.pdf" download className="btn btn-outline">
-                  Download PDF
-                </a>
               </div>
 
               {/* Audiobook Teaser */}
