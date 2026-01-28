@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { BookCover } from '@/components/BookCover'
 
 export const metadata: Metadata = {
-  title: 'AI Immigrants: &ldquo;The Bloody Algos Are Here!&rdquo; | Kevin Ryan',
+  title: 'AI Immigrants:  | The Bloody Algos Are Here! | Kevin Ryan',
   description:
     'A provocative exploration of AI ethics through the lens of immigration. Free to download in EPUB and PDF.',
   openGraph: {
