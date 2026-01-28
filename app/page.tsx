@@ -1,11 +1,10 @@
 import Image from "next/image"
-import SiteHeader from "@/components/SiteHeader"
+import Link from "next/link"
+import SiteFooter from "@/components/SiteFooter"
 
 export default function Page() {
   return (
     <main className="min-h-screen bg-base-100">
-      <SiteHeader />
-
       {/* Hero Section */}
       <section className="max-w-5xl mx-auto px-6 py-12 md:py-20">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
@@ -34,7 +33,11 @@ export default function Page() {
             </p>
 
             <p className="text-lg leading-relaxed text-base-content/80 max-w-2xl mt-6">
-              Author of "AI Immigrants" and founder of{' '}
+              Author of{' '}
+              <Link href="/aiimmigrants" className="text-primary hover:underline">
+                AI Immigrants
+              </Link>
+              {' '}and founder of{' '}
               <a
                 href="https://distributedequity.org"
                 target="_blank"
@@ -306,38 +309,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-base-300 py-8">
-        <div className="max-w-5xl mx-auto px-6 text-center text-base-content/60 text-sm">
-          <p>© {new Date().getFullYear()} Kevin Ryan. All rights reserved.</p>
-          <div className="flex gap-4 justify-center mt-4">
-            <a
-              href="https://github.com/devopskev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
-            >
-              GitHub
-            </a>
-            <a
-              href="https://linkedin.com/in/devopskev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="https://distributedequity.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
-            >
-              DistributedEquity
-            </a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   )
 }

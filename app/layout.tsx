@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant, Inter } from "next/font/google";
 import Script from "next/script";
+import SiteHeader from "@/components/SiteHeader";
 import "./globals.css";
 
 const serif = Cormorant({
@@ -34,6 +35,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-sans text-base-content bg-base-100">
+        <SiteHeader />
         {children}
         <Script
           src="https://cloud.umami.is/script.js"
