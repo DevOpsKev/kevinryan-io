@@ -17,7 +17,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Distributed Equity', href: 'https://distributedequity.org', external: true },
 ]
 
-function closeDropdown(ref: React.RefObject<HTMLUListElement>) {
+function closeDropdown(ref: React.RefObject<HTMLUListElement | null>) {
   if (ref.current) {
     ref.current.blur()
   }
