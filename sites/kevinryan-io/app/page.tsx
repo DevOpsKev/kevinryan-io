@@ -3,6 +3,7 @@
 import { useRevealOnScroll } from "@/hooks/useRevealOnScroll"
 import HeroSection from "@/components/sections/HeroSection"
 import TickerBar from "@/components/sections/TickerBar"
+import DocsBanner from "@/components/sections/DocsBanner"
 import AboutSection from "@/components/sections/AboutSection"
 import CapabilitiesSection from "@/components/sections/CapabilitiesSection"
 import DeliverySection from "@/components/sections/DeliverySection"
@@ -21,6 +22,7 @@ export default function Page() {
     <main>
       <HeroSection />
       <TickerBar />
+      <DocsBanner />
       <AboutSection />
       <CapabilitiesSection />
       <DeliverySection />
