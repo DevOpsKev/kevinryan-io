@@ -660,7 +660,7 @@ const html = `
       </div>
       <div class="format-item">
         <div class="f-label">Slide Deck</div>
-        <div class="f-val"><a href="/dark-factory/deck" style="color:var(--lime);text-decoration:none;">Preview →</a></div>
+        <div class="f-val"><a href="/dark-factory/deck" target="_blank" rel="noopener noreferrer" style="color:var(--lime);text-decoration:none;">Preview →</a></div>
       </div>
     </div>
   </div>
