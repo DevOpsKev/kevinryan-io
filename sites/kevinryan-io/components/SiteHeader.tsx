@@ -6,17 +6,13 @@ interface NavItem {
   label: string
   href: string
   external?: boolean
+  page?: boolean
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'About', href: '#about' },
-  { label: 'Capabilities', href: '#capabilities' },
-  { label: 'Delivery', href: '#delivery' },
-  { label: 'Timeline', href: '#timeline' },
-  { label: 'SpecMCP', href: '#specmcp' },
+  { label: 'Speaking', href: '/dark-factory', external: true },
   { label: 'Writing', href: '#projects' },
   { label: 'Contact', href: '#contact' },
-  { label: 'CV', href: '/kevin-ryan-cv.pdf', external: true },
 ]
 
 const linkStyle = {
@@ -82,6 +78,14 @@ export default function SiteHeader(): React.JSX.Element {
                 >
                   {item.label}
                 </a>
+              ) : item.page ? (
+                <a
+                  href={item.href}
+                  className="nav-link"
+                  style={navLinkStyle}
+                >
+                  {item.label}
+                </a>
               ) : (
                 <a
                   href={item.href}
@@ -128,6 +132,14 @@ export default function SiteHeader(): React.JSX.Element {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  style={linkStyle}
+                >
+                  {item.label}
+                </a>
+              ) : item.page ? (
+                <a
+                  href={item.href}
+                  onClick={() => setOpen(false)}
                   style={linkStyle}
                 >
                   {item.label}
