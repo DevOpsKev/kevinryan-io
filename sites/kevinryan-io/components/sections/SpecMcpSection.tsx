@@ -10,7 +10,7 @@ export default function SpecMcpSection() {
 
           {/* Label bar */}
           <div className="specmcp__label-bar reveal">
-            <div className="specmcp__section-tag">07</div>
+            <div className="specmcp__section-tag">08</div>
             <div className="specmcp__product-badge">
               <span className="pulse-dot" />
               Launching 2026

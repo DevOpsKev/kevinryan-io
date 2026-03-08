@@ -4,7 +4,7 @@ import { CONTAINER } from "@/lib/constants"
 
 export default function ContactSection() {
   return (
-    <section className="section section--charcoal" id="contact">
+    <section className="section section--dark" id="contact">
       <div style={CONTAINER}>
         <div className="section__header reveal">
           <div className="section__number">09</div>
