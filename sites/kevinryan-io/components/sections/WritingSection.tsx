@@ -5,7 +5,7 @@ export default function WritingSection() {
     <section className="section" id="projects">
       <div style={CONTAINER}>
         <div className="section__header reveal">
-          <div className="section__number">07</div>
+          <div className="section__number">06</div>
           <div>
             <div className="section__subtitle">Writing &amp; Projects</div>
             <h2 className="display-lg">Published<br />Work</h2>

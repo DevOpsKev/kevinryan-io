@@ -4,7 +4,7 @@ import { CONTAINER } from "@/lib/constants"
 
 export default function ContactSection() {
   return (
-    <section className="section section--dark" id="contact">
+    <section className="section section--charcoal" id="contact">
       <div style={CONTAINER}>
         <div className="section__header reveal">
           <div className="section__number">09</div>
@@ -15,8 +15,8 @@ export default function ContactSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 reveal" style={{ gap: 'calc(2rem * 3)', alignItems: 'end' }}>
           <div>
-            <p style={{ fontSize: '1.1rem', lineHeight: 1.7, color: 'var(--grey-400)', marginTop: '1.5rem', maxWidth: '45ch' }}>
-              Available for DevOps and Platform Engineering contracts. Remote preferred, based in Budapest and Dublin. SDD training and AI governance advisory available through Kevin Ryan &amp; Associates.
+            <p style={{ fontSize: '1.1rem', lineHeight: 1.7, color: 'var(--white)', marginTop: '1.5rem', maxWidth: '45ch' }}>
+              Available for AI-native transition engagements and Platform Engineering contracts. I embed with teams and make the work happen — spec quality, execution, delivery. Remote-first. Budapest · Dublin · London. AI governance advisory available through Kevin Ryan &amp; Associates.
             </p>
           </div>
           <div className="md:text-right">
@@ -46,12 +46,12 @@ export default function ContactSection() {
                   rel="noopener noreferrer"
                   style={{
                     fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.14em',
-                    textTransform: 'uppercase', color: 'var(--grey-400)',
-                    padding: '0.6rem 1.4rem', border: '1px solid var(--grey-600)',
+                    textTransform: 'uppercase', color: 'var(--accent)',
+                    padding: '0.6rem 1.4rem', border: '1px solid var(--accent)',
                     transition: 'all 0.25s ease',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--grey-600)'; e.currentTarget.style.color = 'var(--grey-400)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'var(--black)' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--accent)' }}
                 >
                   {s.label}
                 </a>

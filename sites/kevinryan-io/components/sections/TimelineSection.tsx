@@ -13,7 +13,7 @@ const TIMELINE = [
 
 export default function TimelineSection() {
   return (
-    <section className="section section--black" id="timeline">
+    <section className="section section--dark" id="timeline">
       <div style={CONTAINER}>
         <div className="section__header reveal">
           <div className="section__number">05</div>

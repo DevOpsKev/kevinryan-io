@@ -28,8 +28,8 @@ export default function Page() {
       <DeliverySection />
       <ClientsSection />
       <TimelineSection />
-      <SpecMcpSection />
       <WritingSection />
+      <SpecMcpSection />
       <CertificationsSection />
       <ContactSection />
       <SiteFooter />

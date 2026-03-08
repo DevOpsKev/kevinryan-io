@@ -68,7 +68,7 @@ export default function HeroSection() {
                   marginBottom: '1.5rem', gap: '1.5rem',
                 }}
               >
-                {['DevOps', 'Platform', 'AI-Native', 'Author'].map((item, i, arr) => (
+                {['AI-Native', 'DevEx', 'Platform', 'Author'].map((item, i, arr) => (
                   <span key={item}>
                     {item}
                     {i < arr.length - 1 && (
@@ -97,7 +97,7 @@ export default function HeroSection() {
                 fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--grey-600)',
                 maxWidth: 500, marginBottom: '2.2rem',
               }}>
-                I used to direct teams of software engineers. Now I coordinate AI agents. A career building software and shipping products taught me the job was never about the tools — it's specification, role clarity, and amplifying human ingenuity. The tools change. The reality is, it still takes great teams of people to build great products. Agents just mean we do it faster.
+                I used to direct teams of software engineers. Now I coordinate AI agents. A career building software and shipping products taught me the job was never about the tools &mdash; it&rsquo;s specification, role clarity, and amplifying human ingenuity. The tools change. The reality is, it still takes great teams of people to build great products. Agents just mean we do it faster.
               </p>
 
               {/* CTAs */}
