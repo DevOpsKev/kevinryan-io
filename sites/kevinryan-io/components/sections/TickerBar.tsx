@@ -1,6 +1,7 @@
 const TICKER_ITEMS = [
-  "DevOps", "Platform Engineering", "AI-Native", "Kubernetes", "CI/CD",
-  "Terraform", "Spec Driven Development", "Enterprise Delivery", "DORA Metrics", "Cloud Migration",
+  "Systems Thinking", "AI-Native Engineering", "Platform Engineering", "Spec Driven Development",
+  "Agent Orchestration", "Deterministic Automation", "Enterprise Delivery", "Cloud-Native Architecture",
+  "CI/CD", "Kubernetes",
 ]
 
 export default function TickerBar() {
