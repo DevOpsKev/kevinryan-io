@@ -10,9 +10,9 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Speaking', href: '/dark-factory', external: true },
-  { label: 'Writing', href: '#projects' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Speaking', href: '/speaking', page: true },
+  { label: 'Writing', href: '/#projects' },
+  { label: 'Contact', href: '/#contact' },
 ]
 
 const linkStyle = {
@@ -32,9 +32,10 @@ export default function SiteHeader(): React.JSX.Element {
   const [open, setOpen] = useState(false)
 
   const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
-    const target = document.querySelector(href)
+    const hash = href.includes('#') ? href.substring(href.indexOf('#')) : href
+    const target = document.querySelector(hash)
     if (target) {
+      e.preventDefault()
       const navHeight = 80
       const top = target.getBoundingClientRect().top + window.scrollY - navHeight
       window.scrollTo({ top, behavior: 'smooth' })
@@ -52,7 +53,7 @@ export default function SiteHeader(): React.JSX.Element {
         style={{ maxWidth: '1400px', padding: '1rem clamp(1.5rem, 5vw, 6rem)' }}
       >
         <a
-          href="#"
+          href="/"
           style={{
             fontFamily: "'Work Sans', sans-serif",
             fontWeight: 900,

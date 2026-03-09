@@ -3,13 +3,13 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: {
     template: '%s — Kevin Ryan',
-    default: 'The Dark Factory — Kevin Ryan',
+    default: 'Speaking — Kevin Ryan',
   },
   description:
-    'The gap between AI-native software teams and everyone else — and what it takes to cross it.',
+    'Conference talks and session briefs by Kevin Ryan on AI-native engineering, spec driven development, and platform strategy.',
 }
 
-export default function DarkFactoryLayout({
+export default function SpeakingLayout({
   children,
 }: {
   children: React.ReactNode
