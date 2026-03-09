@@ -320,7 +320,7 @@ const html = `
     <div class="speaking-intro-text">
       <h2>BRING IT TO<br>YOUR TEAM.</h2>
       <p>I speak at conferences, company all-hands, engineering off-sites, and leadership sessions — in person or remote. Every talk draws on thirty years of hands-on delivery and the AI-native engineering work I'm doing right now.</p>
-      <p>Fees depend on format, audience, and context. <a href="mailto:kevin@kevinryan.io" style="color:var(--accent);text-decoration:none;font-weight:700;">Get in touch</a> and we'll work it out.</p>
+      <p>Fees depend on format, audience, and context. <a href="/#contact" style="color:var(--accent);text-decoration:none;font-weight:700;">Get in touch</a> and we'll work it out.</p>
     </div>
     <div class="speaking-intro-formats">
       <div class="speaking-format-card">
