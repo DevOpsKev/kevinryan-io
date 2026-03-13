@@ -1,249 +1,67 @@
 # kevin-ryan-platform
 
-Multi-site platform monorepo for Kevin Ryan's web properties. Currently hosts [kevinryan.io](https://kevinryan.io) — a professional portfolio site. See [ADR-013](.adr/adr-013-monorepo-pnpm-workspaces.md) for the monorepo architecture decision.
+Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant). Hosts seven sites across five domains, deployed to a K3s Kubernetes cluster on Azure via Flux CD GitOps. Full documentation at [docs.kevinryan.io](https://docs.kevinryan.io).
+
+## Sites
+
+| Site | URL | Stack |
+|------|-----|-------|
+| Portfolio | [kevinryan.io](https://kevinryan.io) | Next.js 16, React 19, TypeScript, Tailwind CSS 4 |
+| Brand Guidelines | [brand.kevinryan.io](https://brand.kevinryan.io) | Static HTML |
+| Docs | [docs.kevinryan.io](https://docs.kevinryan.io) | Astro Starlight |
+| AI Immigrants | [aiimmigrants.com](https://aiimmigrants.com) | Static HTML |
+| SpecMCP | [specmcp.ai](https://specmcp.ai) | Static HTML |
+| SDD Book | [sddbook.com](https://sddbook.com) | Static HTML |
+| Distributed Equity | [distributedequity.org](https://distributedequity.org) | Static HTML |
 
 ## Tech Stack
 
-- [Next.js 16](https://nextjs.org) - React framework with App Router
-- [React 19](https://react.dev) - UI library
-- [TypeScript](https://www.typescriptlang.org) - Type safety
-- [Tailwind CSS 4](https://tailwindcss.com) - Utility-first CSS framework
-- [DaisyUI](https://daisyui.com) - Tailwind CSS component library
-- [Fitty](https://github.com/rikschennink/fitty) - Text fitting library
-- [Tessl](https://tessl.io) - Agent context and skills management
+- [Next.js 16](https://nextjs.org) — React framework with App Router (kevinryan.io)
+- [Astro Starlight](https://starlight.astro.build/) — Documentation site (docs.kevinryan.io)
+- [React 19](https://react.dev) — UI library
+- [TypeScript](https://www.typescriptlang.org) — Type safety (strict mode)
+- [Tailwind CSS 4](https://tailwindcss.com) + [DaisyUI](https://daisyui.com) — Styling
+- [pnpm](https://pnpm.io) — Workspace package manager
+- [Terraform](https://www.terraform.io) — Infrastructure as code (Azure + Cloudflare)
+- [K3s](https://k3s.io) — Lightweight Kubernetes
+- [Flux CD](https://fluxcd.io) — GitOps deployment
+- [Traefik](https://traefik.io) — Ingress controller (bundled with K3s)
+- [Cloudflare](https://www.cloudflare.com) — DNS, CDN, DDoS protection
+- [Tessl](https://tessl.io) — Agent context and skills management
+
+## Architecture
+
+```text
+Cloudflare (DNS + CDN + TLS) — 5 domain zones
+     │
+     │  HTTPS (Full SSL mode)
+     ▼
+Azure Public IP (North Europe)
+├── K3s Server (node1 — Standard_B2s)
+│   ├── Traefik Ingress (host-based routing)
+│   ├── Flux CD (source, kustomize, helm controllers)
+│   ├── External Secrets Operator
+│   └── Site Deployments ×7 (nginx containers)
+│
+├── K3s Agent (node2 — Standard_B2s)
+│   ├── Grafana (monitoring.kevinryan.io)
+│   ├── Loki (log aggregation)
+│   ├── Promtail (log collection)
+│   └── VictoriaMetrics (metrics)
+│
+├── Azure Container Registry (image pulls)
+├── Azure Key Vault (secrets via managed identity)
+└── Azure PostgreSQL Flexible Server (Umami + Grafana)
+```
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
-
 - [Node.js](https://nodejs.org) (v20 or higher)
-- [pnpm](https://pnpm.io) (recommended package manager)
-- [Tessl CLI](https://docs.tessl.io) (for agent skills management)
-- [yamllint](https://github.com/adrienverge/yamllint) (for YAML linting in git hooks)
-- [hadolint](https://github.com/hadolint/hadolint) (for Dockerfile linting in git hooks)
-- [tflint](https://github.com/terraform-linters/tflint) (for Terraform linting in git hooks — needed once infra/ directory is added)
+- [pnpm](https://pnpm.io)
+- [Tessl CLI](https://docs.tessl.io) (`npm install -g @tessl/cli`)
+- [yamllint](https://github.com/adrienverge/yamllint), [hadolint](https://github.com/hadolint/hadolint), [tflint](https://github.com/terraform-linters/tflint) — for git hooks
 
-### Installing pnpm
-
-```bash
-npm install -g pnpm
-```
-
-### Installing Tessl CLI
-
-```bash
-npm install -g @tessl/cli
-```
-
-## Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/DevOpsKev/kevin-ryan-platform.git
-cd kevin-ryan-platform
-```
-
-### 2. Install dependencies
-
-```bash
-pnpm install
-```
-
-### 3. Set up Tessl
-
-Initialize Tessl and sync agent skills:
-
-```bash
-tessl init --agent claude-code
-tessl install
-```
-
-This reads `tessl.json` and installs all configured tiles and skills into `.tessl/tiles/`. Skills are automatically loaded by coding agents when relevant to the current task.
-
-To verify installed tiles:
-
-```bash
-tessl list
-```
-
-### 4. Git hooks (automatic)
-
-Git hooks are installed automatically by Husky when you run `pnpm install`. No additional setup required.
-
-The pre-commit hook runs lint-staged (ESLint, TypeScript type checking, markdownlint, yamllint,
-hadolint, terraform fmt, tflint) on staged files only. The pre-push hook runs `pnpm build` to
-catch build failures before they reach CI.
-
-### 5. Run the development server
-
-```bash
-pnpm dev:kevinryan-io
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the site.
-
-## Docker
-
-### Prerequisites
-
-- [Docker](https://docs.docker.com/get-docker/) (with Docker Compose)
-
-### Commands
-
-```bash
-cd sites/kevinryan-io
-pnpm docker:build    # Build the production Docker image locally
-pnpm docker:up       # Build and start the container
-pnpm docker:down     # Stop and remove the container
-```
-
-### Verify
-
-```bash
-curl http://localhost:8080/healthz   # expect: ok
-```
-
-### Architecture
-
-Multi-stage build: Node.js builds the static export, then nginx serves the `out/` directory. The final image runs as non-root on port 8080 with JSON structured access logs. Image size is under 50MB.
-
-## Tessl Skills
-
-This project uses [Tessl](https://tessl.io) to manage context and skills for AI coding agents. Skills provide structured, versioned
-guidance so agents produce code that follows project conventions, framework best practices, and avoids common pitfalls.
-
-### Installed Tiles
-
-| Tile | Version | Purpose |
-|------|---------|---------|
-| `tessl/npm-next` | 16.0.0 | Next.js 16 documentation and API context |
-| `tessl/npm-react` | 19.2.0 | React 19 documentation and API context |
-| `tessl/npm-react-dom` | 19.2.0 | React DOM 19 documentation and API context |
-| `vercel-labs/agent-skills` | e23951b | React and Next.js performance best practices from Vercel Engineering |
-| `tessl/npm-tailwindcss--typography` | 0.5.0 | Tailwind CSS Typography plugin documentation |
-| `tessl/npm-tailwindcss--forms` | 0.5.0 | Tailwind CSS Forms plugin documentation |
-| `secondsky/claude-skills` | 6ebd12c | Aceternity UI — animated React components for Next.js with Tailwind |
-| `microsoft/agent-skills` | — | Microsoft skill-creator with cloud-deploy patterns (AWS, GCP, Azure) |
-| `tessl/pypi-azure-mgmt-containerservice` | 39.1.0 | Azure Container Service SDK docs for AKS provisioning |
-
-### Custom Skills (Planned)
-
-The following skills are being authored for this project and will be published to the Tessl Registry:
-
-| Skill | Covers |
-|-------|--------|
-| `nextjs-docker` | Multi-stage Dockerfile for Next.js static export with pnpm, distroless runtime, .dockerignore patterns |
-| `azure-bicep-k3s` | Bicep modules for Azure VM + k3s bootstrap, ACR, NSG, managed identity, role assignments |
-| `k3s-deployment` | k3s cluster setup, Traefik ingress config, Kubernetes manifests for containerised Next.js apps |
-
-To scaffold a new skill:
-
-```bash
-tessl skill new
-```
-
-### Adding Skills
-
-Browse the [Tessl Registry](https://tessl.io/registry) to find additional skills, or install directly:
-
-```bash
-# Search the registry
-tessl search "keyword"
-
-# Install from registry
-tessl install tessl-labs/skill-name
-
-# Install from GitHub
-tessl install github:owner/repo --skill skill-name
-```
-
-## Available Scripts
-
-### Workspace root
-
-- `pnpm build` — Build all sites
-- `pnpm lint` — Lint all sites
-- `pnpm dev:kevinryan-io` — Start kevinryan.io dev server
-
-### Site-level (from `sites/kevinryan-io/`)
-
-- `pnpm dev` — Start the development server
-- `pnpm build` — Build the static site
-- `pnpm lint` — Run ESLint
-
-### Or from repo root using filters
-
-- `pnpm --filter kevinryan-io dev`
-- `pnpm --filter kevinryan-io build`
-
-## Project Structure
-
-```text
-kevinryan-io/
-├── .adr/                   # Architecture Decision Records
-├── .github/
-│   └── workflows/
-│       ├── deploy.yml      # Build → push ACR + GHCR → update manifest
-│       └── terraform.yml   # Plan on push to infra/, gated apply
-├── .husky/                 # Git hooks (managed by Husky)
-│   ├── pre-commit          # Runs lint-staged on staged files
-│   └── pre-push            # Runs pnpm build (all sites)
-├── .tessl/                 # Tessl agent context (managed by Tessl CLI)
-├── infra/                  # Terraform infrastructure-as-code
-│   ├── bootstrap/          # State storage (applied once)
-│   ├── modules/            # network, compute, registry, cloudflare
-│   ├── main.tf             # Root module wiring
-│   └── variables.tf        # Input variables
-├── k8s/                    # Kubernetes manifests (watched by Flux CD)
-│   └── kevinryan-io/       # App namespace, deployment, service, ingress
-├── sites/
-│   └── kevinryan-io/       # kevinryan.io Next.js app
-│       ├── app/            # Next.js App Router pages
-│       ├── components/     # React components (one per file)
-│       ├── hooks/          # Custom React hooks
-│       ├── lib/            # Shared utilities
-│       ├── public/         # Static assets
-│       ├── Dockerfile      # Multi-stage Docker build
-│       ├── nginx.conf      # nginx configuration
-│       ├── docker-compose.yml
-│       ├── next.config.ts  # Next.js configuration
-│       ├── tsconfig.json   # TypeScript configuration
-│       ├── eslint.config.mjs
-│       ├── postcss.config.mjs
-│       └── package.json    # Site dependencies
-├── pnpm-workspace.yaml     # Workspace configuration
-├── AGENTS.md               # Agent rules and conventions
-├── CLAUDE.md               # Claude Code instructions
-├── tessl.json              # Tessl tile manifest
-└── package.json            # Workspace root
-```
-
-## Building for Production
-
-```bash
-pnpm build                              # Build all sites
-pnpm --filter kevinryan-io build        # Build kevinryan.io only
-```
-
-Static files are generated in `sites/kevinryan-io/out/`.
-
-## Infrastructure
-
-The site runs as a containerised static site on K3s (lightweight Kubernetes) on an Azure Spot VM, with Cloudflare as the CDN and edge layer. See [ADR-005](.adr/adr-005-k3s-azure-spot-cloudflare-cdn.md) for the full architecture decision.
-
-```text
-Cloudflare (DNS + CDN + TLS)
-     │
-     │  HTTPS origin pull
-     ▼
-Azure Spot VM (B2ms, North Europe)
-├── K3s (Traefik Ingress)
-├── Flux CD (GitOps reconciliation)
-└── kevinryan-io (nginx container)
-```
-
-### Prerequisites for infrastructure
+For infrastructure work:
 
 - [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 - [Terraform](https://developer.hashicorp.com/terraform/install) (>= 1.5)
@@ -251,104 +69,173 @@ Azure Spot VM (B2ms, North Europe)
 - Cloudflare API token with DNS edit permissions
 - GitHub PAT for Flux bootstrap
 
-### Bootstrap
+## Getting Started
 
-Infrastructure is provisioned in two stages:
+```bash
+git clone https://github.com/DevOpsKev/kevin-ryan-platform.git
+cd kevin-ryan-platform
+pnpm install
+```
 
-1. **State storage** (one-time): Creates the Azure Storage Account for Terraform state.
+### Set up Tessl
 
-    ```bash
-    cd infra/bootstrap
-    terraform init
-    terraform apply -var="storage_account_name=krtfstateXXXXX"
-    ```
+```bash
+tessl init --agent claude-code
+tessl install
+```
 
-2. **Main infrastructure**: Provisions the VM, ACR, networking, and Cloudflare DNS.
+### Run development servers
 
-    ```bash
-    cd infra
-    cp terraform.tfvars.example terraform.tfvars
-    # Edit terraform.tfvars with real values
-    terraform init -backend-config="storage_account_name=<from step 1>"
-    terraform plan
-    terraform apply
-    ```
+```bash
+pnpm dev:kevinryan-io    # kevinryan.io at localhost:3000
+```
 
-### GitHub environment setup
+### Build all sites
 
-Create a `production` environment in the GitHub repo settings (Settings > Environments) with Kevin as a required reviewer. This gates Terraform apply in CI.
+```bash
+pnpm build               # Build all sites (--if-present skips static HTML sites)
+pnpm --filter kevinryan-io build   # Build specific site
+pnpm --filter kevinryan-io lint    # Lint specific site
+```
+
+## Project Structure
+
+```text
+kevin-ryan-platform/
+├── .github/workflows/         # CI/CD — one deploy workflow per site + Terraform
+├── .tessl/                    # Tessl agent context (managed by Tessl CLI)
+├── docs/                      # Documentation content (symlinked into docs site)
+├── infra/                     # Terraform — Azure, Cloudflare, GitHub OIDC
+│   ├── bootstrap/             # State storage (applied once)
+│   ├── modules/               # network, compute, registry, keyvault, postgresql, cloudflare, github-oidc
+│   ├── cloud-init-server.yaml # K3s server bootstrap
+│   └── cloud-init-agent.yaml  # K3s agent bootstrap
+├── k8s/                       # Kubernetes manifests (watched by Flux CD)
+│   ├── flux-system/           # Flux bootstrap + per-site Kustomization CRs
+│   ├── <site-name>/           # Deployment, Service, IngressRoute per site
+│   ├── external-secrets/      # External Secrets Operator (HelmRelease)
+│   ├── external-secrets-store/ # ClusterSecretStore (Azure Key Vault)
+│   ├── umami/                 # Umami analytics
+│   └── observability/         # Grafana, Loki, Promtail, VictoriaMetrics
+├── sites/                     # Application code — one directory per site
+│   ├── kevinryan-io/          # Next.js 16 (App Router)
+│   ├── brand-kevinryan-io/    # Static HTML
+│   ├── docs-kevinryan-io/     # Astro Starlight
+│   ├── aiimmigrants-com/      # Static HTML
+│   ├── specmcp-ai/            # Static HTML
+│   ├── sddbook-com/           # Static HTML
+│   └── distributedequity-org/ # Static HTML
+├── pnpm-workspace.yaml
+├── AGENTS.md                  # Agent rules and conventions
+├── CLAUDE.md                  # Claude Code instructions
+└── tessl.json                 # Tessl tile manifest
+```
 
 ## Deployment
 
-The site deploys via GitOps using GitHub Actions and Flux CD:
+All sites deploy via GitOps. A push to `main` that changes files under a site's directory triggers the following:
 
-1. Push application code to `main`
-2. GitHub Actions builds the Docker image, pushes to ACR and GHCR with SHA tags
-3. GitHub Actions updates the image tag in `k8s/kevinryan-io/deployment.yaml` and commits
-4. Flux CD (running inside K3s) detects the manifest change and applies it to the cluster
-5. Kubernetes performs a rolling update
+1. **GitHub Actions** builds a Docker image and pushes to ACR + GHCR (SHA-tagged)
+2. **GitHub Actions** updates the image tag in `k8s/<site>/deployment.yaml` and commits
+3. **Flux CD** detects the manifest change and reconciles the cluster (within 10 minutes)
+4. **Kubernetes** performs a rolling update
 
-Infrastructure changes (pushes to `infra/`) trigger a separate workflow with a manual approval gate before `terraform apply`.
+Infrastructure changes (pushes to `infra/`) trigger a separate Terraform workflow with plan → manual approval → apply.
 
-Configuration is in `.github/workflows/deploy.yml` and `.github/workflows/terraform.yml`.
+### Docker Builds
+
+Sites with a build step (kevinryan.io, docs.kevinryan.io) use multi-stage Dockerfiles: Node.js builds the static output, then nginx serves it. Static HTML sites use single-stage nginx images. All containers run as non-root on port 8080 with JSON structured logging.
+
+```bash
+cd sites/kevinryan-io
+pnpm docker:build    # Build the production Docker image locally
+pnpm docker:up       # Build and start the container
+pnpm docker:down     # Stop and remove the container
+curl http://localhost:8080/healthz   # expect: ok
+```
+
+## Infrastructure
+
+All infrastructure is defined in Terraform and deployed to Azure:
+
+| Component | Details |
+|-----------|---------|
+| **Compute** | 2-node K3s cluster on Ubuntu 24.04 LTS (Standard_B2s) |
+| **Container Registry** | Azure Container Registry (ACR) + GHCR |
+| **Secrets** | Azure Key Vault, synced via External Secrets Operator |
+| **Database** | Azure PostgreSQL Flexible Server (Umami + Grafana) |
+| **DNS** | Cloudflare (5 zones, proxied with CDN caching + serve stale) |
+| **CI/CD Auth** | GitHub Actions → Azure via OIDC (no stored secrets) |
+
+### Bootstrap
+
+```bash
+# 1. State storage (one-time)
+cd infra/bootstrap
+terraform init
+terraform apply -var="storage_account_name=krtfstateXXXX"
+
+# 2. Main infrastructure
+cd infra
+terraform init -backend-config="storage_account_name=<from step 1>"
+terraform plan
+terraform apply
+```
+
+### GitHub Environment
+
+Create a `production` environment in GitHub repo settings (Settings → Environments) with required reviewers. This gates `terraform apply` in CI.
+
+## Observability
+
+| Service | URL | Purpose |
+|---------|-----|---------|
+| Umami | [analytics.kevinryan.io](https://analytics.kevinryan.io) | Privacy-focused web analytics (all 7 sites) |
+| Grafana | [monitoring.kevinryan.io](https://monitoring.kevinryan.io) | Dashboards (Loki logs + VictoriaMetrics metrics) |
 
 ## Development Guidelines
 
-### Code Quality
+### Git Hooks
 
 Husky + lint-staged enforce code quality automatically at commit time:
 
-- **TypeScript** (`*.ts`, `*.tsx`): ESLint with autofix + `tsc-files` type checking on staged files
-- **Markdown** (`*.md`): markdownlint for heading levels, line length, and structure
-- **YAML** (`*.yaml`, `*.yml`): yamllint for syntax and style
-- **Dockerfiles** (`Dockerfile*`): hadolint for best practices
+- **TypeScript** (`*.ts`, `*.tsx`): ESLint with autofix + `tsc-files` type checking
+- **Markdown** (`*.md`): markdownlint
+- **YAML** (`*.yaml`, `*.yml`): yamllint
+- **Dockerfiles** (`Dockerfile*`): hadolint
 - **Terraform** (`*.tf`, `*.tfvars`): `terraform fmt` + tflint
 
 The pre-push hook runs `pnpm build` to catch build failures before they reach CI.
 
-### Styling
+### Code Conventions
 
-The project uses:
+- TypeScript strict mode — no `any` without justification
+- Tailwind CSS for all styling — no custom CSS when Tailwind suffices
+- One component per file, max 200 lines
+- All images must have `alt` text
+- All pages must be statically exportable
 
-- Tailwind CSS for utility classes
-- DaisyUI for pre-built components
-- Custom color scheme with primary/secondary gradients
-- Responsive design (mobile-first approach)
+## Tessl Skills
 
-### TypeScript
+This project uses [Tessl](https://tessl.io) to manage context and skills for AI coding agents.
 
-Strict TypeScript is enabled with:
-
-- Type checking on build
-- Path aliases (`@/*` maps to project root)
-- React JSX compilation
-
-## Configuration
-
-### Next.js Config
-
-Configuration lives at `sites/kevinryan-io/next.config.ts`. The site uses static export mode (`output: 'export'`) for GitHub Pages deployment with:
-
-- Unoptimized images (for static hosting)
-- Trailing slashes enabled
-- React strict mode
-
-### Git Hooks
-
-Managed by [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged). Hooks are installed automatically via `pnpm install`.
-
-- **pre-commit**: Runs lint-staged on staged files (ESLint, tsc-files, markdownlint, yamllint, hadolint, terraform fmt, tflint)
-- **pre-push**: Runs `pnpm build` which delegates to all workspace sites via `--filter`
-
-To skip hooks temporarily (not recommended):
+| Tile | Version | Purpose |
+|------|---------|---------|
+| `tessl/npm-next` | 16.0.0 | Next.js 16 documentation and API context |
+| `tessl/npm-react` | 19.2.0 | React 19 documentation and API context |
+| `tessl/npm-react-dom` | 19.2.0 | React DOM 19 documentation and API context |
+| `vercel-labs/agent-skills` | e23951b | React and Next.js performance best practices |
+| `tessl/npm-tailwindcss--typography` | 0.5.0 | Tailwind CSS Typography plugin |
+| `tessl/npm-tailwindcss--forms` | 0.5.0 | Tailwind CSS Forms plugin |
+| `secondsky/claude-skills` | 6ebd12c | Aceternity UI animated React components |
+| `microsoft/agent-skills` | — | Microsoft cloud-deploy patterns |
+| `tessl/pypi-azure-mgmt-containerservice` | 39.1.0 | Azure Container Service SDK docs |
 
 ```bash
-git commit --no-verify
+tessl init --agent claude-code
+tessl install
+tessl list    # Verify installed tiles
 ```
-
-## Browser Support
-
-The site targets modern browsers with ES2017+ support.
 
 ## License
 

@@ -33,11 +33,6 @@ export default defineConfig({
       sidebar: [
         { label: 'Home', link: '/' },
         {
-          label: 'Architecture Decisions',
-          collapsed: true,
-          autogenerate: { directory: 'adr', collapsed: true },
-        },
-        {
           label: 'SDD',
           collapsed: true,
           items: [
@@ -53,6 +48,20 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: 'Architecture Decisions',
+          collapsed: true,
+          autogenerate: { directory: 'adr', collapsed: true },
+        },
+        { label: 'K3s Architecture', link: '/k3s/' },
+        { label: 'Terraform Infrastructure', link: '/terraform/' },
+        { label: 'Cloudflare DNS & CDN', link: '/cloudflare/' },
+        { label: 'Traefik Ingress', link: '/traefik/' },
+        { label: 'Flux CD Deployment', link: '/flux-cd/' },
+        { label: 'GitHub Actions Workflows', link: '/ci-cd/' },
+        { label: 'Docker Builds', link: '/docker-builds/' },
+        { label: 'Observability', link: '/observability/' },
+        { label: 'Umami Analytics', link: '/umami/' },
       ],
     }),
   ],

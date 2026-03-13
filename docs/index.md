@@ -142,14 +142,14 @@ Flux CD watches the `k8s/` directory and reconciles cluster state every 10 minut
 
 Beyond the seven sites, the cluster runs shared platform services:
 
-- **Umami:** [analytics.kevinryan.io](https://analytics.kevinryan.io) — Privacy-focused web analytics (PostgreSQL-backed)
-- **Grafana:** [monitoring.kevinryan.io](https://monitoring.kevinryan.io) — Dashboards, with Loki for log aggregation, Promtail for log collection, and VictoriaMetrics for metrics
+- **Umami:** <a href="https://analytics.kevinryan.io" target="_blank" rel="noopener noreferrer">analytics.kevinryan.io</a> — Privacy-focused web analytics (PostgreSQL-backed)
+- **Grafana:** <a href="https://monitoring.kevinryan.io" target="_blank" rel="noopener noreferrer">monitoring.kevinryan.io</a> — Dashboards, with Loki for log aggregation, Promtail for log collection, and VictoriaMetrics for metrics
 
 Both services retrieve credentials from Azure Key Vault via External Secrets Operator.
 
 ## About This Docs Site
 
-This documentation site is itself part of the monorepo, built with [Astro Starlight](https://starlight.astro.build/). Rather than duplicating content, it uses symlinks to pull in documentation that lives alongside the code it describes:
+This documentation site is itself part of the monorepo, built with <a href="https://starlight.astro.build/" target="_blank" rel="noopener noreferrer">Astro Starlight</a>. Rather than duplicating content, it uses symlinks to pull in documentation that lives alongside the code it describes:
 
 - `src/content/docs/` symlinks to `docs/` at the repository root — keeping documentation editable from either path
 - Architecture Decision Records, SDD specifications, and provenance documents are all symlinked from their canonical locations in the repo
