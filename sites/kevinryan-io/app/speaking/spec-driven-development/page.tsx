@@ -572,6 +572,9 @@ const html = `
         <p>15 minutes structured Q&amp;A. Kevin works with these tools daily and handles implementation questions, edge cases, and "how does this work with my stack" directly.</p>
       </div>
     </div>
+    <div class="arc-item" style="margin-top:16px;display:flex;align-items:center;justify-content:center;">
+      <a href="/speaking/spec-driven-development/deck" target="_blank" rel="noopener noreferrer" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--lime);letter-spacing:2px;text-decoration:none;transition:opacity .15s;" onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'">VIEW SLIDE DECK →</a>
+    </div>
   </div>
 </section>
 
