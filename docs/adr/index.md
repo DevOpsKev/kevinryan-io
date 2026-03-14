@@ -35,3 +35,6 @@ An ADR is a short document that captures a significant architectural decision. E
 | [015](./adr-015-origin-tls-cert-management) | Origin TLS Certificate Management | Accepted |
 | [016](./adr-016-second-k3s-node-for-observability) | Second K3s Node for Observability | Accepted |
 | [017](./adr-017-managed-postgresql-shared-database) | Managed PostgreSQL as Shared Database | Accepted |
+| [018](./adr-018-secret-management-keyvault-eso) | Secret Management with Azure Key Vault and External Secrets Operator | Accepted |
+| [019](./adr-019-victoria-metrics-lightweight-metrics) | Lightweight Metrics with Victoria Metrics | Accepted |
+| [020](./adr-020-email-capture-formspree-static-landing-pages) | Email Capture via Formspree for Static Landing Pages | Accepted |
