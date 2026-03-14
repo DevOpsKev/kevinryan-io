@@ -247,4 +247,4 @@ tessl list    # Verify installed tiles
 - Phone: +44 7402 083261
 - GitHub: [@devopskev](https://github.com/devopskev)
 - LinkedIn: [/in/devopskev](https://linkedin.com/in/devopskev)
-- Website: [distributedequity.org](https://distributedequity.org)
+- Website: [kevinryan.io](https://kevinryan.io)
