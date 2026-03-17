@@ -11,6 +11,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Home', href: '/', page: true },
+  { label: 'Assessments', href: '/ai-native-readiness-assessment', page: true },
   { label: 'Speaking', href: '/speaking', page: true },
   { label: 'Writing', href: '/#projects' },
   { label: 'Contact', href: '/#contact' },
