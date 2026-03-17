@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hq-kevinryan-io
+  namespace: hq-kevinryan-io
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hq-kevinryan-io
+  template:
+    metadata:
+      labels:
+        app: hq-kevinryan-io
+    spec:
+      containers:
+        - name: hq-kevinryan-io
+          image: kevinryanacr.azurecr.io/hq-kevinryan-io:latest
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 5m
+              memory: 8Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi

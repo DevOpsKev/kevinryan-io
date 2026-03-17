@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hq-kevinryan-io
+  namespace: hq-kevinryan-io
+spec:
+  selector:
+    app: hq-kevinryan-io
+  ports:
+    - port: 80
+      targetPort: 8080

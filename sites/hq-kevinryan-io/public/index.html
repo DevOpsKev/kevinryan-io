@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HQ — Kevin Ryan &amp; Associates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: #0A0A0A;
+      color: #F5F3EF;
+      font-family: 'Archivo', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(8rem, 30vw, 20rem);
+      line-height: 1;
+      letter-spacing: 0.05em;
+      color: #F5F3EF;
+    }
+
+    .sha {
+      font-family: 'Archivo', sans-serif;
+      font-size: 0.875rem;
+      color: #A8E10C;
+      margin-top: 1rem;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+  <h1>HQ</h1>
+  <p class="sha">build: {{COMMIT_SHA}}</p>
+</body>
+</html>

@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: hq-kevinryan-io
+  namespace: hq-kevinryan-io
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`hq.kevinryan.io`)
+      kind: Rule
+      services:
+        - name: hq-kevinryan-io
+          port: 80
+  tls: {}
