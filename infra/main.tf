@@ -210,6 +210,12 @@ resource "azurerm_key_vault_secret" "hq_auth0_domain" {
   key_vault_id = module.keyvault.key_vault_id
 }
 
+resource "azurerm_key_vault_secret" "anthropic_api_key" {
+  name         = "anthropic-api-key"
+  value        = var.anthropic_api_key
+  key_vault_id = module.keyvault.key_vault_id
+}
+
 module "registry" {
   source              = "./modules/registry"
   location            = module.network.resource_group_location

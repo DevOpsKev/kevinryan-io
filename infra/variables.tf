@@ -115,3 +115,9 @@ variable "auth0_domain" {
   type        = string
   sensitive   = true
 }
+
+variable "anthropic_api_key" {
+  description = "Anthropic API key for HQ chat interface"
+  type        = string
+  sensitive   = true
+}
