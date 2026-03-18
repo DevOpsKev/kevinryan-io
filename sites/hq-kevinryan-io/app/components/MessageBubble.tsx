@@ -19,7 +19,7 @@ function parseDocumentBlocks(text: string): {
   documents: DocumentBlock[]
 } {
   const documents: DocumentBlock[] = []
-  const markerRegex = /---DOCUMENT:([^\n-]+)---\n([\s\S]*?)---END DOCUMENT---/g
+  const markerRegex = /---DOCUMENT:([^\n]+?)---\n([\s\S]*?)---END DOCUMENT---/g
 
   let match
   while ((match = markerRegex.exec(text)) !== null) {
@@ -30,7 +30,7 @@ function parseDocumentBlocks(text: string): {
   }
 
   const cleanText = text
-    .replace(/---DOCUMENT:[^\n-]+---\n[\s\S]*?---END DOCUMENT---/g, '')
+    .replace(/---DOCUMENT:[^\n]+?---\n[\s\S]*?---END DOCUMENT---/g, '')
     .trim()
 
   return { cleanText, documents }
