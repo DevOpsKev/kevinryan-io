@@ -180,25 +180,29 @@ export default function ChatHeader({
         <a
           href="/auth/logout"
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '0.6875rem',
+            fontFamily: "'Archivo', sans-serif",
+            fontSize: '0.72rem',
             fontWeight: 700,
-            color: '#0A0A0A',
-            backgroundColor: '#32CD32',
+            color: '#A8E10C',
+            backgroundColor: 'transparent',
+            border: '1px solid #A8E10C',
             padding: '0.3rem 0.75rem',
             textDecoration: 'none',
-            letterSpacing: '0.08em',
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
             borderRadius: '2px',
             flexShrink: 0,
-            transition: 'background-color 0.15s ease',
+            transition: 'background-color 0.15s ease, color 0.15s ease',
           }}
           onMouseEnter={(e) => {
-            ;(e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-              '#28b828'
+            const el = e.currentTarget as HTMLAnchorElement
+            el.style.backgroundColor = '#A8E10C'
+            el.style.color = '#0A0A0A'
           }}
           onMouseLeave={(e) => {
-            ;(e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-              '#32CD32'
+            const el = e.currentTarget as HTMLAnchorElement
+            el.style.backgroundColor = 'transparent'
+            el.style.color = '#A8E10C'
           }}
         >
           LOGOUT
