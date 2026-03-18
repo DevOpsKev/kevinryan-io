@@ -44,7 +44,7 @@ locals {
     ["(http.host eq \"${var.domain}\")"],
     [for s in var.cache_bypass_subdomains : "(http.host eq \"${s}.${var.domain}\")"]
   )
-  bypass_expression = "(${join(" or ", local.bypass_host_expressions)}) and (starts_with(http.request.uri.path, \"/auth\") or starts_with(http.request.uri.path, \"/api\"))"
+  bypass_expression = "(${join(" or ", local.bypass_host_expressions)}) and (starts_with(http.request.uri.path, \"/auth\") or starts_with(http.request.uri.path, \"/api\") or http.request.uri.path eq \"/\" or starts_with(http.request.uri.path, \"/login\"))"
 }
 
 resource "cloudflare_ruleset" "cache" {
@@ -77,7 +77,7 @@ resource "cloudflare_ruleset" "cache" {
       cache = false
     }
     expression  = local.bypass_expression
-    description = "Bypass cache for auth and API routes"
+    description = "Bypass cache for auth, API, and login routes"
     enabled     = true
   }
 }
