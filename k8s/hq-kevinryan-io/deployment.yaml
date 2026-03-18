@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: hq-kevinryan-io
-          image: kevinryanacr.azurecr.io/hq-kevinryan-io:6245224
+          image: kevinryanacr.azurecr.io/hq-kevinryan-io:4c0df51
           ports:
             - containerPort: 3000
           envFrom:
