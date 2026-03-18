@@ -56,6 +56,7 @@ jobs:
           TF_VAR_auth0_client_id: ${{ secrets.TF_VAR_AUTH0_CLIENT_ID }}
           TF_VAR_auth0_client_secret: ${{ secrets.TF_VAR_AUTH0_CLIENT_SECRET }}
           TF_VAR_auth0_domain: ${{ secrets.TF_VAR_AUTH0_DOMAIN }}
+          TF_VAR_anthropic_api_key: ${{ secrets.TF_VAR_ANTHROPIC_API_KEY }}
 
       - name: Post plan to summary
         if: always()
@@ -129,3 +130,4 @@ jobs:
           TF_VAR_auth0_client_id: ${{ secrets.TF_VAR_AUTH0_CLIENT_ID }}
           TF_VAR_auth0_client_secret: ${{ secrets.TF_VAR_AUTH0_CLIENT_SECRET }}
           TF_VAR_auth0_domain: ${{ secrets.TF_VAR_AUTH0_DOMAIN }}
+          TF_VAR_anthropic_api_key: ${{ secrets.TF_VAR_ANTHROPIC_API_KEY }}
