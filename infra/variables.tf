@@ -85,3 +85,27 @@ variable "keyvault_name" {
   type        = string
   default     = "kv-kevinryan-io"
 }
+
+variable "auth0_secret" {
+  description = "Auth0 session encryption secret for HQ"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth0_issuer_base_url" {
+  description = "Auth0 tenant URL for HQ (e.g. https://your-tenant.auth0.com)"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth0_client_id" {
+  description = "Auth0 client ID for HQ"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth0_client_secret" {
+  description = "Auth0 client secret for HQ"
+  type        = string
+  sensitive   = true
+}

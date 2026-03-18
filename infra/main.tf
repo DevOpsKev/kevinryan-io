@@ -174,6 +174,36 @@ resource "azurerm_key_vault_secret" "grafana_admin_password" {
   key_vault_id = module.keyvault.key_vault_id
 }
 
+resource "azurerm_key_vault_secret" "hq_auth0_secret" {
+  name         = "hq-auth0-secret"
+  value        = var.auth0_secret
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_base_url" {
+  name         = "hq-auth0-base-url"
+  value        = "https://hq.kevinryan.io"
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_issuer_base_url" {
+  name         = "hq-auth0-issuer-base-url"
+  value        = var.auth0_issuer_base_url
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_client_id" {
+  name         = "hq-auth0-client-id"
+  value        = var.auth0_client_id
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_client_secret" {
+  name         = "hq-auth0-client-secret"
+  value        = var.auth0_client_secret
+  key_vault_id = module.keyvault.key_vault_id
+}
+
 module "registry" {
   source              = "./modules/registry"
   location            = module.network.resource_group_location

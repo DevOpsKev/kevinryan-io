@@ -51,6 +51,10 @@ jobs:
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
           TF_VAR_github_token: ${{ secrets.FLUX_GITHUB_TOKEN }}
+          TF_VAR_auth0_secret: ${{ secrets.TF_VAR_AUTH0_SECRET }}
+          TF_VAR_auth0_issuer_base_url: ${{ secrets.TF_VAR_AUTH0_ISSUER_BASE_URL }}
+          TF_VAR_auth0_client_id: ${{ secrets.TF_VAR_AUTH0_CLIENT_ID }}
+          TF_VAR_auth0_client_secret: ${{ secrets.TF_VAR_AUTH0_CLIENT_SECRET }}
 
       - name: Post plan to summary
         if: always()
@@ -119,3 +123,7 @@ jobs:
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
           TF_VAR_github_token: ${{ secrets.FLUX_GITHUB_TOKEN }}
+          TF_VAR_auth0_secret: ${{ secrets.TF_VAR_AUTH0_SECRET }}
+          TF_VAR_auth0_issuer_base_url: ${{ secrets.TF_VAR_AUTH0_ISSUER_BASE_URL }}
+          TF_VAR_auth0_client_id: ${{ secrets.TF_VAR_AUTH0_CLIENT_ID }}
+          TF_VAR_auth0_client_secret: ${{ secrets.TF_VAR_AUTH0_CLIENT_SECRET }}

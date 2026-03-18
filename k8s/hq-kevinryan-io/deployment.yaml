@@ -15,25 +15,28 @@ spec:
     spec:
       containers:
         - name: hq-kevinryan-io
-          image: kevinryanacr.azurecr.io/hq-kevinryan-io:31e50c8
+          image: kevinryanacr.azurecr.io/hq-kevinryan-io:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: hq-auth0-secrets
           livenessProbe:
             httpGet:
-              path: /healthz
-              port: 8080
-            initialDelaySeconds: 5
+              path: /api/healthz
+              port: 3000
+            initialDelaySeconds: 10
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /healthz
-              port: 8080
-            initialDelaySeconds: 3
+              path: /api/healthz
+              port: 3000
+            initialDelaySeconds: 5
             periodSeconds: 5
           resources:
             requests:
-              cpu: 5m
-              memory: 8Mi
-            limits:
               cpu: 50m
-              memory: 32Mi
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
