@@ -32,6 +32,7 @@ COPY --from=build /app/sites/hq-kevinryan-io/public ./sites/hq-kevinryan-io/publ
 COPY --from=build /app/sites/hq-kevinryan-io/package.json ./sites/hq-kevinryan-io/package.json
 COPY --from=build /app/sites/hq-kevinryan-io/node_modules ./sites/hq-kevinryan-io/node_modules
 COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/sites/hq-kevinryan-io/config ./sites/hq-kevinryan-io/config
 COPY pnpm-workspace.yaml ./
 
 WORKDIR /app/sites/hq-kevinryan-io
