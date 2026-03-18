@@ -70,10 +70,11 @@ export async function POST(request: Request) {
     ],
     tools: [
       {
-        type: 'web_search_20250305',
+        type: 'web_search_20250305' as const,
         name: 'web_search',
       },
-    ],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- SDK types lag behind beta API features
+    ] as unknown as Parameters<typeof client.beta.messages.stream>[0]['tools'],
     betas: ['mcp-client-2025-11-20'],
   })
 
