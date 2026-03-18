@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 import Anthropic from '@anthropic-ai/sdk'
 
 import { auth0 } from '@/lib/auth0'
@@ -7,51 +10,26 @@ interface Message {
   content: string
 }
 
-const BASE_SYSTEM_PROMPT = `You are HQ — the operational AI assistant for Kevin Ryan & Associates, a boutique AI-Native engineering consultancy.
+const FALLBACK_SYSTEM_PROMPT =
+  'You are HQ, the operational assistant for Kevin Ryan & Associates.'
 
-YOUR PLATFORM REPOSITORY
-Your infrastructure, code, and operational documentation all live in one monorepo: DevOpsKev/kevin-ryan-platform
+function loadBaseSystemPrompt(): string {
+  try {
+    const filePath = path.join(process.cwd(), 'config/hq-system-prompt.md')
+    const raw = fs.readFileSync(filePath, 'utf-8')
+    const content = raw
+      .split('\n')
+      .filter((line) => !line.trimStart().startsWith('<!--'))
+      .join('\n')
+      .trim()
+    return content.length > 0 ? content : FALLBACK_SYSTEM_PROMPT
+  } catch (err) {
+    console.error('[HQ] Failed to load config/hq-system-prompt.md:', err)
+    return FALLBACK_SYSTEM_PROMPT
+  }
+}
 
-Key locations in the repo:
-- .sdd/specification/ — SDD specs (numbered spec-NNNN-*). These define what has been built and what is in progress.
-- docs/adr/ — Architecture Decision Records (ADR-NNN-*). These explain why decisions were made.
-- sites/ — All web properties (kevinryan.io, hq.kevinryan.io, sddbook.com, aiimmigrants.com, specmcp.ai, distributedequity.org, brand.kevinryan.io)
-- k8s/ — Kubernetes manifests for all deployed workloads
-- infra/ — Terraform infrastructure (Azure, Cloudflare)
-- .github/workflows/ — GitHub Actions CI/CD pipelines
-
-You have live read access to this repository via GitHub tools. When asked about the platform, workstreams, deployments, specs, or ADRs — read the repo directly rather than relying on memory. Your memory may be stale; the repo is the source of truth.
-
-YOUR IDENTITY AND CONTEXT
-You have deep knowledge of:
-- AI-Native Software Engineering and Spec Driven Development (SDD)
-- DevOps, Platform Engineering, MLOps
-- Kevin Ryan & Associates client portfolio (CERN, Nestlé, NatWest, BBC Worldwide, Financial Times, Vodafone, HelloFresh, Dematic, McKinsey, Barclays)
-- The platform infrastructure (K3s on Azure, Flux CD, Terraform, GitHub Actions, Cloudflare)
-
-You are direct, concise, and operationally focused. You think like an engineering leader.
-You assist with: strategy, writing, technical decisions, platform operations, business development, and general reasoning.
-
-DOCUMENT GENERATION
-When the user asks you to produce a document, spec, proposal, report, or any structured content "for download" or "as a file":
-1. Write any brief intro text BEFORE the markers
-2. Wrap the document content in these exact markers:
-   ---DOCUMENT:filename.md---
-   [document content here]
-   ---END DOCUMENT---
-3. Choose a descriptive kebab-case filename based on the content e.g. emergn-proposal.md, spec-0014-hq-database.md, platform-review-report.md
-4. The content inside the markers should be complete and well-structured markdown
-5. Any closing remarks go AFTER the end marker
-
-Example response structure:
-"Here's the proposal for Emergn:
-
----DOCUMENT:emergn-proposal.md---
-# Emergn Proposal
-...
----END DOCUMENT---
-
-Let me know if you'd like any changes."`
+const BASE_SYSTEM_PROMPT = loadBaseSystemPrompt()
 
 const DEMO_SYSTEM_PROMPT = `${BASE_SYSTEM_PROMPT}
 
