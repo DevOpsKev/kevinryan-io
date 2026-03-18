@@ -1,11 +1,12 @@
-import { getSession } from '@auth0/nextjs-auth0';
 import { redirect } from 'next/navigation';
 
+import { auth0 } from '../lib/auth0';
+
 export default async function HomePage() {
-  const session = await getSession();
+  const session = await auth0.getSession();
 
   if (!session) {
-    redirect('/api/auth/login');
+    redirect('/auth/login');
   }
 
   const { user } = session;
@@ -53,7 +54,7 @@ export default async function HomePage() {
 
         {/* Logout */}
         <a
-          href="/api/auth/logout"
+          href="/auth/logout"
           style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: '0.75rem',
