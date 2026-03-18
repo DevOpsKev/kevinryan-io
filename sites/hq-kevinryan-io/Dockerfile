@@ -1,22 +1,40 @@
-FROM nginx:1.28.2-alpine
+FROM node:22.22.0-alpine3.23 AS build
+
+ARG COMMIT_SHA=dev
+ENV NEXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA}
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY sites/hq-kevinryan-io/package.json ./sites/hq-kevinryan-io/
+
+WORKDIR /app/sites/hq-kevinryan-io
+RUN pnpm install --frozen-lockfile
+
+WORKDIR /app
+COPY sites/hq-kevinryan-io/ ./sites/hq-kevinryan-io/
+
+WORKDIR /app/sites/hq-kevinryan-io
+RUN pnpm build
+
+FROM node:22.22.0-alpine3.23
 
 LABEL org.opencontainers.image.source="https://github.com/DevOpsKev/kevin-ryan-platform"
 
-ARG COMMIT_SHA=dev
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-COPY sites/hq-kevinryan-io/public/ /usr/share/nginx/html/
-COPY sites/hq-kevinryan-io/nginx.conf /etc/nginx/nginx.conf
+WORKDIR /app
 
-RUN sed -i "s/{{COMMIT_SHA}}/${COMMIT_SHA}/g" /usr/share/nginx/html/index.html
+COPY --from=build /app/sites/hq-kevinryan-io/.next ./sites/hq-kevinryan-io/.next
+COPY --from=build /app/sites/hq-kevinryan-io/public ./sites/hq-kevinryan-io/public
+COPY --from=build /app/sites/hq-kevinryan-io/package.json ./sites/hq-kevinryan-io/package.json
+COPY --from=build /app/sites/hq-kevinryan-io/node_modules ./sites/hq-kevinryan-io/node_modules
+COPY pnpm-workspace.yaml ./
 
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chown -R nginx:nginx /var/cache/nginx && \
-    chown -R nginx:nginx /var/log/nginx && \
-    touch /run/nginx.pid && \
-    chown nginx:nginx /run/nginx.pid
+WORKDIR /app/sites/hq-kevinryan-io
 
-USER nginx
+EXPOSE 3000
 
-EXPOSE 8080
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["pnpm", "start"]

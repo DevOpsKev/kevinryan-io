@@ -8,4 +8,4 @@ spec:
     app: hq-kevinryan-io
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 3000
