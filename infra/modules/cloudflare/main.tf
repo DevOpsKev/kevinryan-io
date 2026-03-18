@@ -39,6 +39,12 @@ locals {
     local.subdomain_expressions
   )
   cache_expression = join(" or ", local.all_expressions)
+
+  bypass_host_expressions = concat(
+    ["(http.host eq \"${var.domain}\")"],
+    [for s in var.cache_bypass_subdomains : "(http.host eq \"${s}.${var.domain}\")"]
+  )
+  bypass_expression = "(${join(" or ", local.bypass_host_expressions)}) and (starts_with(http.request.uri.path, \"/auth\") or starts_with(http.request.uri.path, \"/api\"))"
 }
 
 resource "cloudflare_ruleset" "cache" {
@@ -62,6 +68,16 @@ resource "cloudflare_ruleset" "cache" {
     }
     expression  = local.cache_expression
     description = "Serve stale content on origin failure"
+    enabled     = true
+  }
+
+  rules {
+    action = "set_cache_settings"
+    action_parameters {
+      cache = false
+    }
+    expression  = local.bypass_expression
+    description = "Bypass cache for auth and API routes"
     enabled     = true
   }
 }

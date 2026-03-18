@@ -222,11 +222,12 @@ module "registry" {
 }
 
 module "cloudflare" {
-  source       = "./modules/cloudflare"
-  zone_id      = var.cloudflare_zone_id
-  vm_public_ip = module.network.public_ip_address
-  domain       = "kevinryan.io"
-  subdomains   = ["brand", "docs", "hq"]
+  source                  = "./modules/cloudflare"
+  zone_id                 = var.cloudflare_zone_id
+  vm_public_ip            = module.network.public_ip_address
+  domain                  = "kevinryan.io"
+  subdomains              = ["brand", "docs", "hq"]
+  cache_bypass_subdomains = ["hq"]
 }
 
 resource "cloudflare_record" "analytics" {

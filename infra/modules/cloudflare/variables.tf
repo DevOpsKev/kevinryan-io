@@ -18,3 +18,9 @@ variable "subdomains" {
   type        = list(string)
   default     = []
 }
+
+variable "cache_bypass_subdomains" {
+  description = "Subdomains that need auth/API cache bypass (e.g. [\"hq\"])"
+  type        = list(string)
+  default     = []
+}
