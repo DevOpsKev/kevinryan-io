@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     await request.json()
   const systemPrompt = demoMode ? DEMO_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- SDK types lag behind beta API: mcp_servers + web_search tool
   const stream = await client.beta.messages.stream({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 8192,
@@ -70,13 +71,12 @@ export async function POST(request: Request) {
     ],
     tools: [
       {
-        type: 'web_search_20250305' as const,
+        type: 'web_search_20250305',
         name: 'web_search',
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- SDK types lag behind beta API features
-    ] as unknown as Parameters<typeof client.beta.messages.stream>[0]['tools'],
+    ],
     betas: ['mcp-client-2025-11-20'],
-  })
+  } as any)
 
   const readable = new ReadableStream({
     async start(controller) {
