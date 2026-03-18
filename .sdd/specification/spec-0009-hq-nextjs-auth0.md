@@ -204,15 +204,17 @@ export const config = {
 
 ### Environment variables
 
-The following environment variables must be present at runtime. They are **not** build-time variables — they are injected via a Kubernetes secret at runtime. The agent does not create the secret values. The secret name in K8s is `hq-auth0-secrets`.
+The following environment variables must be present at runtime. They are **not** build-time variables — they are delivered to the pod via the platform's established secret management pattern: Azure Key Vault (`kv-kevinryan-io`) → External Secrets Operator → Kubernetes Secret named `hq-auth0-secrets`.
 
-| Variable | Description |
-|----------|-------------|
-| `AUTH0_SECRET` | Long random string — session encryption key |
-| `AUTH0_BASE_URL` | `https://hq.kevinryan.io` |
-| `AUTH0_ISSUER_BASE_URL` | Auth0 tenant URL e.g. `https://your-tenant.auth0.com` |
-| `AUTH0_CLIENT_ID` | Auth0 application client ID |
-| `AUTH0_CLIENT_SECRET` | Auth0 application client secret |
+| Variable | Key Vault secret name | Description |
+|----------|-----------------------|-------------|
+| `AUTH0_SECRET` | `hq-auth0-secret` | Long random string — session encryption key |
+| `AUTH0_BASE_URL` | `hq-auth0-base-url` | `https://hq.kevinryan.io` |
+| `AUTH0_ISSUER_BASE_URL` | `hq-auth0-issuer-base-url` | Auth0 tenant URL e.g. `https://your-tenant.auth0.com` |
+| `AUTH0_CLIENT_ID` | `hq-auth0-client-id` | Auth0 application client ID |
+| `AUTH0_CLIENT_SECRET` | `hq-auth0-client-secret` | Auth0 application client secret |
+
+The secret values are written to Key Vault manually (see Manual steps). The `ExternalSecret` manifest (section 7) pulls them into a native K8s secret automatically.
 
 ## 4. Home page
 
@@ -307,7 +309,7 @@ export const config = {
 
 ## 7. Kubernetes manifests
 
-Update `k8s/hq-kevinryan-io/deployment.yaml` only. The namespace, service, ingress, and Flux sync files do not change.
+Update `k8s/hq-kevinryan-io/deployment.yaml` and `k8s/hq-kevinryan-io/service.yaml`. Add `k8s/hq-kevinryan-io/externalsecret.yaml`. The namespace, ingress, and Flux sync files do not change.
 
 Update the deployment to:
 
@@ -376,13 +378,134 @@ spec:
       targetPort: 3000
 ```
 
-## 8. GitHub Actions workflow
+### externalsecret.yaml
+
+Create `k8s/hq-kevinryan-io/externalsecret.yaml`. This pulls the Auth0 secrets from Key Vault into a native K8s secret following the same pattern as `k8s/umami/externalsecret.yaml` and `k8s/observability/externalsecret.yaml`:
+
+```yaml
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: hq-auth0-secrets
+  namespace: hq-kevinryan-io
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: azure-keyvault
+  target:
+    name: hq-auth0-secrets
+    creationPolicy: Owner
+  data:
+    - secretKey: AUTH0_SECRET
+      remoteRef:
+        key: hq-auth0-secret
+    - secretKey: AUTH0_BASE_URL
+      remoteRef:
+        key: hq-auth0-base-url
+    - secretKey: AUTH0_ISSUER_BASE_URL
+      remoteRef:
+        key: hq-auth0-issuer-base-url
+    - secretKey: AUTH0_CLIENT_ID
+      remoteRef:
+        key: hq-auth0-client-id
+    - secretKey: AUTH0_CLIENT_SECRET
+      remoteRef:
+        key: hq-auth0-client-secret
+```
+
+**Design notes:**
+
+- `refreshInterval: 1h` — ESO syncs Key Vault values into the K8s secret every hour. If secrets are rotated in Key Vault the pod picks them up on the next sync without a restart.
+- `creationPolicy: Owner` — ESO owns the lifecycle of the K8s secret. If the ExternalSecret is deleted, the K8s secret is deleted too.
+- No template block needed — the Key Vault secret values map directly to environment variable names without transformation.
+
+## 8. Terraform — Auth0 secrets
+
+Add the following to `infra/variables.tf`. Follow the exact pattern of `cloudflare_api_token` — `type = string`, `sensitive = true`:
+
+```hcl
+variable "auth0_secret" {
+  description = "Auth0 session encryption secret for HQ"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth0_issuer_base_url" {
+  description = "Auth0 tenant URL for HQ (e.g. https://your-tenant.auth0.com)"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth0_client_id" {
+  description = "Auth0 client ID for HQ"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth0_client_secret" {
+  description = "Auth0 client secret for HQ"
+  type        = string
+  sensitive   = true
+}
+```
+
+Add the following to `infra/main.tf`, alongside the existing `azurerm_key_vault_secret` resources:
+
+```hcl
+resource "azurerm_key_vault_secret" "hq_auth0_secret" {
+  name         = "hq-auth0-secret"
+  value        = var.auth0_secret
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_base_url" {
+  name         = "hq-auth0-base-url"
+  value        = "https://hq.kevinryan.io"
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_issuer_base_url" {
+  name         = "hq-auth0-issuer-base-url"
+  value        = var.auth0_issuer_base_url
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_client_id" {
+  name         = "hq-auth0-client-id"
+  value        = var.auth0_client_id
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "hq_auth0_client_secret" {
+  name         = "hq-auth0-client-secret"
+  value        = var.auth0_client_secret
+  key_vault_id = module.keyvault.key_vault_id
+}
+```
+
+Update `.github/workflows/terraform.yml` to pass the new variables in both the `plan` and `apply` jobs, alongside the existing `TF_VAR_cloudflare_api_token` entry:
+
+```yaml
+TF_VAR_auth0_secret: ${{ secrets.TF_VAR_AUTH0_SECRET }}
+TF_VAR_auth0_issuer_base_url: ${{ secrets.TF_VAR_AUTH0_ISSUER_BASE_URL }}
+TF_VAR_auth0_client_id: ${{ secrets.TF_VAR_AUTH0_CLIENT_ID }}
+TF_VAR_auth0_client_secret: ${{ secrets.TF_VAR_AUTH0_CLIENT_SECRET }}
+```
+
+**Design notes:**
+
+- `hq-auth0-base-url` is hardcoded to `https://hq.kevinryan.io` — it is not a variable because it is determined by the infrastructure, not an external system.
+- `AUTH0_SECRET` is a session encryption key generated once. Store it in GitHub secrets and do not rotate it unless there is a security incident — rotation invalidates all active sessions.
+- Follow the `cloudflare_api_token` pattern exactly: `sensitive = true` on all variables, `TF_VAR_` prefix on GitHub secret names.
+
+## 9. GitHub Actions workflow
 
 Replace `.github/workflows/deploy-hq.yml`. Follow `deploy.yml` (kevinryan-io) exactly, substituting `kevinryan-io` → `hq-kevinryan-io` throughout. Path trigger: `sites/hq-kevinryan-io/**`.
 
 The workflow does not change — build, push to ACR/GHCR, update manifest, commit. The Dockerfile handles the Node.js build internally.
 
-## 9. pnpm workspace
+## 10. pnpm workspace
 
 Add `sites/hq-kevinryan-io` to `pnpm-workspace.yaml` if it is not already present. Check the file before modifying.
 
@@ -390,8 +513,9 @@ Add `sites/hq-kevinryan-io` to `pnpm-workspace.yaml` if it is not already presen
 
 - **Constraint:** HQ runs in Next.js server mode. `output: 'export'` must not be present in `next.config.ts`.
 - **Constraint:** Auth0 environment variables are runtime secrets, not build-time args. They must never appear in the Dockerfile or GitHub Actions workflow.
-- **Constraint:** The `hq-auth0-secrets` Kubernetes secret must be created manually before the pod will start. The agent does not create this secret — it is a manual step.
 - **Constraint:** The Auth0 callback URLs must be registered in the Auth0 tenant before login will work. This is a manual step documented in Prerequisites.
+- **Constraint:** Auth0 secret values reach Key Vault via Terraform, following the same pattern as `cloudflare_api_token`. The values are stored as GitHub Actions secrets (`TF_VAR_*`) and written to Key Vault by `infra/main.tf` during `terraform apply`. The agent adds the Terraform resources; the human adds the GitHub secrets.
+- **Assumption:** The `ClusterSecretStore` named `azure-keyvault` is already running and healthy in the cluster (established by spec-0003/ADR-018).
 - **Assumption:** `pnpm-lock.yaml` at the repo root covers all workspace packages. The agent runs `pnpm install` from the workspace root context in the Dockerfile.
 - **Assumption:** Auth0 tenant is already provisioned with a GitHub social connection configured as the identity provider.
 
@@ -401,7 +525,7 @@ Add `sites/hq-kevinryan-io` to `pnpm-workspace.yaml` if it is not already presen
 - Anthropic API integration — that is spec-0010
 - GitHub MCP integration — that is spec-0010
 - Demo mode toggle — that is spec-0010
-- Creating the `hq-auth0-secrets` K8s secret — manual step
+- Adding GitHub Actions secrets to the repository — manual step performed by the human before running Terraform
 - Registering Auth0 callback URLs — manual step, must be done before deployment
 
 ## Manual steps (not performed by the agent)
@@ -413,20 +537,24 @@ Add `sites/hq-kevinryan-io` to `pnpm-workspace.yaml` if it is not already presen
    - Allowed Logout URL: `https://hq.kevinryan.io`
    - Allowed Web Origins: `https://hq.kevinryan.io`
 
+**Before merging the PR:**
+
+1. Add the following GitHub Actions secrets to the `DevOpsKev/kevin-ryan-platform` repository (Settings → Secrets and variables → Actions):
+
+| Secret name | Value |
+|-------------|-------|
+| `TF_VAR_AUTH0_SECRET` | Generate with `openssl rand -hex 32` |
+| `TF_VAR_AUTH0_ISSUER_BASE_URL` | `https://<your-tenant>.auth0.com` |
+| `TF_VAR_AUTH0_CLIENT_ID` | Auth0 application client ID |
+| `TF_VAR_AUTH0_CLIENT_SECRET` | Auth0 application client secret |
+
+Note: `AUTH0_BASE_URL` is always `https://hq.kevinryan.io` — hardcoded in Terraform, not a GitHub secret.
+
+1. Run `terraform apply` to write the secrets to Key Vault — this happens automatically when the PR is merged and `infra/**` changes trigger the Terraform workflow.
+
 **After merging the PR:**
 
-1. Create the Auth0 K8s secret on the cluster:
-
-```bash
-kubectl create secret generic hq-auth0-secrets \
-  --namespace hq-kevinryan-io \
-  --from-literal=AUTH0_SECRET='<long-random-string>' \
-  --from-literal=AUTH0_BASE_URL='https://hq.kevinryan.io' \
-  --from-literal=AUTH0_ISSUER_BASE_URL='https://<your-tenant>.auth0.com' \
-  --from-literal=AUTH0_CLIENT_ID='<client-id>' \
-  --from-literal=AUTH0_CLIENT_SECRET='<client-secret>'
-```
-
+1. Verify ESO has synced the secret: `kubectl get secret hq-auth0-secrets -n hq-kevinryan-io`
 1. Confirm the pod is running: `kubectl get pods -n hq-kevinryan-io`
 1. Visit `https://hq.kevinryan.io` — should redirect to GitHub OAuth login
 1. Complete login — should land on the HQ page showing your GitHub username and avatar
@@ -449,8 +577,13 @@ After completing the work, create `.sdd/provenance/spec-0009-hq-nextjs-auth0.pro
 9. `sites/hq-kevinryan-io/Dockerfile` exists, contains `node:22.22.0-alpine3.23`, does NOT contain `nginx`, and exposes port `3000`
 10. `k8s/hq-kevinryan-io/deployment.yaml` references port `3000` and `envFrom` referencing `hq-auth0-secrets`
 11. `k8s/hq-kevinryan-io/service.yaml` targets port `3000`
-12. `.github/workflows/deploy-hq.yml` path trigger references `sites/hq-kevinryan-io/**`
-13. `pnpm lint` passes
-14. `pnpm build` passes inside `sites/hq-kevinryan-io/` (without Auth0 env vars — build must succeed without them, only runtime requires them)
-15. The provenance record exists at `.sdd/provenance/spec-0009-hq-nextjs-auth0.provenance.md`
-16. All files are committed together in a single commit
+12. `k8s/hq-kevinryan-io/externalsecret.yaml` exists, references `ClusterSecretStore` `azure-keyvault`, and maps all five Auth0 variables
+13. `infra/variables.tf` contains `auth0_secret`, `auth0_issuer_base_url`, `auth0_client_id`, `auth0_client_secret` variables all with `sensitive = true`
+14. `infra/main.tf` contains five `azurerm_key_vault_secret` resources for `hq-auth0-*`
+15. `.github/workflows/terraform.yml` passes `TF_VAR_auth0_*` in both plan and apply jobs
+16. `terraform fmt -check -recursive infra/` passes
+17. `.github/workflows/deploy-hq.yml` path trigger references `sites/hq-kevinryan-io/**`
+18. `pnpm lint` passes
+19. `pnpm build` passes inside `sites/hq-kevinryan-io/` (without Auth0 env vars — build must succeed without them, only runtime requires them)
+20. The provenance record exists at `.sdd/provenance/spec-0009-hq-nextjs-auth0.provenance.md`
+21. All files are committed together in a single commit
