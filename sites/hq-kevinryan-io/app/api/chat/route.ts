@@ -224,6 +224,8 @@ export async function POST(request: Request) {
 
   const readable = new ReadableStream({
     async start(controller) {
+      const encoder = new TextEncoder()
+
       while (true) {
         const stream = client.messages.stream({
           model: 'claude-sonnet-4-20250514',
@@ -233,19 +235,19 @@ export async function POST(request: Request) {
           tools,
         })
 
+        stream.on('text', (text) => {
+          controller.enqueue(encoder.encode(text))
+        })
+
         const finalMessage = await stream.finalMessage()
+
+        if (finalMessage.stop_reason !== 'tool_use') {
+          break
+        }
+
         const toolUseBlocks = finalMessage.content.filter(
           (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use',
         )
-
-        if (toolUseBlocks.length === 0) {
-          for (const block of finalMessage.content) {
-            if (block.type === 'text') {
-              controller.enqueue(new TextEncoder().encode(block.text))
-            }
-          }
-          break
-        }
 
         conversationMessages.push({
           role: 'assistant',

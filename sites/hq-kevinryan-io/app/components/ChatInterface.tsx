@@ -37,7 +37,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
     if (!text.trim() || loading) return
     const userMessage: Message = { role: 'user', content: text.trim() }
     const updatedMessages = [...messages, userMessage]
-    setMessages([...updatedMessages, { role: 'assistant', content: '' }])
+    setMessages(updatedMessages)
     setInput('')
     setLoading(true)
 
@@ -69,9 +69,14 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
         const chunk = decoder.decode(value, { stream: true })
         setMessages((prev) => {
           const next = [...prev]
-          next[next.length - 1] = {
-            role: 'assistant',
-            content: next[next.length - 1].content + chunk,
+          const last = next[next.length - 1]
+          if (last?.role === 'assistant') {
+            next[next.length - 1] = {
+              role: 'assistant',
+              content: last.content + chunk,
+            }
+          } else {
+            next.push({ role: 'assistant', content: chunk })
           }
           return next
         })
@@ -120,7 +125,54 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
             </span>
           </div>
         ) : (
-          messages.map((msg, i) => <MessageBubble key={i} message={msg} />)
+          <>
+            {messages.map((msg, i) => (
+              <MessageBubble key={i} message={msg} />
+            ))}
+            {loading && messages[messages.length - 1]?.role === 'user' && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  marginBottom: '0.75rem',
+                }}
+              >
+                <div style={{ maxWidth: '75%' }}>
+                  <div
+                    style={{
+                      fontFamily: "'Bebas Neue', sans-serif",
+                      fontSize: '0.75rem',
+                      color: '#A8E10C',
+                      marginBottom: '0.25rem',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    HQ
+                  </div>
+                  <div
+                    style={{
+                      backgroundColor: '#111111',
+                      border: '1px solid #222222',
+                      padding: '0.75rem 1rem',
+                      display: 'flex',
+                      gap: '0.3rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <span className="typing-dot" />
+                    <span
+                      className="typing-dot"
+                      style={{ animationDelay: '0.2s' }}
+                    />
+                    <span
+                      className="typing-dot"
+                      style={{ animationDelay: '0.4s' }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
         <div ref={bottomRef} />
       </main>

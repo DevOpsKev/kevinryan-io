@@ -11,3 +11,25 @@ body {
   color: #F5F3EF;
   font-family: 'Archivo', sans-serif;
 }
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #f5f3ef;
+  border-radius: 50%;
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
