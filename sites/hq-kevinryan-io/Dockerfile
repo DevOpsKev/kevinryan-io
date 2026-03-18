@@ -30,6 +30,7 @@ WORKDIR /app
 COPY --from=build /app/sites/hq-kevinryan-io/.next ./sites/hq-kevinryan-io/.next
 COPY --from=build /app/sites/hq-kevinryan-io/public ./sites/hq-kevinryan-io/public
 COPY --from=build /app/sites/hq-kevinryan-io/package.json ./sites/hq-kevinryan-io/package.json
+COPY --from=build /app/sites/hq-kevinryan-io/node_modules ./sites/hq-kevinryan-io/node_modules
 COPY --from=build /app/node_modules ./node_modules
 COPY pnpm-workspace.yaml ./
 
