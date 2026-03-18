@@ -189,22 +189,11 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
         style={{
           padding: '0.5rem 2rem',
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
           alignItems: 'center',
           borderTop: '1px solid #111',
         }}
       >
-        <a
-          href="/auth/logout"
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '0.6875rem',
-            color: '#F5F3EF33',
-            textDecoration: 'none',
-          }}
-        >
-          logout
-        </a>
         <span
           style={{
             fontFamily: "'JetBrains Mono', monospace",
