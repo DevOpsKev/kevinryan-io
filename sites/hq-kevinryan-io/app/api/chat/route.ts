@@ -74,7 +74,11 @@ export async function POST(request: Request) {
         type: 'web_search_20250305',
         name: 'web_search',
       },
-    ],
+      {
+        type: 'mcp_toolset',
+        mcp_server_name: 'github',
+      },
+    ] as any,
     betas: ['mcp-client-2025-11-20'],
   } as any)
 
