@@ -64,9 +64,9 @@ export async function POST(request: Request) {
     mcp_servers: [
       {
         type: 'url',
-        url: 'https://mcp.github.com/sse',
+        url: 'https://api.githubcopilot.com/mcp/',
         name: 'github',
-        authorization_token: process.env.GITHUB_MCP_TOKEN,
+        authorization_token: `Bearer ${process.env.GITHUB_MCP_TOKEN}`,
       },
     ],
     tools: [
