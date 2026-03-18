@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     await request.json()
   const systemPrompt = demoMode ? DEMO_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
 
-  const stream = await client.messages.stream({
+  const stream = await client.beta.messages.stream({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 8192,
     system: systemPrompt,
@@ -68,7 +68,14 @@ export async function POST(request: Request) {
         authorization_token: process.env.GITHUB_MCP_TOKEN,
       },
     ],
-  } as Parameters<typeof client.messages.stream>[0])
+    tools: [
+      {
+        type: 'web_search_20250305',
+        name: 'web_search',
+      },
+    ],
+    betas: ['mcp-client-2025-11-20'],
+  })
 
   const readable = new ReadableStream({
     async start(controller) {
