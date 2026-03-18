@@ -204,6 +204,12 @@ resource "azurerm_key_vault_secret" "hq_auth0_client_secret" {
   key_vault_id = module.keyvault.key_vault_id
 }
 
+resource "azurerm_key_vault_secret" "hq_auth0_domain" {
+  name         = "hq-auth0-domain"
+  value        = var.auth0_domain
+  key_vault_id = module.keyvault.key_vault_id
+}
+
 module "registry" {
   source              = "./modules/registry"
   location            = module.network.resource_group_location

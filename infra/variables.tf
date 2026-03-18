@@ -109,3 +109,9 @@ variable "auth0_client_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "auth0_domain" {
+  description = "Auth0 domain for HQ (e.g. devopskev.eu.auth0.com) — no https:// prefix"
+  type        = string
+  sensitive   = true
+}
