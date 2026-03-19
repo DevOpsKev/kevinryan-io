@@ -138,6 +138,106 @@ async function executeGitHubTool(
     )
   }
 
+  if (name === 'create_github_branch') {
+    const branchName = input.branchName as string
+    if (!branchName.startsWith('hq-')) {
+      return 'Error: Branch name must start with "hq-"'
+    }
+    const mainRes = await fetch(`${GITHUB_API_BASE}/git/ref/heads/main`, { headers })
+    if (!mainRes.ok) {
+      return `Error getting main branch: ${mainRes.status} ${mainRes.statusText}`
+    }
+    const mainData = (await mainRes.json()) as { object: { sha: string } }
+    const res = await fetch(`${GITHUB_API_BASE}/git/refs`, {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ref: `refs/heads/${branchName}`,
+        sha: mainData.object.sha,
+      }),
+    })
+    if (!res.ok) {
+      const err = (await res.json()) as unknown
+      return `Error creating branch: ${res.status} ${JSON.stringify(err)}`
+    }
+    const data = (await res.json()) as { ref: string }
+    return `Branch created: ${data.ref}`
+  }
+
+  if (name === 'create_github_file') {
+    const filePath = input.path as string
+    const content = input.content as string
+    const message = input.message as string
+    const branch = input.branch as string
+    if (filePath.includes('..')) {
+      return 'Error: File path must not contain ".."'
+    }
+    let existingSha: string | undefined
+    const checkRes = await fetch(
+      `${GITHUB_API_BASE}/contents/${filePath}?ref=${encodeURIComponent(branch)}`,
+      { headers },
+    )
+    if (checkRes.ok) {
+      const existing = (await checkRes.json()) as { sha?: string }
+      existingSha = existing.sha
+    }
+    const body: Record<string, string> = {
+      message,
+      content: Buffer.from(content).toString('base64'),
+      branch,
+    }
+    if (existingSha) body.sha = existingSha
+    const res = await fetch(`${GITHUB_API_BASE}/contents/${filePath}`, {
+      method: 'PUT',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (!res.ok) {
+      const err = (await res.json()) as unknown
+      return `Error creating/updating file: ${res.status} ${JSON.stringify(err)}`
+    }
+    const data = (await res.json()) as { content: { html_url: string } }
+    return `File ${existingSha ? 'updated' : 'created'}: ${data.content.html_url}`
+  }
+
+  if (name === 'create_github_pull_request') {
+    const title = input.title as string
+    const body = input.body as string
+    const head = input.head as string
+    const base = (input.base as string | undefined) ?? 'main'
+    const res = await fetch(`${GITHUB_API_BASE}/pulls`, {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, body, head, base }),
+    })
+    if (!res.ok) {
+      const err = (await res.json()) as unknown
+      return `Error creating PR: ${res.status} ${JSON.stringify(err)}`
+    }
+    const data = (await res.json()) as {
+      number: number
+      html_url: string
+      title: string
+    }
+    return JSON.stringify({ number: data.number, url: data.html_url, title: data.title })
+  }
+
+  if (name === 'add_pr_comment') {
+    const prNumber = input.prNumber as number
+    const body = input.body as string
+    const res = await fetch(`${GITHUB_API_BASE}/issues/${prNumber}/comments`, {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body }),
+    })
+    if (!res.ok) {
+      const err = (await res.json()) as unknown
+      return `Error adding comment: ${res.status} ${JSON.stringify(err)}`
+    }
+    const data = (await res.json()) as { id: number; html_url: string }
+    return JSON.stringify({ id: data.id, url: data.html_url })
+  }
+
   return `Unknown tool: ${name}`
 }
 
@@ -205,6 +305,94 @@ const tools: Anthropic.Tool[] = [
         },
       },
       required: [],
+    },
+  },
+  {
+    name: 'create_github_branch',
+    description:
+      'Create a new branch in the DevOpsKev/kevin-ryan-platform repository from main. Branch name must start with "hq-".',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        branchName: {
+          type: 'string',
+          description: 'Branch name — must start with "hq-", e.g. hq-my-feature',
+        },
+      },
+      required: ['branchName'],
+    },
+  },
+  {
+    name: 'create_github_file',
+    description:
+      'Create or update a file in the DevOpsKev/kevin-ryan-platform repository on a given branch',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        path: {
+          type: 'string',
+          description: 'File path in the repository e.g. config/hq-system-prompt.md',
+        },
+        content: {
+          type: 'string',
+          description: 'Full text content of the file',
+        },
+        message: {
+          type: 'string',
+          description: 'Commit message',
+        },
+        branch: {
+          type: 'string',
+          description: 'Branch to commit to, e.g. hq-my-feature',
+        },
+      },
+      required: ['path', 'content', 'message', 'branch'],
+    },
+  },
+  {
+    name: 'create_github_pull_request',
+    description:
+      'Create a pull request in the DevOpsKev/kevin-ryan-platform repository',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        title: {
+          type: 'string',
+          description: 'PR title',
+        },
+        body: {
+          type: 'string',
+          description: 'PR description / body',
+        },
+        head: {
+          type: 'string',
+          description: 'Source branch name, e.g. hq-my-feature',
+        },
+        base: {
+          type: 'string',
+          description: 'Target branch, defaults to "main"',
+        },
+      },
+      required: ['title', 'body', 'head'],
+    },
+  },
+  {
+    name: 'add_pr_comment',
+    description:
+      'Add a comment to an existing pull request in the DevOpsKev/kevin-ryan-platform repository',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        prNumber: {
+          type: 'number',
+          description: 'Pull request number',
+        },
+        body: {
+          type: 'string',
+          description: 'Comment body (markdown supported)',
+        },
+      },
+      required: ['prNumber', 'body'],
     },
   },
 ]
