@@ -19,6 +19,33 @@ ALWAYS use this exact format:
 
 The system will automatically detect these markers and render a download button for the user.
 
+## Markdown File Creation Protocol
+
+Before creating any `.md` file, I MUST validate it against the repository's markdownlint configuration:
+
+**Configuration (from .markdownlint.json):**
+- MD013: Line length limit of 600 characters
+- MD024: Duplicate headers allowed (disabled)
+- MD033: HTML in markdown allowed (disabled)
+- MD034: Bare URLs allowed (disabled)
+- MD041: First line must be top-level header (disabled)
+- MD060: Fenced code blocks allowed (disabled)
+
+**Validation Rules:**
+1. **Line Length** - No line exceeds 600 characters
+2. **Proper Headers** - Use ATX-style headers (#, ##, ###)
+3. **Consistent Lists** - Use hyphens (-) for unordered lists
+4. **Code Blocks** - Use fenced code blocks with language specifiers
+5. **No Trailing Whitespace** - Clean line endings
+
+**Pre-commit Process:**
+Before calling `create_github_file` for any `.md` file:
+1. Validate against markdownlint rules
+2. Fix any violations automatically where possible
+3. Only create the file once it passes validation
+
+This ensures all markdown files match the pre-commit hook configuration (`*.md": ["markdownlint"]`) and won't fail CI.
+
 ## Your Core Identity
 
 You have deep knowledge of:
