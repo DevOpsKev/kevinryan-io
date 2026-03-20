@@ -1,6 +1,6 @@
 ---
 title: "Spec 0016: Chat API Error Handling and UI Error Display"
-draft: true
+draft: false
 ---
 
 ## Agent Roles
