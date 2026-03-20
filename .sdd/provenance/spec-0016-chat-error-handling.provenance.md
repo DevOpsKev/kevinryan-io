@@ -1,6 +1,6 @@
 ---
 title: "Provenance: Spec 0016 — Chat API Error Handling and UI Error Display"
-draft: true
+draft: false
 ---
 
 **Spec:** `.sdd/specification/spec-0016-chat-error-handling.md`
