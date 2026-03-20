@@ -33,3 +33,136 @@ body {
   border-radius: 50%;
   animation: typing-bounce 1.2s ease-in-out infinite;
 }
+
+/* HQ Markdown rendering styles */
+.hq-markdown p {
+  margin-bottom: 0.75em;
+}
+
+.hq-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.hq-markdown strong {
+  color: #A8E10C;
+  font-weight: 700;
+}
+
+.hq-markdown em {
+  font-style: italic;
+  color: #d4d0c8;
+}
+
+.hq-markdown h1,
+.hq-markdown h2,
+.hq-markdown h3,
+.hq-markdown h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  color: #A8E10C;
+  letter-spacing: 0.03em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.hq-markdown h1 {
+  font-size: 1.5rem;
+}
+
+.hq-markdown h2 {
+  font-size: 1.25rem;
+}
+
+.hq-markdown h3 {
+  font-size: 1.1rem;
+}
+
+.hq-markdown ul,
+.hq-markdown ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.hq-markdown li {
+  margin-bottom: 0.25em;
+}
+
+.hq-markdown li::marker {
+  color: #A8E10C;
+}
+
+.hq-markdown code {
+  font-family: 'JetBrains Mono', monospace;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  padding: 0.15em 0.4em;
+  font-size: 0.85em;
+  border-radius: 3px;
+  color: #A8E10C;
+}
+
+.hq-markdown pre {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  padding: 0.75em 1em;
+  margin: 0.75em 0;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+.hq-markdown pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.85em;
+  color: #F5F3EF;
+}
+
+.hq-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: 0.875rem;
+}
+
+.hq-markdown th {
+  text-align: left;
+  padding: 0.5em 0.75em;
+  border-bottom: 2px solid #A8E10C;
+  color: #A8E10C;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+}
+
+.hq-markdown td {
+  padding: 0.4em 0.75em;
+  border-bottom: 1px solid #222;
+}
+
+.hq-markdown tr:hover td {
+  background-color: #1a1a1a;
+}
+
+.hq-markdown a {
+  color: #A8E10C;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.hq-markdown a:hover {
+  color: #c4ff2e;
+}
+
+.hq-markdown blockquote {
+  border-left: 3px solid #A8E10C;
+  padding-left: 0.75em;
+  margin: 0.75em 0;
+  color: #999;
+  font-style: italic;
+}
+
+.hq-markdown hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 1em 0;
+}
