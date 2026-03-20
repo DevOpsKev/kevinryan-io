@@ -8,8 +8,8 @@ interface User {
 
 interface ChatHeaderProps {
   user: User
-  demoMode: boolean
-  onDemoModeChange: (value: boolean) => void
+  redacted: boolean
+  onRedactedChange: (value: boolean) => void
 }
 
 const toggleTrackBase: React.CSSProperties = {
@@ -18,7 +18,6 @@ const toggleTrackBase: React.CSSProperties = {
   width: '2.25rem',
   height: '1.25rem',
   borderRadius: '999px',
-  cursor: 'pointer',
   transition: 'background-color 0.2s ease',
   flexShrink: 0,
 }
@@ -35,8 +34,8 @@ const toggleThumb: React.CSSProperties = {
 
 export default function ChatHeader({
   user,
-  demoMode,
-  onDemoModeChange,
+  redacted,
+  onRedactedChange,
 }: ChatHeaderProps) {
   return (
     <header
@@ -71,19 +70,20 @@ export default function ChatHeader({
         }}
       >
         {/* Redact Data toggle */}
-        <label
+        <div
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
             cursor: 'pointer',
           }}
+          onClick={() => onRedactedChange(!redacted)}
         >
           <span
             style={{
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: '0.6875rem',
-              color: demoMode ? '#F59E0B' : '#F5F3EF66',
+              color: redacted ? '#A8E10C' : '#F5F3EF66',
               letterSpacing: '0.04em',
               transition: 'color 0.2s ease',
               userSelect: 'none',
@@ -91,56 +91,41 @@ export default function ChatHeader({
           >
             REDACT DATA
           </span>
-          {/* Hidden native checkbox for accessibility */}
-          <input
-            type="checkbox"
-            checked={demoMode}
-            onChange={(e) => onDemoModeChange(e.target.checked)}
-            style={{
-              position: 'absolute',
-              opacity: 0,
-              width: 0,
-              height: 0,
-              pointerEvents: 'none',
-            }}
-            aria-label="Redact Data"
-          />
           {/* Visual toggle track */}
           <div
             role="switch"
-            aria-checked={demoMode}
+            aria-checked={redacted}
             aria-label="Redact Data"
-            onClick={() => onDemoModeChange(!demoMode)}
             onKeyDown={(e) => {
               if (e.key === ' ' || e.key === 'Enter') {
                 e.preventDefault()
-                onDemoModeChange(!demoMode)
+                onRedactedChange(!redacted)
               }
             }}
             tabIndex={0}
             style={{
               ...toggleTrackBase,
-              backgroundColor: demoMode ? '#F59E0B' : '#2a2a2a',
-              border: `1px solid ${demoMode ? '#F59E0B' : '#444'}`,
+              backgroundColor: redacted ? '#A8E10C' : '#2a2a2a',
+              border: `1px solid ${redacted ? '#A8E10C' : '#444'}`,
             }}
           >
             <div
               style={{
                 ...toggleThumb,
-                left: demoMode ? '1.1875rem' : '0.1875rem',
+                left: redacted ? '1.1875rem' : '0.1875rem',
               }}
             />
           </div>
-        </label>
+        </div>
 
-        {demoMode && (
+        {redacted && (
           <span
             style={{
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: '0.6rem',
               fontWeight: 700,
               color: '#0A0A0A',
-              backgroundColor: '#F59E0B',
+              backgroundColor: '#A8E10C',
               padding: '0.125rem 0.4rem',
               letterSpacing: '0.12em',
               borderRadius: '2px',

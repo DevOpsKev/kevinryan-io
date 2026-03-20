@@ -23,7 +23,7 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ user }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([])
-  const [demoMode, setDemoMode] = useState(false)
+  const [redacted, setRedacted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState('')
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -45,7 +45,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: updatedMessages, demoMode }),
+        body: JSON.stringify({ messages: updatedMessages, redacted }),
       })
 
       if (!res.ok || !res.body) {
@@ -98,8 +98,8 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
     >
       <ChatHeader
         user={user}
-        demoMode={demoMode}
-        onDemoModeChange={setDemoMode}
+        redacted={redacted}
+        onRedactedChange={setRedacted}
       />
 
       <main style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 2rem' }}>
@@ -127,7 +127,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
         ) : (
           <>
             {messages.map((msg, i) => (
-              <MessageBubble key={i} message={msg} />
+              <MessageBubble key={i} message={msg} redacted={redacted} />
             ))}
             {loading && messages[messages.length - 1]?.role === 'user' && (
               <div
@@ -180,7 +180,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
       <ChatInput
         input={input}
         loading={loading}
-        demoMode={demoMode}
+        redacted={redacted}
         onChange={setInput}
         onSend={(text) => void sendMessage(text)}
       />

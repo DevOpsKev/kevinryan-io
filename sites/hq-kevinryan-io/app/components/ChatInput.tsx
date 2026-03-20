@@ -10,7 +10,7 @@ const HINT_PILLS = [
 interface ChatInputProps {
   input: string
   loading: boolean
-  demoMode: boolean
+  redacted: boolean
   onChange: (value: string) => void
   onSend: (text: string) => void
 }
@@ -18,7 +18,7 @@ interface ChatInputProps {
 export default function ChatInput({
   input,
   loading,
-  demoMode,
+  redacted,
   onChange,
   onSend,
 }: ChatInputProps) {
@@ -64,7 +64,7 @@ export default function ChatInput({
           onKeyDown={handleKeyDown}
           disabled={loading}
           placeholder={
-            demoMode ? 'ask HQ anything (demo mode)' : 'ask HQ anything'
+            redacted ? 'ask HQ anything (redacted mode)' : 'ask HQ anything'
           }
           rows={3}
           style={{
