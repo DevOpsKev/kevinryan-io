@@ -64,32 +64,8 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: claude-opus-4-6
-          max_turns: 50
           show_full_output: true
-          allowed_tools: |
-            Bash(pnpm:*)
-            Bash(npm:*)
-            Bash(npx:*)
-            Bash(git:*)
-            Bash(cat:*)
-            Bash(ls:*)
-            Bash(find:*)
-            Bash(head:*)
-            Bash(tail:*)
-            Bash(grep:*)
-            Bash(sed:*)
-            Bash(echo:*)
-            Bash(mkdir:*)
-            Bash(cp:*)
-            Bash(mv:*)
-            Bash(cd:*)
-            Read
-            Write
-            Edit
-            GlobTool
-            GrepTool
-            BatchTool
+          claude_args: "--model claude-opus-4-6 --max-turns 50"
           prompt: |
             You are the Builder Agent for the kevin-ryan-platform monorepo.
 
