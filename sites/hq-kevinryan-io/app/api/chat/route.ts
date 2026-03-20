@@ -110,7 +110,7 @@ async function executeGitHubTool(
   }
 
   if (name === 'list_workflow_runs') {
-    limit = (input.limit as number) ?? 10
+    const limit = (input.limit as number) ?? 10
     const res = await fetch(
       `${GITHUB_API_BASE}/actions/runs?per_page=${limit}`,
       { headers },
