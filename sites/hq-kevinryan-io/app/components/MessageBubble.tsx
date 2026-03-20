@@ -143,9 +143,8 @@ export default function MessageBubble({
             fontSize: '0.9375rem',
             lineHeight: 1.6,
             wordBreak: 'break-word',
-            // Blanket blur for user messages only; assistant fallbacks remain readable
-            filter: redacted && isUser ? 'blur(5px)' : 'none',
-            userSelect: redacted && isUser ? 'none' : 'auto',
+            filter: 'none',
+            userSelect: 'auto',
             transition: 'filter 0.3s ease',
           }}
           className={isUser || hasSegments ? undefined : 'hq-markdown'}
