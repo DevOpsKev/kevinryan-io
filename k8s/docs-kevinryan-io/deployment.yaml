@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: docs-kevinryan-io
-          image: kevinryanacr.azurecr.io/docs-kevinryan-io:87dc3bc
+          image: kevinryanacr.azurecr.io/docs-kevinryan-io:59edc9e
           ports:
             - containerPort: 8080
           livenessProbe:
