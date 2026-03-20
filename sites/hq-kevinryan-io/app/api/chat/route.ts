@@ -110,7 +110,7 @@ async function executeGitHubTool(
   }
 
   if (name === 'list_workflow_runs') {
-    const limit = (input.limit as number) ?? 10
+    limit = (input.limit as number) ?? 10
     const res = await fetch(
       `${GITHUB_API_BASE}/actions/runs?per_page=${limit}`,
       { headers },
@@ -415,7 +415,7 @@ export async function POST(request: Request) {
 
       while (true) {
         const stream = client.messages.stream({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-opus-4-6',
           max_tokens: 8192,
           system: systemPrompt,
           messages: conversationMessages,
