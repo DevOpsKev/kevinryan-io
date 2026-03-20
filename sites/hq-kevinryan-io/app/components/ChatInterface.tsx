@@ -2,14 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import type { Message, Segment } from '../types/chat'
 import ChatHeader from './ChatHeader'
 import ChatInput from './ChatInput'
 import MessageBubble from './MessageBubble'
-
-interface Message {
-  role: 'user' | 'assistant'
-  content: string
-}
 
 interface User {
   picture?: string
@@ -81,6 +77,45 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
           return next
         })
       }
+
+      if (redacted) {
+        setMessages((prev) => {
+          const next = [...prev]
+          const last = next[next.length - 1]
+          if (last?.role === 'assistant') {
+            try {
+              // Strip markdown code fences if Claude wrapped the JSON
+              let rawContent = last.content
+              const fenceMatch = rawContent.match(
+                /^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/,
+              )
+              if (fenceMatch) {
+                rawContent = fenceMatch[1]
+              }
+              const segments: Segment[] = JSON.parse(rawContent)
+              if (
+                Array.isArray(segments) &&
+                segments.every(
+                  (s) =>
+                    typeof s.text === 'string' &&
+                    typeof s.sensitive === 'boolean',
+                )
+              ) {
+                next[next.length - 1] = {
+                  ...last,
+                  segments,
+                  content: segments.map((s) => s.text).join(' '),
+                }
+              }
+            } catch {
+              console.warn(
+                '[HQ] Failed to parse redacted response as JSON, falling back to blanket blur',
+              )
+            }
+          }
+          return next
+        })
+      }
     } finally {
       setLoading(false)
     }
@@ -127,7 +162,16 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
         ) : (
           <>
             {messages.map((msg, i) => (
-              <MessageBubble key={i} message={msg} redacted={redacted} />
+              <MessageBubble
+                key={i}
+                message={msg}
+                redacted={redacted}
+                isStreaming={
+                  loading &&
+                  i === messages.length - 1 &&
+                  msg.role === 'assistant'
+                }
+              />
             ))}
             {loading && messages[messages.length - 1]?.role === 'user' && (
               <div

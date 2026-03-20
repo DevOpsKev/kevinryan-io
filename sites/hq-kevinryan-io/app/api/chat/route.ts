@@ -33,14 +33,19 @@ const BASE_SYSTEM_PROMPT = loadBaseSystemPrompt()
 
 const REDACTED_SYSTEM_PROMPT = `${BASE_SYSTEM_PROMPT}
 
-REDACTED MODE IS ACTIVE. Do not reveal, reference, or quote any sensitive information including:
-- Day rates, contract fees, or financial details
-- HMRC, tax, or legal matters
-- Personal health or financial circumstances
-- Specific client contract terms not already publicly known
-- Any information that could be commercially sensitive
+REDACTED MODE IS ACTIVE. You must return your response as a JSON array of segments. Each segment has a "text" field and a "sensitive" field (boolean).
 
-If asked about these topics, acknowledge they exist but state they are redacted in redacted mode.`
+Rules for sensitivity classification:
+- Mark as sensitive (true): client names, project codenames, contract values, day rates, financial figures, personal information, health details, tax/HMRC matters, internal URLs, API keys, specific deliverable details that could identify a client engagement, any commercially sensitive information.
+- Mark as not sensitive (false): general greetings, technical explanations that are not client-specific, publicly known information, general advice, descriptions of methodology or process, tool usage descriptions, and any content that would be safe for a public audience.
+
+Segment your response at natural sentence boundaries. Each segment should be one or a few sentences that share the same sensitivity level. Do not over-segment — group consecutive sentences that have the same sensitivity level into a single segment.
+
+Your response must be ONLY the JSON array — no markdown, no code fences, no preamble, no explanation outside the JSON. Example format:
+
+[{"text":"Hello! Let me look into that for you.","sensitive":false},{"text":"The ACME Corp deployment is using a custom auth flow with a day rate of £1,200.","sensitive":true},{"text":"The architecture follows a standard microservices pattern with Kubernetes orchestration.","sensitive":false}]
+
+Important: Your entire response must be valid JSON. Do not include any text before or after the JSON array. Do not wrap it in markdown code blocks.`
 
 const client = new Anthropic()
 
@@ -461,10 +466,14 @@ export async function POST(request: Request) {
     },
   })
 
-  return new Response(readable, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Transfer-Encoding': 'chunked',
-    },
-  })
+  const responseHeaders: Record<string, string> = {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Transfer-Encoding': 'chunked',
+  }
+
+  if (redacted) {
+    responseHeaders['X-HQ-Redacted'] = 'true'
+  }
+
+  return new Response(readable, { headers: responseHeaders })
 }
