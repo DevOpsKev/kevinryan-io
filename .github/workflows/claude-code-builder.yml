@@ -35,7 +35,6 @@ jobs:
   claude-code:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # Only run on issue_comment if it contains @claude
     if: >
       github.event_name == 'pull_request' ||
       github.event_name == 'workflow_dispatch' ||
@@ -65,7 +64,7 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           show_full_output: true
-          claude_args: "--model claude-opus-4-6 --max-turns 50"
+          claude_args: "--model claude-opus-4-6 --max-turns 50 --dangerously-skip-permissions"
           prompt: |
             You are the Builder Agent for the kevin-ryan-platform monorepo.
 
