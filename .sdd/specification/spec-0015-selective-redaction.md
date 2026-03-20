@@ -77,314 +77,360 @@ This specification is the single source of truth for what to build, how to verif
 
 ## Prerequisites
 
-- Spec 0014 deployed: Redact toggle is functional with correct naming (`redacted`), brand colours, and blanket CSS blur
-- Spec 0010 deployed: HQ Chat Interface exists and is functional
-- Spec 0012 deployed: File download feature exists in MessageBubble
+- Spec 0014 deployed: Redact Data toggle exists with correct branding, renamed `redacted` state, CSS blur on all message bubbles, and fixed double-toggle bug.
+- Spec 0010 deployed: HQ Chat Interface exists and is functional.
+- Spec 0012 deployed: File download feature exists in MessageBubble.
 
 ## Context
 
-Spec 0014 implemented a "Redact Data" toggle that applies a blanket CSS blur to ALL message bubbles when activated. This is too aggressive for client demos — it obscures everything, making the conversation incomprehensible to the viewer.
+Spec 0014 implemented a blanket CSS blur on **all** message bubbles when the redact toggle is active. This was correct per that spec's requirements. However, the blanket blur is too aggressive for client demos — it obscures everything, making it impossible for viewers to follow the conversation flow.
 
-The desired behaviour is **selective redaction**: when the toggle is on, only message bubbles that contain sensitive information should be blurred. Non-sensitive messages (greetings, general technical discussion, UI descriptions, etc.) should remain fully visible. This creates a natural, readable demo experience where the viewer can follow the conversation flow while sensitive data (client names, financial details, internal project specifics) is protected.
+The desired behaviour is **selective redaction**: when the toggle is on, only message bubbles that contain sensitive information should be blurred. General-purpose messages (greetings, technical explanations, UI descriptions) should remain visible so the demo makes sense to the audience.
 
-The approach is **LLM-driven sensitivity tagging**. Rather than maintaining brittle keyword lists or regex patterns, we instruct Claude to reason about what is sensitive and tag its responses accordingly. This is only active when the redact toggle is on — when the toggle is off, there is zero overhead and Claude responds normally.
+The approach: **Claude reasons about sensitivity**. When redacted mode is active, the system prompt instructs Claude to return structured JSON responses with sensitivity tags on each segment. The UI parses this structure and selectively blurs only the sensitive segments. This is AI-Native — the LLM itself determines what is sensitive, rather than relying on brittle keyword lists or regex patterns.
 
-**CRITICAL — System prompt location:** The HQ app's system prompt lives at `sites/hq-kevinryan-io/config/hq-system-prompt.md`. This is NOT the same as `config/hq-system-prompt.md` in the repo root. The file at the repo root is the MCP tool system prompt. The app's `route.ts` loads the system prompt using `path.join(process.cwd(), 'config/hq-system-prompt.md')` — at runtime, `process.cwd()` resolves to the `sites/hq-kevinryan-io/` directory, so it reads `sites/hq-kevinryan-io/config/hq-system-prompt.md`. Do NOT modify the root-level `config/hq-system-prompt.md`. All system prompt changes in this spec refer to `sites/hq-kevinryan-io/config/hq-system-prompt.md`.
+This applies only to **assistant** (HQ) messages. User messages continue to be blanket-blurred when redacted mode is on (the user typed them and they may contain anything).
 
 ### Current state (read these files before making changes)
 
+**IMPORTANT:** The HQ app's system prompt is loaded from `sites/hq-kevinryan-io/config/hq-system-prompt.md` at runtime (NOT the root `config/hq-system-prompt.md`). The `route.ts` file resolves this path using `path.join(process.cwd(), 'config/hq-system-prompt.md')`, and the app's working directory at runtime is `sites/hq-kevinryan-io/`. Do NOT confuse this with the root-level config file.
+
 | File / Directory | What it does |
 |-----------------|-------------|
-| `sites/hq-kevinryan-io/app/api/chat/route.ts` | API route. Loads the base system prompt from `config/hq-system-prompt.md` (relative to app root). Appends redacted instructions when `redacted: true`. Streams Claude responses to the client. Currently streams plain text. |
-| `sites/hq-kevinryan-io/config/hq-system-prompt.md` | The HQ app system prompt. This is the file loaded by route.ts at runtime. Do NOT confuse with the root-level config/hq-system-prompt.md. |
-| `sites/hq-kevinryan-io/app/components/ChatInterface.tsx` | Main chat container. Holds `redacted` state. Passes it to ChatHeader, ChatInput, and MessageBubble. Sends `redacted` flag in API request body. Currently streams plain text from the API and appends chunks to message content. |
-| `sites/hq-kevinryan-io/app/components/ChatHeader.tsx` | Header with the Redact Data toggle. No changes needed for this spec. |
-| `sites/hq-kevinryan-io/app/components/MessageBubble.tsx` | Renders individual messages. Currently applies blanket `filter: blur(5px)` when `redacted` is true. This spec changes it to selective blur based on sensitivity metadata. |
-| `sites/hq-kevinryan-io/app/components/ChatInput.tsx` | Chat input area. No changes needed for this spec. |
-| `sites/hq-kevinryan-io/app/globals.css` | Global CSS. May need a new class for blurred segments. |
+| `sites/hq-kevinryan-io/config/hq-system-prompt.md` | **THE** system prompt for the HQ app. Loaded by route.ts at runtime. This is the file that Claude sees as its instructions. |
+| `sites/hq-kevinryan-io/app/api/chat/route.ts` | API route. Loads the system prompt from `config/hq-system-prompt.md` (relative to app cwd). Constructs `REDACTED_SYSTEM_PROMPT` by appending redaction instructions to the base prompt. Handles streaming responses and tool use. |
+| `sites/hq-kevinryan-io/app/components/ChatInterface.tsx` | Main chat container. Holds `redacted` state. Passes it to ChatHeader, ChatInput, MessageBubble, and the API call. |
+| `sites/hq-kevinryan-io/app/components/MessageBubble.tsx` | Renders individual messages. Currently applies blanket `filter: blur(5px)` when `redacted` is true. Handles document download blocks. |
+| `sites/hq-kevinryan-io/app/components/ChatHeader.tsx` | Header with the Redact Data toggle. Brand-compliant lime styling. |
+| `sites/hq-kevinryan-io/app/components/ChatInput.tsx` | Chat input area. Receives `redacted` prop for placeholder text. |
 
 ### Key facts
 
-- **Accent colour:** `#A8E10C` (Lime)
-- **Black:** `#0A0A0A`
-- **White:** `#F5F3EF` (warm off-white)
-- **Dark:** `#111111`
-- **Mono font:** JetBrains Mono
-- **Body font:** Archivo
-- **Current streaming approach:** The API streams plain text chunks. ChatInterface reads chunks and appends them to the last assistant message's `content` string. MessageBubble renders the content string as markdown.
+- **System prompt load path:** `route.ts` calls `path.join(process.cwd(), 'config/hq-system-prompt.md')`. At runtime, `process.cwd()` is `sites/hq-kevinryan-io/`, so the resolved path is `sites/hq-kevinryan-io/config/hq-system-prompt.md`.
+- **Current REDACTED_SYSTEM_PROMPT:** Appends a paragraph to the base prompt telling Claude not to reveal sensitive information. This will be replaced with structured output instructions.
+- **Streaming:** The current API streams plain text chunks from Claude. This must change to handle JSON-structured responses when redacted mode is on.
+- **Tool use:** The API handles multi-turn tool use loops. The structured response format only applies to the final text output, not to tool use blocks.
+- **Brand colours:** Lime `#A8E10C`, Black `#0A0A0A`, White `#F5F3EF`, Dark `#111111`.
 
-## 1. Modify the redacted system prompt in route.ts
+## 1. Update the REDACTED_SYSTEM_PROMPT in route.ts
 
-### 1a. Update REDACTED_SYSTEM_PROMPT
+Replace the current `REDACTED_SYSTEM_PROMPT` constant in `sites/hq-kevinryan-io/app/api/chat/route.ts`.
 
-The current `REDACTED_SYSTEM_PROMPT` in `route.ts` tells Claude not to reveal sensitive information. Replace it with an instruction that tells Claude to **wrap sensitive portions** of its response in a custom XML-style tag.
-
-Replace the current `REDACTED_SYSTEM_PROMPT` definition with:
+### Current value (to be replaced)
 
 ```typescript
 const REDACTED_SYSTEM_PROMPT = `${BASE_SYSTEM_PROMPT}
 
-REDACTED MODE IS ACTIVE.
+REDACTED MODE IS ACTIVE. Do not reveal, reference, or quote any sensitive information including:
+- Day rates, contract fees, or financial details
+- HMRC, tax, or legal matters
+- Personal health or financial circumstances
+- Specific client contract terms not already publicly known
+- Any information that could be commercially sensitive
 
-You MUST wrap every part of your response in either <sensitive> or <safe> tags. Every character of your response must be inside one of these tags — no text outside them.
-
-Rules for tagging:
-- <sensitive>...</sensitive> — Wrap content that contains or directly references ANY of the following:
-  - Client names, project names, or codenames (e.g. CERN, Nestlé, NatWest, specific project names)
-  - Financial information (day rates, contract values, revenue, costs, invoices)
-  - Personal information (health, tax, legal, HMRC, personal financial details)
-  - Internal URLs, IP addresses, API keys, credentials, or infrastructure specifics that identify clients
-  - Commercially sensitive strategy, pricing, or contractual terms
-  - Any information that could identify a specific client engagement or its commercial terms
-
-- <safe>...</safe> — Wrap content that is general, non-sensitive, and safe for a public audience:
-  - Greetings, acknowledgements, general conversation
-  - Generic technical explanations (e.g. "Kubernetes uses pods to run containers")
-  - Descriptions of methodology, process, or tooling that don't reference specific clients
-  - Public knowledge or general industry information
-  - UI/UX descriptions, general architecture patterns
-
-Important:
-- Respond naturally. Write your response as you normally would, then wrap each paragraph or logical section in the appropriate tag.
-- A section is sensitive if ANY part of it contains sensitive information. When in doubt, tag as sensitive.
-- Do NOT mention the tags, redaction, or sensitivity classification in your response text. The tags are metadata only.
-- Do NOT change the content of your response based on redaction mode. Say exactly what you would normally say — just add the tags.
-- Maintain valid markdown WITHIN each tag. The tags wrap around markdown content.
-- Every response must have at least one tag. If the entire response is safe, wrap it all in <safe>...</safe>. If entirely sensitive, wrap it all in <sensitive>...</sensitive>.`
+If asked about these topics, acknowledge they exist but state they are redacted in redacted mode.`
 ```
 
-### 1b. No changes to streaming
-
-The API continues to stream plain text. The `<sensitive>` and `<safe>` tags are inline in the text stream, just like markdown syntax would be. The client-side will parse them. No changes to the streaming mechanism in `route.ts` are needed.
-
-## 2. Update ChatInterface.tsx to parse sensitivity tags
-
-### 2a. Update the Message interface
-
-Add a parsed segments structure. Define a new interface:
+### New value
 
 ```typescript
-interface MessageSegment {
+const REDACTED_SYSTEM_PROMPT = `${BASE_SYSTEM_PROMPT}
+
+REDACTED MODE IS ACTIVE. You MUST respond using the structured JSON format described below. Do NOT respond with plain text. Your entire response must be a single valid JSON array.
+
+Respond with a JSON array of segment objects. Each segment represents a logical portion of your response (typically one sentence or one short paragraph). For each segment, determine whether it contains sensitive information and tag it accordingly.
+
+A segment is SENSITIVE if it contains ANY of the following:
+- Client names, project names, or engagement details
+- Day rates, contract fees, pricing, or financial figures
+- HMRC, tax, or legal matters
+- Personal health or financial circumstances
+- Internal URLs, infrastructure details, or deployment specifics that are not publicly known
+- Specific contract terms, SOW details, or commercial arrangements
+- Names of individuals (other than Kevin Ryan himself)
+
+A segment is NOT SENSITIVE if it contains:
+- General greetings, pleasantries, or conversational filler
+- Generic technical explanations (e.g. "Kubernetes uses pods to manage containers")
+- Descriptions of publicly known technologies, methodologies, or frameworks
+- General business advice that does not reference specific clients or figures
+- Questions back to the user
+- References to SDD methodology, AI-Native engineering concepts, or other publicly known Kevin Ryan & Associates practices
+
+Format your ENTIRE response as a JSON array. Do not include any text before or after the JSON array. Do not wrap it in markdown code fences. Example:
+
+[{"text":"Happy to help with that.","sensitive":false},{"text":"The CERN deployment uses a custom K3s cluster running on Azure with Flux CD for GitOps.","sensitive":true},{"text":"Generally, Flux CD reconciles the desired state from a Git repository against the live cluster state.","sensitive":false}]
+
+Rules:
+- Every segment MUST have exactly two keys: "text" (string) and "sensitive" (boolean).
+- Keep segments at sentence or short-paragraph granularity. Do not put your entire response in a single segment.
+- When in doubt, mark a segment as sensitive. Over-redaction is safer than under-redaction.
+- Do not include a "reason" field or any other keys — only "text" and "sensitive".
+- Your response must be parseable by JSON.parse() with no modifications.
+- Do NOT wrap the JSON in markdown code fences (\`\`\`json ... \`\`\`). Output raw JSON only.`
+```
+
+**Design notes:**
+
+- The prompt is explicit about what is and is not sensitive because Claude needs clear boundaries to make consistent decisions.
+- The "when in doubt, mark sensitive" instruction ensures the demo errs on the side of caution.
+- We use a flat JSON array (not nested objects) to keep parsing simple.
+- The "no markdown code fences" instruction is critical — Claude's instinct is to wrap JSON in fences, which would break `JSON.parse()`.
+- The "no text before or after" instruction prevents Claude from adding preamble like "Here is my response:" before the JSON.
+
+## 2. Modify the streaming response handling in route.ts
+
+The current implementation streams text chunks directly to the client. When `redacted` is true, we need to **buffer the complete response** and then send it, because the JSON structure cannot be reliably parsed from a partial stream.
+
+### 2a. Non-redacted mode (no change to streaming)
+
+When `redacted` is `false`, the current streaming behaviour is preserved exactly as-is. Plain text chunks flow through to the client in real time.
+
+### 2b. Redacted mode (buffered JSON response)
+
+When `redacted` is `true`, the response must be buffered and then sent as a single chunk. Modify the `POST` handler:
+
+Replace the streaming logic in the `readable` ReadableStream's `start` function. The key change is: when `redacted` is true, instead of streaming text events directly via `stream.on('text', ...)`, accumulate all text into a buffer. After the final message is received (after all tool-use loops complete), send the entire buffered text as one chunk.
+
+```typescript
+// Inside the ReadableStream start function:
+
+// For non-redacted: stream text events directly (existing behaviour)
+// For redacted: buffer all text, then send at end
+
+let textBuffer = ''
+
+// In the while(true) loop:
+stream.on('text', (text) => {
+  if (redacted) {
+    textBuffer += text
+  } else {
+    controller.enqueue(encoder.encode(text))
+  }
+})
+
+// After the while loop breaks (final response):
+if (redacted && textBuffer.length > 0) {
+  controller.enqueue(encoder.encode(textBuffer))
+}
+controller.close()
+```
+
+**Design notes:**
+
+- Buffering is necessary because partial JSON is not parseable. The client needs the complete JSON array to render segments.
+- This means redacted-mode responses will appear all at once (no word-by-word streaming effect). This is acceptable — it also creates a visual distinction that signals "something different is happening" when redacted mode is on.
+- Non-redacted mode is completely unchanged — zero performance or behaviour impact.
+
+## 3. Update ChatInterface.tsx to handle structured responses
+
+Modify the message handling in `ChatInterface.tsx` to detect and store structured responses when in redacted mode.
+
+### 3a. Update the Message interface
+
+Add an optional `segments` field to the Message interface:
+
+```typescript
+interface Segment {
   text: string
   sensitive: boolean
 }
-```
 
-### 2b. Add a parsing function
-
-Add a function that takes a raw message content string and parses out the `<sensitive>` and `<safe>` tags into segments:
-
-```typescript
-function parseRedactionSegments(content: string): MessageSegment[] {
-  const segments: MessageSegment[] = []
-  const tagRegex = /<(sensitive|safe)>([\s\S]*?)<\/\1>/g
-  let lastIndex = 0
-  let match
-
-  while ((match = tagRegex.exec(content)) !== null) {
-    // Any text between tags (shouldn't exist if Claude follows instructions, but handle gracefully)
-    if (match.index > lastIndex) {
-      const between = content.slice(lastIndex, match.index).trim()
-      if (between) {
-        segments.push({ text: between, sensitive: true }) // Default untagged text to sensitive (conservative)
-      }
-    }
-    segments.push({
-      text: match[2],
-      sensitive: match[1] === 'sensitive',
-    })
-    lastIndex = match.index + match[0].length
-  }
-
-  // Any trailing text after the last tag
-  if (lastIndex < content.length) {
-    const trailing = content.slice(lastIndex).trim()
-    if (trailing) {
-      segments.push({ text: trailing, sensitive: true }) // Default to sensitive
-    }
-  }
-
-  // If no tags were found at all, return the whole content as a single segment
-  if (segments.length === 0) {
-    segments.push({ text: content, sensitive: false })
-  }
-
-  return segments
+interface Message {
+  role: 'user' | 'assistant'
+  content: string
+  segments?: Segment[]
 }
 ```
 
-### 2c. Pass parsed segments to MessageBubble
+### 3b. Parse structured responses
 
-Update the MessageBubble rendering in ChatInterface.tsx. When `redacted` is true, parse the message content into segments and pass them. When `redacted` is false, pass the raw content as-is (no parsing overhead).
+After the streaming read loop completes for an assistant message (i.e. after `done` is true), if `redacted` is true, attempt to parse the accumulated content as JSON. If parsing succeeds and the result is an array of objects with `text` and `sensitive` keys, store the segments on the message.
 
-Change the MessageBubble invocation from:
-
-```tsx
-<MessageBubble key={i} message={msg} redacted={redacted} />
-```
-
-To:
-
-```tsx
-<MessageBubble
-  key={i}
-  message={msg}
-  redacted={redacted}
-  segments={redacted && msg.role === 'assistant' ? parseRedactionSegments(msg.content) : undefined}
-/>
-```
-
-Note: Only assistant messages get segment parsing. User messages are always treated as sensitive when redacted (the user typed them — they may contain sensitive queries). This is handled in MessageBubble (section 3).
-
-## 3. Update MessageBubble.tsx for selective blur
-
-### 3a. Update the props interface
+In the `sendMessage` function, after the `while (true)` reader loop finishes:
 
 ```typescript
-interface MessageSegment {
+// After streaming is complete, if redacted, try to parse segments
+if (redacted) {
+  setMessages((prev) => {
+    const next = [...prev]
+    const last = next[next.length - 1]
+    if (last?.role === 'assistant') {
+      try {
+        const parsed = JSON.parse(last.content)
+        if (Array.isArray(parsed) && parsed.length > 0 && 'text' in parsed[0] && 'sensitive' in parsed[0]) {
+          const segments: Segment[] = parsed.map((s: { text: string; sensitive: boolean }) => ({
+            text: s.text,
+            sensitive: s.sensitive,
+          }))
+          // Replace content with the concatenated plain text (for accessibility/search)
+          // and store segments separately
+          next[next.length - 1] = {
+            role: 'assistant',
+            content: segments.map((s) => s.text).join(' '),
+            segments,
+          }
+        }
+      } catch {
+        // JSON parse failed — treat as plain text, blanket blur as fallback
+        // This handles cases where Claude did not follow the JSON instruction
+      }
+    }
+    return next
+  })
+}
+```
+
+**Design notes:**
+
+- The `content` field is updated to contain the concatenated plain text of all segments. This ensures that if the user turns off redacted mode, the message is still readable as plain text.
+- The `segments` field is only present on messages received while redacted mode was on.
+- If JSON parsing fails (Claude didn't follow the format), the message stays as plain text with no segments. The MessageBubble will fall back to blanket blur for that message (see section 4).
+- The `Segment` interface should be exported or defined in a shared location so both ChatInterface and MessageBubble can use it. Define it in `ChatInterface.tsx` and export it, or define it in a separate types file. Builder agent: choose the approach that keeps the codebase simplest and record the decision in provenance.
+
+## 4. Update MessageBubble.tsx for selective blur
+
+Replace the current blanket blur with segment-aware rendering.
+
+### 4a. Update the MessageBubbleProps interface
+
+```typescript
+interface Segment {
   text: string
   sensitive: boolean
 }
 
 interface MessageBubbleProps {
-  message: Message
+  message: {
+    role: 'user' | 'assistant'
+    content: string
+    segments?: Segment[]
+  }
   redacted?: boolean
-  segments?: MessageSegment[]
 }
 ```
 
-### 3b. Rendering logic
+### 4b. Rendering logic
 
-The rendering logic should work as follows:
+The rendering logic should follow these rules:
 
-**When `redacted` is false (or undefined):**
-- Render exactly as today. No change. The `segments` prop will be undefined.
-- Remove the existing blanket `filter: blur(5px)` from the content div. The blur is no longer applied at this level.
+1. **User messages + redacted ON:** Blanket blur the entire bubble (same as current behaviour). User messages never have segments.
 
-**When `redacted` is true AND `segments` is provided (assistant messages):**
-- Render each segment as a separate div within the message bubble.
-- Sensitive segments get `filter: blur(5px)`, `userSelect: 'none'`, and `transition: 'filter 0.3s ease'`.
-- Safe segments render normally with no blur.
-- Each segment's text is rendered as markdown (using ReactMarkdown with remarkGfm, same as current assistant message rendering).
-- The `<sensitive>` and `<safe>` tags must be stripped from the rendered text (the parsing function already does this — segments contain only the inner text).
+2. **Assistant messages + redacted ON + segments exist:** Render each segment individually. Sensitive segments are blurred. Non-sensitive segments are rendered normally.
 
-**When `redacted` is true AND `segments` is NOT provided (user messages):**
-- Apply blanket blur to the entire user message bubble, same as spec 0014 behaviour.
-- User messages always blur entirely when redacted because the user may have typed sensitive queries.
+3. **Assistant messages + redacted ON + no segments (fallback):** Blanket blur the entire bubble. This handles messages that were sent before redacted mode was turned on, or cases where JSON parsing failed.
 
-### 3c. Implementation detail for the content div
+4. **Any message + redacted OFF:** Render normally (same as current behaviour). Ignore segments entirely.
 
-Replace the current single content div with conditional rendering. Here is the structural approach:
+### 4c. Segment rendering
 
-For the main content `<div>` (the one with `backgroundColor`, `padding`, `border`):
-
-- Remove the existing `filter: redacted ? 'blur(5px)' : 'none'` and `userSelect: redacted ? 'none' : 'auto'` from this div.
-- For **user messages when redacted**: apply `filter: blur(5px)` and `userSelect: 'none'` on this content div (blanket blur for user messages, same as before).
-- For **assistant messages when redacted and segments provided**: do NOT blur this outer div. Instead, render each segment inside it, with sensitive segments individually blurred.
-- For **all messages when not redacted**: no blur anywhere, render as before.
-
-The segment rendering inside the content div (assistant messages, redacted mode):
+For assistant messages with segments in redacted mode, replace the current single content div with a series of segment divs:
 
 ```tsx
-{segments.map((segment, idx) => (
+// Inside the content div (the one with backgroundColor and padding):
+{redacted && !isUser && message.segments && message.segments.length > 0 ? (
+  // Selective redaction: render each segment
+  message.segments.map((segment, idx) => (
+    <div
+      key={idx}
+      style={{
+        filter: segment.sensitive ? 'blur(5px)' : 'none',
+        userSelect: segment.sensitive ? 'none' : 'auto',
+        transition: 'filter 0.3s ease',
+        marginBottom: idx < message.segments!.length - 1 ? '0.5rem' : 0,
+      }}
+    >
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {segment.text}
+      </ReactMarkdown>
+    </div>
+  ))
+) : (
+  // Normal rendering (existing code) — with blanket blur for user messages in redacted mode
   <div
-    key={idx}
     style={{
-      filter: segment.sensitive ? 'blur(5px)' : 'none',
-      userSelect: segment.sensitive ? 'none' : 'auto',
+      filter: redacted && isUser ? 'blur(5px)' : (redacted && !isUser && !message.segments ? 'blur(5px)' : 'none'),
+      userSelect: redacted ? 'none' : 'auto',
       transition: 'filter 0.3s ease',
     }}
-    className="hq-markdown"
   >
-    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-      {segment.text}
-    </ReactMarkdown>
+    {isUser ? (
+      <span style={{ whiteSpace: 'pre-wrap' }}>{cleanText}</span>
+    ) : (
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        {cleanText}
+      </ReactMarkdown>
+    )}
   </div>
-))}
-```
-
-When NOT in redacted mode or no segments (current behaviour):
-
-```tsx
-{isUser ? (
-  <span style={{ whiteSpace: 'pre-wrap' }}>{cleanText}</span>
-) : (
-  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-    {cleanText}
-  </ReactMarkdown>
 )}
 ```
 
-### 3d. Document blocks
+**Design notes:**
 
-The existing document block parsing (`parseDocumentBlocks`) should run BEFORE redaction segment parsing. The flow is:
+- The blur/no-blur is applied per-segment div, not on the outer content container. This means the background and padding of the bubble are always visible — only the text within sensitive segments is blurred.
+- Each segment is wrapped in its own `<div>` with its own blur filter. Non-sensitive segments render with full clarity.
+- The fallback for messages without segments (pre-existing messages or parse failures) is blanket blur — same as spec 0014 behaviour. This ensures we never show potentially sensitive content that hasn't been classified.
+- `marginBottom: '0.5rem'` between segments provides visual separation.
+- The `ReactMarkdown` component is used for each segment so that markdown formatting within segments is preserved.
+- The existing document download block rendering (the `documents.map(...)` section) remains OUTSIDE the blur logic and is never blurred — same as spec 0014.
 
-1. `parseDocumentBlocks(message.content)` extracts document blocks and returns `cleanText`
-2. If segments are provided (from ChatInterface), those segments were parsed from the full `message.content`. However, document block markers (`---DOCUMENT:...---`) should NOT appear inside `<sensitive>` or `<safe>` tags because they are structural, not conversational. If a document block marker does end up inside a tag, the `parseDocumentBlocks` function in MessageBubble will strip it regardless.
-3. For safety: in MessageBubble, when segments are provided, run `parseDocumentBlocks` on EACH segment's text to strip any document markers that may have leaked into segments. Collect all extracted documents into a single array for rendering download buttons.
+### 4d. Blur behaviour for the content container
 
-### 3e. Streaming behaviour
+The current `filter: blur(5px)` on the outer content div must be removed. The blur is now applied at the segment level (or at the inner div level for blanket fallback). The outer content div should always have `filter: 'none'`.
 
-During streaming, the message content is built up chunk by chunk. Tags may be incomplete mid-stream (e.g. `<sensi` then `tive>some text`). The `parseRedactionSegments` function handles this naturally:
+Update the content div's style:
 
-- Incomplete tags won't match the regex, so that text falls into the "untagged trailing text" case and defaults to `sensitive: true` (conservative — blur it until the tag completes).
-- As more chunks arrive, the content is re-parsed and tags resolve correctly.
-- This means during streaming, partially received segments may flicker from blurred to unblurred as tags complete. This is acceptable and even desirable — it shows the system actively processing.
-
-ChatInterface already re-renders MessageBubble on every chunk (because message content state updates). The segments will be re-parsed on each render when `redacted` is true. Since `parseRedactionSegments` is a pure function with no side effects, this is safe and has negligible overhead (it's just a regex over the current message string).
-
-## 4. Handle edge cases
-
-### 4a. Claude fails to tag
-
-If Claude returns a response with no `<sensitive>` or `<safe>` tags (model non-compliance), the `parseRedactionSegments` function returns the entire content as a single non-sensitive segment (`sensitive: false`). This is the correct fallback — if the model didn't tag anything, we can't know what's sensitive, and showing the content is better than blanking the entire response. The `REDACTED_SYSTEM_PROMPT` instructions are strong enough that this should be rare.
-
-### 4b. Nested tags
-
-Claude should not produce nested tags (e.g. `<sensitive><safe>text</safe></sensitive>`). The regex is non-greedy and matches the innermost tags. If nesting occurs, the inner tags will be treated as literal text within the outer tag's content. Record in provenance how this is handled if encountered during testing.
-
-### 4c. Tags in user messages
-
-User messages are never parsed for tags. They are always blanket-blurred when redacted. User-typed `<sensitive>` text would just render as literal text (React escapes it).
-
-### 4d. Redact toggle toggled mid-conversation
-
-When the user toggles redact ON mid-conversation:
-- Past assistant messages that were sent WITHOUT redacted mode will have no tags in their content. `parseRedactionSegments` will return them as a single non-sensitive segment. They will display unblurred. This is correct — those messages were generated in non-redacted mode and may not contain what the user considers sensitive in a demo context.
-- Past user messages will blanket-blur.
-- Future messages will be sent with `redacted: true`, and Claude will tag its responses.
-
-When the user toggles redact OFF mid-conversation:
-- All messages display normally. Tags in previously-tagged responses are ignored (segments prop is not passed when `redacted` is false). The raw content including `<sensitive>` and `<safe>` tags will be visible as literal text in the markdown. This is acceptable for a dev/internal tool — the tags are lightweight and self-explanatory.
-
-**Alternative approach:** If the visible tags when toggling off are undesirable, the `cleanText` passed to the non-redacted renderer could strip the tags. Add a simple strip function:
-
-```typescript
-function stripRedactionTags(content: string): string {
-  return content.replace(/<\/?(?:sensitive|safe)>/g, '')
-}
+```tsx
+// The outer content div (with backgroundColor, border, padding)
+style={{
+  backgroundColor: isUser ? '#1a2a05' : '#111111',
+  border: `1px solid ${isUser ? '#A8E10C' : '#222222'}`,
+  padding: '0.75rem 1rem',
+  color: '#F5F3EF',
+  fontFamily: "'Archivo', sans-serif",
+  fontSize: '0.9375rem',
+  lineHeight: 1.6,
+  wordBreak: 'break-word',
+  // REMOVED: filter and userSelect are now on inner segment divs
+  transition: 'filter 0.3s ease',
+}}
 ```
 
-Apply this in MessageBubble when rendering assistant messages in non-redacted mode — use `stripRedactionTags(cleanText)` instead of `cleanText`. This ensures tags are never visible to the user regardless of toggle state. **Do implement this.**
+## 5. Handle the typing indicator during redacted mode
+
+When `redacted` is true and a response is being generated, the response is buffered (section 2b) — so no streaming text appears. The typing indicator (bouncing dots) should display while waiting for the complete response.
+
+The current typing indicator logic in `ChatInterface.tsx` already shows dots when `loading` is true and the last message is from the user. This is correct and requires **no change** — the buffered response will arrive all at once, at which point `loading` is set to false and the typing indicator disappears.
+
+No changes needed here. Document this in provenance as an intentional no-op.
+
+## 6. Edge case: toggling redacted mode mid-conversation
+
+When the user toggles redacted mode:
+
+- **Turning ON:** Messages already in the conversation do NOT have segments (they were received as plain text). These should blanket-blur (the fallback path in section 4c). Only new messages sent while redacted is on will have segments.
+- **Turning OFF:** All messages render normally. The `segments` field is ignored. The `content` field (which contains the concatenated plain text) is displayed.
+
+This requires **no additional code** — the rendering logic in section 4 already handles both cases via the conditional checks. Document this in provenance.
 
 ## Constraints and Assumptions
 
-- **Constraint:** When `redacted` is false, there must be ZERO changes to the current behaviour. No parsing, no tag stripping overhead for the non-redacted path except the lightweight `stripRedactionTags` regex in MessageBubble rendering.
-- **Constraint:** The `<sensitive>` and `<safe>` tag names must be exactly these strings. Do not use other tag names.
-- **Constraint:** User messages are always blanket-blurred when redacted. No selective redaction for user input.
-- **Constraint:** The blur value remains `5px` as established in spec 0014.
-- **Constraint:** Document download buttons are never blurred, regardless of redaction state.
-- **Assumption:** Claude will reliably tag responses when instructed. The redacted system prompt instructions are explicit and structured enough for high compliance. Occasional failures are handled gracefully by the fallback.
-- **Assumption:** The tags add minimal token overhead to Claude's response. Each tag pair is ~25 characters. This is negligible relative to response length.
-- **Assumption:** Parsing segments on every re-render during streaming is fast enough. The regex runs against a string that grows as chunks arrive. For typical message lengths (under 10KB), this is sub-millisecond.
-- **Assumption:** The `redacted` state is session-only and does not persist. Same as spec 0014.
+- **Constraint:** Non-redacted mode must be completely unchanged — same streaming behaviour, same rendering, zero regression.
+- **Constraint:** The `REDACTED_SYSTEM_PROMPT` must be built by appending to `BASE_SYSTEM_PROMPT`, same as the current pattern. Do not load a separate file for the redacted prompt.
+- **Constraint:** The system prompt file for the HQ app is at `sites/hq-kevinryan-io/config/hq-system-prompt.md`. Do NOT modify the root-level `config/hq-system-prompt.md` — that is the prompt for the MCP tool integration, not the app.
+- **Constraint:** JSON parsing failure must not crash the app. If `JSON.parse()` throws, fall back to blanket blur gracefully.
+- **Assumption:** Claude will follow the JSON format instruction reliably enough for demo purposes. Occasional failures are acceptable and handled by the fallback.
+- **Assumption:** The buffered (non-streaming) response in redacted mode is acceptable UX. The response appears all at once after a loading period, which is a reasonable tradeoff for structured output.
+- **Assumption:** User messages are always blanket-blurred in redacted mode. There is no sensitivity analysis on user input — the user could type anything.
+- **Assumption:** The `Segment` type definition can live in either a shared types file or be duplicated in ChatInterface.tsx and MessageBubble.tsx. Builder agent should choose the cleanest approach.
 
 ## Out of Scope
 
-- **Server-side redaction or filtering** — This spec only addresses client-side visual redaction. The API streams the full content regardless.
-- **Persisting redacted state across sessions** — Future work.
-- **Redaction of tool call results or system messages** — Only user and assistant message bubbles are affected.
-- **Configurable sensitivity rules** — The LLM decides what is sensitive based on the system prompt. No user-configurable rules in this spec.
+- **Selective redaction of user messages** — User messages are always blanket-blurred. Analysing user input for sensitivity is a future enhancement.
+- **Persistent segment data** — Segments are stored in React state only. They do not survive page refresh.
+- **Segment-level "reveal" interaction** — Clicking a blurred segment to temporarily reveal it is a future enhancement.
+- **Server-side redaction** — This spec only handles client-side visual redaction. The API transmits full content; blurring is a UI concern.
+- **LLM classification API call** — We are not making a separate API call to classify sensitivity. Claude self-classifies within its response. This is simpler and cheaper.
 - **Tests** — The builder agent does not write tests. Testing is handled by the testing agent.
 
 ## Manual steps (not performed by the agent)
@@ -394,15 +440,13 @@ None — all changes are in application code and will be built and deployed via 
 Verify after merge:
 
 1. Visit `https://hq.kevinryan.io`
-2. With redact toggle OFF, send a message. Response should render normally, no tags visible, identical to current behaviour.
-3. Turn redact toggle ON.
-4. Send a message that would produce mixed sensitivity, e.g. "What's the status of the CERN project and how does Flux CD work?"
-5. Claude's response should contain both safe segments (Flux CD explanation) and sensitive segments (CERN project details).
-6. Safe segments should be fully visible and readable.
-7. Sensitive segments should be blurred with `filter: blur(5px)`.
-8. User message bubbles should be blanket-blurred.
-9. Toggle redact OFF — all messages should display normally, no `<sensitive>` or `<safe>` tags visible in the text.
-10. Document download buttons should never be blurred in any state.
+2. Send a message with redacted mode OFF — response should stream normally (word by word), no change from current behaviour
+3. Turn on "REDACT DATA" toggle
+4. Send a message like "What's the status of the CERN deployment?" or "What are Kevin's current day rates?"
+5. The response should appear after a brief loading period (buffered, not streamed)
+6. Some segments of the response should be visible (general statements) and some should be blurred (client names, financial details, internal specifics)
+7. Turn off the toggle — all message content should be fully visible again
+8. Messages received before the toggle was turned on should be blanket-blurred when toggle is on (no segments)
 
 ## Provenance Record
 
@@ -413,18 +457,22 @@ After completing the work, create `.sdd/provenance/spec-0015-selective-redaction
 After completing all work, confirm:
 
 1. This spec has been saved to `.sdd/specification/spec-0015-selective-redaction.md`
-2. `route.ts` contains the updated `REDACTED_SYSTEM_PROMPT` with `<sensitive>` and `<safe>` tag instructions
-3. The file `sites/hq-kevinryan-io/config/hq-system-prompt.md` has NOT been modified (the redacted prompt is composed in route.ts only)
-4. The file `config/hq-system-prompt.md` (repo root) has NOT been modified
-5. `ChatInterface.tsx` contains a `parseRedactionSegments` function that parses `<sensitive>` and `<safe>` tags
-6. `ChatInterface.tsx` passes a `segments` prop to MessageBubble when `redacted` is true and the message is from the assistant
-7. `MessageBubble.tsx` accepts a `segments` prop of type `MessageSegment[]`
-8. `MessageBubble.tsx` renders segments individually when provided, blurring only sensitive segments
-9. `MessageBubble.tsx` blanket-blurs user messages when `redacted` is true (no segment parsing for user messages)
-10. `MessageBubble.tsx` contains a `stripRedactionTags` function that removes `<sensitive>`, `</sensitive>`, `<safe>`, and `</safe>` tags from content
-11. `MessageBubble.tsx` applies `stripRedactionTags` to assistant message content when rendering in non-redacted mode
-12. Document download buttons are rendered outside of any blur filter
-13. `pnpm lint` passes with no errors
-14. `pnpm build` completes successfully
-15. The provenance record exists at `.sdd/provenance/spec-0015-selective-redaction.provenance.md` and contains all required sections
-16. All files (spec, implementation, provenance) are committed together
+2. `route.ts` contains the new `REDACTED_SYSTEM_PROMPT` with JSON array format instructions
+3. `route.ts` buffers the response when `redacted` is true (text is not streamed via `stream.on('text', ...)` in redacted mode)
+4. `route.ts` sends the buffered text as a single chunk after all tool-use loops complete
+5. `route.ts` preserves existing streaming behaviour when `redacted` is false — no changes to the non-redacted code path
+6. `ChatInterface.tsx` contains a `Segment` interface with `text: string` and `sensitive: boolean`
+7. `ChatInterface.tsx` attempts `JSON.parse()` on the assistant response after streaming completes when `redacted` is true
+8. `ChatInterface.tsx` stores parsed segments on the message object
+9. `ChatInterface.tsx` gracefully handles `JSON.parse()` failure (try/catch, falls back to plain text)
+10. `MessageBubble.tsx` renders segments individually when `redacted` is true and segments exist
+11. `MessageBubble.tsx` applies `filter: blur(5px)` only to segments where `sensitive` is true
+12. `MessageBubble.tsx` renders non-sensitive segments with `filter: none` — text is fully readable
+13. `MessageBubble.tsx` blanket-blurs user messages when redacted is true (no segments on user messages)
+14. `MessageBubble.tsx` blanket-blurs assistant messages that have no segments when redacted is true (fallback)
+15. `MessageBubble.tsx` does NOT blur document download buttons
+16. The outer content div in MessageBubble no longer has `filter` or `userSelect` in its style — these are on inner divs
+17. `pnpm lint` passes with no errors
+18. `pnpm build` completes successfully
+19. The provenance record exists at `.sdd/provenance/spec-0015-selective-redaction.provenance.md` and contains all required sections
+20. All files (spec, implementation, provenance) are committed together
