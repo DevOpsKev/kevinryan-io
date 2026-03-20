@@ -1,5 +1,8 @@
 'use client'
 
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
 interface Message {
   role: 'user' | 'assistant'
   content: string
@@ -85,11 +88,17 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             fontFamily: "'Archivo', sans-serif",
             fontSize: '0.9375rem',
             lineHeight: 1.6,
-            whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
           }}
+          className={isUser ? undefined : 'hq-markdown'}
         >
-          {cleanText}
+          {isUser ? (
+            <span style={{ whiteSpace: 'pre-wrap' }}>{cleanText}</span>
+          ) : (
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {cleanText}
+            </ReactMarkdown>
+          )}
         </div>
         {documents.map((doc) => (
           <button
