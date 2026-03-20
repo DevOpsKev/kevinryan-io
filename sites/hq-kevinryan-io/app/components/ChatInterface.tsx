@@ -29,6 +29,10 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  useEffect(() => {
+    setMessages([])
+  }, [redacted])
+
   async function sendMessage(text: string) {
     if (!text.trim() || loading) return
     const userMessage: Message = { role: 'user', content: text.trim() }
@@ -45,14 +49,10 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
       })
 
       if (!res.ok || !res.body) {
-        setMessages((prev) => {
-          const next = [...prev]
-          next[next.length - 1] = {
-            role: 'assistant',
-            content: 'Error: failed to get response.',
-          }
-          return next
-        })
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: 'Error: failed to get response.' },
+        ])
         return
       }
 

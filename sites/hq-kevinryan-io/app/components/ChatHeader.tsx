@@ -118,23 +118,6 @@ export default function ChatHeader({
           </div>
         </div>
 
-        {redacted && (
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.6rem',
-              fontWeight: 700,
-              color: '#0A0A0A',
-              backgroundColor: '#A8E10C',
-              padding: '0.125rem 0.4rem',
-              letterSpacing: '0.12em',
-              borderRadius: '2px',
-            }}
-          >
-            REDACTED
-          </span>
-        )}
-
         <div
           style={{
             width: '1px',
