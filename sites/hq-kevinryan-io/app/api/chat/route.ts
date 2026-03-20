@@ -405,11 +405,24 @@ const tools: Anthropic.Tool[] = [
 export async function POST(request: Request) {
   const session = await auth0.getSession()
   if (!session) {
-    return new Response('Unauthorized', { status: 401 })
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
-  const { messages, redacted }: { messages: Message[]; redacted: boolean } =
-    await request.json()
+  let messages: Message[]
+  let redacted: boolean
+  try {
+    const body = await request.json()
+    messages = body.messages
+    redacted = body.redacted ?? false
+  } catch {
+    return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
   const systemPrompt = redacted ? REDACTED_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
 
   const conversationMessages: Anthropic.MessageParam[] = [...messages]
@@ -417,52 +430,57 @@ export async function POST(request: Request) {
   const readable = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder()
-
-      while (true) {
-        const stream = client.messages.stream({
-          model: 'claude-opus-4-6',
-          max_tokens: 8192,
-          system: systemPrompt,
-          messages: conversationMessages,
-          tools,
-        })
-
-        stream.on('text', (text) => {
-          controller.enqueue(encoder.encode(text))
-        })
-
-        const finalMessage = await stream.finalMessage()
-
-        if (finalMessage.stop_reason !== 'tool_use') {
-          break
-        }
-
-        const toolUseBlocks = finalMessage.content.filter(
-          (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use',
-        )
-
-        conversationMessages.push({
-          role: 'assistant',
-          content: finalMessage.content,
-        })
-
-        const toolResults: Anthropic.ToolResultBlockParam[] = []
-        for (const toolUse of toolUseBlocks) {
-          const result = await executeGitHubTool(
-            toolUse.name,
-            toolUse.input as Record<string, unknown>,
-          )
-          toolResults.push({
-            type: 'tool_result',
-            tool_use_id: toolUse.id,
-            content: result,
+      try {
+        while (true) {
+          const stream = client.messages.stream({
+            model: 'claude-opus-4-6',
+            max_tokens: 8192,
+            system: systemPrompt,
+            messages: conversationMessages,
+            tools,
           })
+
+          stream.on('text', (text) => {
+            controller.enqueue(encoder.encode(text))
+          })
+
+          const finalMessage = await stream.finalMessage()
+
+          if (finalMessage.stop_reason !== 'tool_use') {
+            break
+          }
+
+          const toolUseBlocks = finalMessage.content.filter(
+            (b): b is Anthropic.ToolUseBlock => b.type === 'tool_use',
+          )
+
+          conversationMessages.push({
+            role: 'assistant',
+            content: finalMessage.content,
+          })
+
+          const toolResults: Anthropic.ToolResultBlockParam[] = []
+          for (const toolUse of toolUseBlocks) {
+            const result = await executeGitHubTool(
+              toolUse.name,
+              toolUse.input as Record<string, unknown>,
+            )
+            toolResults.push({
+              type: 'tool_result',
+              tool_use_id: toolUse.id,
+              content: result,
+            })
+          }
+
+          conversationMessages.push({ role: 'user', content: toolResults })
         }
-
-        conversationMessages.push({ role: 'user', content: toolResults })
+      } catch (err: unknown) {
+        console.error('[HQ] Stream error:', err)
+        const message = err instanceof Error ? err.message : 'Unknown error occurred'
+        controller.enqueue(encoder.encode(`[HQ_ERROR] ${message}`))
+      } finally {
+        controller.close()
       }
-
-      controller.close()
     },
   })
 

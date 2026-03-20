@@ -49,9 +49,27 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
       })
 
       if (!res.ok || !res.body) {
+        let errorDetail = `${res.status} ${res.statusText}`
+        try {
+          const contentType = res.headers.get('content-type') ?? ''
+          if (contentType.includes('application/json')) {
+            const errorJson = await res.json()
+            errorDetail = errorJson.error ?? errorDetail
+          } else if (contentType.includes('text/plain')) {
+            const errorText = await res.text()
+            if (errorText.length > 0 && errorText.length < 500) {
+              errorDetail = errorText
+            }
+          }
+        } catch {
+          // If we can't parse the error body, fall back to status code
+        }
         setMessages((prev) => [
           ...prev,
-          { role: 'assistant', content: 'Error: failed to get response.' },
+          {
+            role: 'assistant',
+            content: `⚠️ Error: ${errorDetail}`,
+          },
         ])
         return
       }
@@ -77,6 +95,21 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
           return next
         })
       }
+
+      // Detect [HQ_ERROR] sentinel in streamed content
+      setMessages((prev) => {
+        const next = [...prev]
+        const last = next[next.length - 1]
+        if (last?.role === 'assistant' && last.content.includes('[HQ_ERROR] ')) {
+          const errorStart = last.content.indexOf('[HQ_ERROR] ')
+          const errorMessage = last.content.substring(errorStart + '[HQ_ERROR] '.length)
+          next[next.length - 1] = {
+            role: 'assistant',
+            content: `⚠️ Error: ${errorMessage}`,
+          }
+        }
+        return next
+      })
 
       if (redacted) {
         setMessages((prev) => {
@@ -116,6 +149,12 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
           return next
         })
       }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Network error'
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', content: `⚠️ Connection error: ${message}` },
+      ])
     } finally {
       setLoading(false)
     }
