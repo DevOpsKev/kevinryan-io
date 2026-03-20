@@ -125,3 +125,46 @@ Before suggesting code is complete:
 - [ ] All images have alt text
 - [ ] No new dependencies without justification
 - [ ] Components under 200 lines
+
+## CI/CD Context — Claude Code Builder
+
+When running as a GitHub Actions Builder Agent (via `claude-code-builder.yml`):
+
+### Environment
+
+- Runner: `ubuntu-latest` with Node.js 22 and pnpm
+- Working directory: repository root
+- Full git access: can commit and push to the PR branch
+
+### Build Verification Checklist
+
+After implementing changes, ALWAYS run these in order:
+
+1. `pnpm install` — if any `package.json` was modified
+2. `pnpm lint` — fix all lint errors before proceeding
+3. `pnpm build` — fix all build errors before proceeding
+4. Verify no untracked files that should be committed (especially lockfiles)
+
+### Spec-Driven Development Protocol
+
+When implementing a spec:
+
+1. Read the spec file completely before making any changes
+2. Read ALL files listed in the spec's "Current state" table
+3. Implement changes section by section, in order
+4. Create the provenance record using the template at `.sdd/provenance/template.md`
+5. Commit spec, implementation, and provenance together
+
+### Commit Conventions
+
+- Imperative mood, present tense: "Add feature" not "Added feature"
+- Reference the spec in the commit message: `[spec-0013] Add Claude Code builder workflow`
+- One logical change per commit where practical
+
+### Restrictions
+
+- Never commit directly to `main`
+- Never modify a spec file after the initial save
+- Never skip the build verification checklist
+- Never add dependencies without justification recorded in provenance
+- If the spec is ambiguous, record the ambiguity in provenance and make a reasonable choice
