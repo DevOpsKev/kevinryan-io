@@ -412,7 +412,9 @@ export async function POST(request: Request) {
     await request.json()
   const systemPrompt = redacted ? REDACTED_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
 
-  const conversationMessages: Anthropic.MessageParam[] = [...messages]
+  const conversationMessages: Anthropic.MessageParam[] = messages.map(
+    ({ role, content }) => ({ role, content }),
+  )
 
   const readable = new ReadableStream({
     async start(controller) {
