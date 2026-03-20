@@ -1,0 +1,87 @@
+name: Claude Code Builder
+
+on:
+  # Trigger 1: When HQ opens a PR containing a new spec
+  pull_request:
+    types: [opened, edited]
+    paths:
+      - ".sdd/specification/spec-*.md"
+
+  # Trigger 2: @claude mention on PRs or issues
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+  # Trigger 3: Manual trigger with spec path
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: "Path to the spec file (e.g. .sdd/specification/spec-0014-example.md)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+concurrency:
+  group: claude-code-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  claude-code:
+    runs-on: ubuntu-latest
+    # Only run on issue_comment if it contains @claude
+    if: >
+      github.event_name == 'pull_request' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude'))
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Run Claude Code
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: |
+            --model claude-opus-4-6
+            --max-turns 50
+            --allowedTools "Bash(pnpm:*),Bash(npm:*),Bash(npx:*),Bash(git:*),Bash(cat:*),Bash(ls:*),Bash(find:*),Bash(head:*),Bash(tail:*),Bash(grep:*),Bash(sed:*),Bash(echo:*),Bash(mkdir:*),Bash(cp:*),Bash(mv:*),Bash(cd:*),Read,Write,Edit,GlobTool,GrepTool,BatchTool"
+          prompt: |
+            You are the Builder Agent for the kevin-ryan-platform monorepo.
+
+            WORKFLOW:
+            1. Read the spec file and ALL files listed in its "Current state" table.
+            2. Implement every change described in the spec.
+            3. Run `pnpm install` if any package.json was modified.
+            4. Run `pnpm lint` and fix any issues.
+            5. Run `pnpm build` and fix any issues.
+            6. Create the provenance record as described in the spec.
+            7. Commit all changes with a clear commit message.
+
+            RULES:
+            - Follow AGENTS.md and .tessl/RULES.md for project conventions.
+            - Never modify the spec file after saving it.
+            - If a pre-commit hook fails, fix the issue and retry.
+            - If pnpm build fails, fix the issue and retry.
+            - Record every decision in the provenance document.
+            - Do not skip validation steps listed in the spec.
+
+            ${{ github.event_name == 'workflow_dispatch' && format('SPEC FILE: {0}', github.event.inputs.spec_path) || '' }}
