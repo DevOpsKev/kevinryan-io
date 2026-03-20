@@ -10,6 +10,7 @@ interface Message {
 
 interface MessageBubbleProps {
   message: Message
+  redacted?: boolean
 }
 
 interface DocumentBlock {
@@ -51,7 +52,7 @@ function downloadDocument(filename: string, content: string) {
   URL.revokeObjectURL(url)
 }
 
-export default function MessageBubble({ message }: MessageBubbleProps) {
+export default function MessageBubble({ message, redacted }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const { cleanText, documents } = isUser
     ? { cleanText: message.content, documents: [] }
@@ -89,6 +90,9 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
             fontSize: '0.9375rem',
             lineHeight: 1.6,
             wordBreak: 'break-word',
+            filter: redacted ? 'blur(5px)' : 'none',
+            userSelect: redacted ? 'none' : 'auto',
+            transition: 'filter 0.3s ease',
           }}
           className={isUser ? undefined : 'hq-markdown'}
         >

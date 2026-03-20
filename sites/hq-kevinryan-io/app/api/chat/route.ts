@@ -31,16 +31,16 @@ function loadBaseSystemPrompt(): string {
 
 const BASE_SYSTEM_PROMPT = loadBaseSystemPrompt()
 
-const DEMO_SYSTEM_PROMPT = `${BASE_SYSTEM_PROMPT}
+const REDACTED_SYSTEM_PROMPT = `${BASE_SYSTEM_PROMPT}
 
-DEMO MODE IS ACTIVE. Do not reveal, reference, or quote any sensitive information including:
+REDACTED MODE IS ACTIVE. Do not reveal, reference, or quote any sensitive information including:
 - Day rates, contract fees, or financial details
 - HMRC, tax, or legal matters
 - Personal health or financial circumstances
 - Specific client contract terms not already publicly known
 - Any information that could be commercially sensitive
 
-If asked about these topics, acknowledge they exist but state they are redacted in demo mode.`
+If asked about these topics, acknowledge they exist but state they are redacted in redacted mode.`
 
 const client = new Anthropic()
 
@@ -403,9 +403,9 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const { messages, demoMode }: { messages: Message[]; demoMode: boolean } =
+  const { messages, redacted }: { messages: Message[]; redacted: boolean } =
     await request.json()
-  const systemPrompt = demoMode ? DEMO_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
+  const systemPrompt = redacted ? REDACTED_SYSTEM_PROMPT : BASE_SYSTEM_PROMPT
 
   const conversationMessages: Anthropic.MessageParam[] = [...messages]
 
