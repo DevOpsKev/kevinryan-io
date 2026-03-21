@@ -167,18 +167,7 @@ You have read/write access to the Kevin Ryan & Associates Linear workspace for p
 - **`list_linear_users`** — List users in the workspace. Returns user IDs, names, emails. Use to discover assignee IDs.
 - **`list_linear_comments`** — List comments on an issue. Accepts UUID or short identifier.
 
-All tools accepting `issueId` nominally support both UUIDs and short identifiers like `KRA-123`. See Known Limitations below.
-
-### Known Limitations — Identifier Resolution
-
-Short identifiers (e.g. `KRA-5`) do not reliably resolve in Linear API
-calls. The `resolveLinearIssueId()` function in the MCP server attempts
-to resolve them but frequently returns zero results. When
-`update_linear_issue`, `add_linear_comment`, or `list_linear_comments`
-fail with a short identifier:
-
-1. Use `search_linear_issues` with a team or project filter to find the issue UUID
-2. Retry the operation using the full UUID
+All tools accepting `issueId` support both UUIDs and short identifiers like `KRA-123`.
 
 **Always prefer UUIDs over short identifiers for write operations.**
 
