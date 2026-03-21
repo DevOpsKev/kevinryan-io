@@ -246,6 +246,323 @@ async function executeGitHubTool(
   return `Unknown tool: ${name}`
 }
 
+const LINEAR_API_URL = 'https://api.linear.app/graphql'
+
+async function linearGraphQL(
+  query: string,
+  variables?: Record<string, unknown>,
+): Promise<unknown> {
+  const res = await fetch(LINEAR_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${process.env.LINEAR_API_KEY}`,
+    },
+    body: JSON.stringify({ query, variables: variables ?? {} }),
+  })
+  if (!res.ok) return { error: `Linear API error: ${res.status} ${res.statusText}` }
+  const json = (await res.json()) as { data?: unknown; errors?: Array<{ message: string }> }
+  if (json.errors) return { error: json.errors.map((e) => e.message).join(', ') }
+  return json.data
+}
+
+async function executeLinearTool(
+  name: string,
+  input: Record<string, unknown>,
+): Promise<string> {
+  if (!process.env.LINEAR_API_KEY) {
+    return 'Linear integration is not configured. The LINEAR_API_KEY environment variable is missing.'
+  }
+
+  if (name === 'list_linear_teams') {
+    const data = await linearGraphQL(`query Teams {
+      teams {
+        nodes {
+          id
+          name
+          key
+          description
+        }
+      }
+    }`)
+    const teams = data as { teams?: { nodes: unknown[] } }
+    return JSON.stringify(teams?.teams?.nodes ?? data)
+  }
+
+  if (name === 'search_linear_issues') {
+    const query = input.query as string | undefined
+    const teamId = input.teamId as string | undefined
+    const projectId = input.projectId as string | undefined
+    const stateType = input.stateType as string | undefined
+    const assigneeId = input.assigneeId as string | undefined
+    const labelName = input.labelName as string | undefined
+    const limit = (input.limit as number) ?? 20
+
+    if (query) {
+      const data = await linearGraphQL(
+        `query IssueSearch($query: String!, $first: Int) {
+          issueSearch(query: $query, first: $first) {
+            nodes {
+              id
+              identifier
+              title
+              description
+              priority
+              priorityLabel
+              state { name type }
+              assignee { name }
+              project { name }
+              labels { nodes { name } }
+              dueDate
+              createdAt
+              updatedAt
+              url
+            }
+          }
+        }`,
+        { query, first: limit },
+      )
+      const result = data as { issueSearch?: { nodes: unknown[] } }
+      return JSON.stringify(result?.issueSearch?.nodes ?? data)
+    }
+
+    const filter: Record<string, unknown> = {}
+    if (teamId) filter.team = { id: { eq: teamId } }
+    if (projectId) filter.project = { id: { eq: projectId } }
+    if (stateType) filter.state = { type: { eq: stateType } }
+    if (assigneeId) filter.assignee = { id: { eq: assigneeId } }
+    if (labelName) filter.labels = { name: { eq: labelName } }
+
+    const data = await linearGraphQL(
+      `query Issues($filter: IssueFilter, $first: Int) {
+        issues(filter: $filter, first: $first) {
+          nodes {
+            id
+            identifier
+            title
+            description
+            priority
+            priorityLabel
+            state { name type }
+            assignee { name }
+            project { name }
+            labels { nodes { name } }
+            dueDate
+            createdAt
+            updatedAt
+            url
+          }
+        }
+      }`,
+      { filter, first: limit },
+    )
+    const result = data as { issues?: { nodes: unknown[] } }
+    return JSON.stringify(result?.issues?.nodes ?? data)
+  }
+
+  if (name === 'create_linear_issue') {
+    const issueInput: Record<string, unknown> = {
+      title: input.title,
+      teamId: input.teamId,
+    }
+    if (input.description !== undefined) issueInput.description = input.description
+    if (input.projectId !== undefined) issueInput.projectId = input.projectId
+    if (input.assigneeId !== undefined) issueInput.assigneeId = input.assigneeId
+    if (input.priority !== undefined) issueInput.priority = input.priority
+    if (input.labelIds !== undefined) issueInput.labelIds = input.labelIds
+    if (input.dueDate !== undefined) issueInput.dueDate = input.dueDate
+    if (input.stateId !== undefined) issueInput.stateId = input.stateId
+
+    const data = await linearGraphQL(
+      `mutation IssueCreate($input: IssueCreateInput!) {
+        issueCreate(input: $input) {
+          success
+          issue {
+            id
+            identifier
+            title
+            url
+            state { name }
+            project { name }
+          }
+        }
+      }`,
+      { input: issueInput },
+    )
+    const result = data as { issueCreate?: unknown }
+    return JSON.stringify(result?.issueCreate ?? data)
+  }
+
+  if (name === 'update_linear_issue') {
+    const issueId = input.issueId as string
+    const updateInput: Record<string, unknown> = {}
+    if (input.title !== undefined) updateInput.title = input.title
+    if (input.description !== undefined) updateInput.description = input.description
+    if (input.stateId !== undefined) updateInput.stateId = input.stateId
+    if (input.assigneeId !== undefined) updateInput.assigneeId = input.assigneeId
+    if (input.priority !== undefined) updateInput.priority = input.priority
+    if (input.projectId !== undefined) updateInput.projectId = input.projectId
+    if (input.labelIds !== undefined) updateInput.labelIds = input.labelIds
+    if (input.dueDate !== undefined) updateInput.dueDate = input.dueDate
+
+    const data = await linearGraphQL(
+      `mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) {
+        issueUpdate(id: $id, input: $input) {
+          success
+          issue {
+            id
+            identifier
+            title
+            url
+            state { name }
+          }
+        }
+      }`,
+      { id: issueId, input: updateInput },
+    )
+    const result = data as { issueUpdate?: unknown }
+    return JSON.stringify(result?.issueUpdate ?? data)
+  }
+
+  if (name === 'list_linear_projects') {
+    const state = input.state as string | undefined
+    const limit = (input.limit as number) ?? 20
+    const filter: Record<string, unknown> = {}
+    if (state) filter.state = { eq: state }
+
+    const data = await linearGraphQL(
+      `query Projects($filter: ProjectFilter, $first: Int) {
+        projects(filter: $filter, first: $first) {
+          nodes {
+            id
+            name
+            description
+            state
+            progress
+            startDate
+            targetDate
+            url
+            lead { name }
+            teams { nodes { name } }
+            issues {
+              nodes {
+                id
+                identifier
+                title
+                state { name type }
+              }
+            }
+          }
+        }
+      }`,
+      { filter, first: limit },
+    )
+    const result = data as { projects?: { nodes: unknown[] } }
+    return JSON.stringify(result?.projects?.nodes ?? data)
+  }
+
+  if (name === 'create_linear_project') {
+    const projectInput: Record<string, unknown> = {
+      name: input.name,
+      teamIds: input.teamIds,
+    }
+    if (input.description !== undefined) projectInput.description = input.description
+    if (input.state !== undefined) projectInput.state = input.state
+    if (input.startDate !== undefined) projectInput.startDate = input.startDate
+    if (input.targetDate !== undefined) projectInput.targetDate = input.targetDate
+    if (input.leadId !== undefined) projectInput.leadId = input.leadId
+
+    const data = await linearGraphQL(
+      `mutation ProjectCreate($input: ProjectCreateInput!) {
+        projectCreate(input: $input) {
+          success
+          project {
+            id
+            name
+            url
+            state
+          }
+        }
+      }`,
+      { input: projectInput },
+    )
+    const result = data as { projectCreate?: unknown }
+    return JSON.stringify(result?.projectCreate ?? data)
+  }
+
+  if (name === 'add_linear_comment') {
+    const data = await linearGraphQL(
+      `mutation CommentCreate($input: CommentCreateInput!) {
+        commentCreate(input: $input) {
+          success
+          comment {
+            id
+            body
+            createdAt
+            url
+          }
+        }
+      }`,
+      { input: { issueId: input.issueId, body: input.body } },
+    )
+    const result = data as { commentCreate?: unknown }
+    return JSON.stringify(result?.commentCreate ?? data)
+  }
+
+  if (name === 'list_linear_workflow_states') {
+    const teamId = input.teamId as string
+    const data = await linearGraphQL(
+      `query WorkflowStates($filter: WorkflowStateFilter) {
+        workflowStates(filter: $filter) {
+          nodes {
+            id
+            name
+            type
+            position
+            team { name }
+          }
+        }
+      }`,
+      { filter: { team: { id: { eq: teamId } } } },
+    )
+    const result = data as { workflowStates?: { nodes: unknown[] } }
+    return JSON.stringify(result?.workflowStates?.nodes ?? data)
+  }
+
+  if (name === 'list_linear_labels') {
+    const limit = (input.limit as number) ?? 50
+    const data = await linearGraphQL(
+      `query Labels($first: Int) {
+        issueLabels(first: $first) {
+          nodes {
+            id
+            name
+            color
+            description
+          }
+        }
+      }`,
+      { first: limit },
+    )
+    const result = data as { issueLabels?: { nodes: unknown[] } }
+    return JSON.stringify(result?.issueLabels?.nodes ?? data)
+  }
+
+  return `Unknown Linear tool: ${name}`
+}
+
+const linearToolNames = new Set([
+  'list_linear_teams',
+  'search_linear_issues',
+  'create_linear_issue',
+  'update_linear_issue',
+  'list_linear_projects',
+  'create_linear_project',
+  'add_linear_comment',
+  'list_linear_workflow_states',
+  'list_linear_labels',
+])
+
 const tools: Anthropic.Tool[] = [
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- web_search_20250305 is not a literal in the SDK's Tool union type
   { type: 'web_search_20250305', name: 'web_search' } as any,
@@ -400,6 +717,168 @@ const tools: Anthropic.Tool[] = [
       required: ['prNumber', 'body'],
     },
   },
+  {
+    name: 'list_linear_teams',
+    description:
+      'List all teams in the Linear workspace. Returns team IDs, names, keys, and descriptions. Use this to discover team IDs needed for creating issues and projects.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'search_linear_issues',
+    description:
+      'Search and filter issues in Linear. Can search by text query, or filter by team, project, state type, assignee, or label. Returns issue details including identifier, title, state, assignee, project, labels, due date, and URL.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        query: { type: 'string', description: 'Text search term' },
+        teamId: { type: 'string', description: 'Filter by team ID' },
+        projectId: { type: 'string', description: 'Filter by project ID' },
+        stateType: {
+          type: 'string',
+          enum: ['backlog', 'unstarted', 'started', 'completed', 'cancelled'],
+          description: 'Filter by state type',
+        },
+        assigneeId: { type: 'string', description: 'Filter by assignee ID' },
+        labelName: { type: 'string', description: 'Filter by label name' },
+        limit: { type: 'number', description: 'Max results (default 20)' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_linear_issue',
+    description:
+      'Create a new issue in Linear. Requires a title and team ID. Optionally set description, project, assignee, priority (0=none, 1=urgent, 2=high, 3=medium, 4=low), labels, due date, and initial state.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        title: { type: 'string', description: 'Issue title' },
+        teamId: { type: 'string', description: 'Team ID to create issue in' },
+        description: { type: 'string', description: 'Markdown description' },
+        projectId: { type: 'string', description: 'Project ID to associate with' },
+        assigneeId: { type: 'string', description: 'User ID to assign to' },
+        priority: {
+          type: 'number',
+          description: 'Priority: 0=none, 1=urgent, 2=high, 3=medium, 4=low',
+        },
+        labelIds: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Label IDs to apply',
+        },
+        dueDate: { type: 'string', description: 'Due date (YYYY-MM-DD)' },
+        stateId: { type: 'string', description: 'Workflow state ID' },
+      },
+      required: ['title', 'teamId'],
+    },
+  },
+  {
+    name: 'update_linear_issue',
+    description:
+      'Update an existing Linear issue. The issueId can be the UUID or the short identifier like KRA-123. Any provided field will be updated; omitted fields remain unchanged.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        issueId: { type: 'string', description: 'Issue ID or identifier (e.g. KRA-123)' },
+        title: { type: 'string', description: 'New title' },
+        description: { type: 'string', description: 'New description' },
+        stateId: { type: 'string', description: 'New state ID' },
+        assigneeId: { type: 'string', description: 'New assignee ID' },
+        priority: {
+          type: 'number',
+          description: 'New priority: 0=none, 1=urgent, 2=high, 3=medium, 4=low',
+        },
+        projectId: { type: 'string', description: 'Move to project ID' },
+        labelIds: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Replace labels with these IDs',
+        },
+        dueDate: { type: 'string', description: 'New due date (YYYY-MM-DD)' },
+      },
+      required: ['issueId'],
+    },
+  },
+  {
+    name: 'list_linear_projects',
+    description:
+      'List projects in Linear. Optionally filter by project state (planned, started, paused, completed, cancelled). Returns project details including progress, dates, lead, associated teams, and issues.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        state: {
+          type: 'string',
+          enum: ['planned', 'started', 'paused', 'completed', 'cancelled'],
+          description: 'Filter by project state',
+        },
+        limit: { type: 'number', description: 'Max results (default 20)' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_linear_project',
+    description:
+      'Create a new project in Linear. Requires a name and at least one team ID. Optionally set description, initial state, start/target dates, and project lead.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        name: { type: 'string', description: 'Project name' },
+        teamIds: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Team IDs to associate with',
+        },
+        description: { type: 'string', description: 'Markdown description' },
+        state: { type: 'string', description: 'Initial state (defaults to planned)' },
+        startDate: { type: 'string', description: 'Start date (YYYY-MM-DD)' },
+        targetDate: { type: 'string', description: 'Target date (YYYY-MM-DD)' },
+        leadId: { type: 'string', description: 'Project lead user ID' },
+      },
+      required: ['name', 'teamIds'],
+    },
+  },
+  {
+    name: 'add_linear_comment',
+    description:
+      'Add a comment to a Linear issue. The comment body supports markdown formatting.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        issueId: { type: 'string', description: 'Issue ID' },
+        body: { type: 'string', description: 'Markdown comment body' },
+      },
+      required: ['issueId', 'body'],
+    },
+  },
+  {
+    name: 'list_linear_workflow_states',
+    description:
+      'List workflow states (statuses) for a Linear team. Use this to discover valid state IDs for creating or updating issues. States are categorised as: backlog, unstarted, started, completed, cancelled.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        teamId: { type: 'string', description: 'Team ID' },
+      },
+      required: ['teamId'],
+    },
+  },
+  {
+    name: 'list_linear_labels',
+    description:
+      'List issue labels in the Linear workspace. Use this to discover valid label IDs for creating or updating issues.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        limit: { type: 'number', description: 'Max results (default 50)' },
+      },
+      required: [],
+    },
+  },
 ]
 
 export async function POST(request: Request) {
@@ -463,10 +942,15 @@ export async function POST(request: Request) {
 
           const toolResults: Anthropic.ToolResultBlockParam[] = []
           for (const toolUse of toolUseBlocks) {
-            const result = await executeGitHubTool(
-              toolUse.name,
-              toolUse.input as Record<string, unknown>,
-            )
+            const result = linearToolNames.has(toolUse.name)
+              ? await executeLinearTool(
+                  toolUse.name,
+                  toolUse.input as Record<string, unknown>,
+                )
+              : await executeGitHubTool(
+                  toolUse.name,
+                  toolUse.input as Record<string, unknown>,
+                )
             toolResults.push({
               type: 'tool_result',
               tool_use_id: toolUse.id,
