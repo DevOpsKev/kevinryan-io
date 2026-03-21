@@ -266,6 +266,33 @@ async function linearGraphQL(
   return json.data
 }
 
+async function resolveLinearIssueId(issueIdOrIdentifier: string): Promise<string> {
+  // If it looks like a UUID, return as-is
+  if (issueIdOrIdentifier.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+    return issueIdOrIdentifier
+  }
+
+  // Otherwise treat it as a short identifier (e.g. KRA-123) and resolve via search
+  const data = await linearGraphQL(
+    `query IssueByIdentifier($filter: IssueFilter) {
+      issues(filter: $filter, first: 1) {
+        nodes {
+          id
+          identifier
+        }
+      }
+    }`,
+    { filter: { identifier: { eq: issueIdOrIdentifier } } },
+  )
+
+  const result = data as { issues?: { nodes: Array<{ id: string; identifier: string }> } }
+  const issue = result?.issues?.nodes?.[0]
+  if (!issue) {
+    throw new Error(`Linear issue not found: ${issueIdOrIdentifier}`)
+  }
+  return issue.id
+}
+
 async function executeLinearTool(
   name: string,
   input: Record<string, unknown>,
@@ -389,12 +416,21 @@ async function executeLinearTool(
       }`,
       { input: issueInput },
     )
-    const result = data as { issueCreate?: unknown }
+    const result = data as { issueCreate?: { success: boolean; issue?: unknown } }
+    if (result?.issueCreate && !result.issueCreate.success) {
+      return `Error: Linear issueCreate mutation returned success: false`
+    }
     return JSON.stringify(result?.issueCreate ?? data)
   }
 
   if (name === 'update_linear_issue') {
-    const issueId = input.issueId as string
+    const issueIdInput = input.issueId as string
+    let resolvedId: string
+    try {
+      resolvedId = await resolveLinearIssueId(issueIdInput)
+    } catch (err) {
+      return err instanceof Error ? err.message : `Error resolving issue ID: ${issueIdInput}`
+    }
     const updateInput: Record<string, unknown> = {}
     if (input.title !== undefined) updateInput.title = input.title
     if (input.description !== undefined) updateInput.description = input.description
@@ -418,9 +454,12 @@ async function executeLinearTool(
           }
         }
       }`,
-      { id: issueId, input: updateInput },
+      { id: resolvedId, input: updateInput },
     )
-    const result = data as { issueUpdate?: unknown }
+    const result = data as { issueUpdate?: { success: boolean; issue?: unknown } }
+    if (result?.issueUpdate && !result.issueUpdate.success) {
+      return `Error: Linear issueUpdate mutation returned success: false for ${issueIdInput}`
+    }
     return JSON.stringify(result?.issueUpdate ?? data)
   }
 
@@ -486,11 +525,21 @@ async function executeLinearTool(
       }`,
       { input: projectInput },
     )
-    const result = data as { projectCreate?: unknown }
+    const result = data as { projectCreate?: { success: boolean; project?: unknown } }
+    if (result?.projectCreate && !result.projectCreate.success) {
+      return `Error: Linear projectCreate mutation returned success: false`
+    }
     return JSON.stringify(result?.projectCreate ?? data)
   }
 
   if (name === 'add_linear_comment') {
+    const issueIdInput = input.issueId as string
+    let resolvedIssueId: string
+    try {
+      resolvedIssueId = await resolveLinearIssueId(issueIdInput)
+    } catch (err) {
+      return err instanceof Error ? err.message : `Error resolving issue ID: ${issueIdInput}`
+    }
     const data = await linearGraphQL(
       `mutation CommentCreate($input: CommentCreateInput!) {
         commentCreate(input: $input) {
@@ -503,9 +552,12 @@ async function executeLinearTool(
           }
         }
       }`,
-      { input: { issueId: input.issueId, body: input.body } },
+      { input: { issueId: resolvedIssueId, body: input.body } },
     )
-    const result = data as { commentCreate?: unknown }
+    const result = data as { commentCreate?: { success: boolean; comment?: unknown } }
+    if (result?.commentCreate && !result.commentCreate.success) {
+      return `Error: Linear commentCreate mutation returned success: false`
+    }
     return JSON.stringify(result?.commentCreate ?? data)
   }
 
@@ -548,6 +600,55 @@ async function executeLinearTool(
     return JSON.stringify(result?.issueLabels?.nodes ?? data)
   }
 
+  if (name === 'list_linear_users') {
+    const limit = (input.limit as number) ?? 50
+    const data = await linearGraphQL(
+      `query Users($first: Int) {
+        users(first: $first) {
+          nodes {
+            id
+            name
+            displayName
+            email
+            active
+            admin
+          }
+        }
+      }`,
+      { first: limit },
+    )
+    const result = data as { users?: { nodes: unknown[] } }
+    return JSON.stringify(result?.users?.nodes ?? data)
+  }
+
+  if (name === 'list_linear_comments') {
+    const issueIdInput = input.issueId as string
+    let resolvedIssueId: string
+    try {
+      resolvedIssueId = await resolveLinearIssueId(issueIdInput)
+    } catch (err) {
+      return err instanceof Error ? err.message : `Error resolving issue ID: ${issueIdInput}`
+    }
+    const data = await linearGraphQL(
+      `query IssueComments($id: String!) {
+        issue(id: $id) {
+          comments {
+            nodes {
+              id
+              body
+              createdAt
+              updatedAt
+              user { name email }
+            }
+          }
+        }
+      }`,
+      { id: resolvedIssueId },
+    )
+    const result = data as { issue?: { comments?: { nodes: unknown[] } } }
+    return JSON.stringify(result?.issue?.comments?.nodes ?? data)
+  }
+
   return `Unknown Linear tool: ${name}`
 }
 
@@ -561,6 +662,8 @@ const linearToolNames = new Set([
   'add_linear_comment',
   'list_linear_workflow_states',
   'list_linear_labels',
+  'list_linear_users',
+  'list_linear_comments',
 ])
 
 const tools: Anthropic.Tool[] = [
@@ -877,6 +980,30 @@ const tools: Anthropic.Tool[] = [
         limit: { type: 'number', description: 'Max results (default 50)' },
       },
       required: [],
+    },
+  },
+  {
+    name: 'list_linear_users',
+    description:
+      'List users in the Linear workspace. Returns user IDs, names, emails, and active status. Use this to discover valid assignee IDs.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        limit: { type: 'number', description: 'Max results (default 50)' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'list_linear_comments',
+    description:
+      'List comments on a Linear issue. Returns comment body, author, and timestamps. Accepts issue UUID or short identifier (e.g. KRA-123).',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        issueId: { type: 'string', description: 'Issue ID or identifier (e.g. KRA-123)' },
+      },
+      required: ['issueId'],
     },
   },
 ]

@@ -156,9 +156,13 @@ You have read/write access to the Kevin Ryan & Associates Linear workspace for p
 - **`update_linear_issue`** — Update an issue by ID or identifier (e.g. KRA-123).
 - **`list_linear_projects`** — List projects, optionally filtered by state.
 - **`create_linear_project`** — Create a project. Requires name and team IDs.
-- **`add_linear_comment`** — Add a markdown comment to an issue.
+- **`add_linear_comment`** — Add a markdown comment to an issue. Accepts UUID or short identifier.
 - **`list_linear_workflow_states`** — List valid statuses for a team.
 - **`list_linear_labels`** — List available labels and their IDs.
+- **`list_linear_users`** — List users in the workspace. Returns user IDs, names, emails. Use to discover assignee IDs.
+- **`list_linear_comments`** — List comments on an issue. Accepts UUID or short identifier.
+
+All tools accepting `issueId` support both UUIDs and short identifiers like `KRA-123`.
 
 ### Usage Patterns
 
@@ -167,7 +171,8 @@ When creating issues or projects, you often need to look up IDs first:
 1. Call `list_linear_teams` to find the team ID
 2. Call `list_linear_workflow_states` with the team ID to find state IDs
 3. Call `list_linear_labels` to find label IDs
-4. Then call `create_linear_issue` or `create_linear_project` with those IDs
+4. Call `list_linear_users` to find user IDs for assignees
+5. Then call `create_linear_issue` or `create_linear_project` with those IDs
 
 Cache team, state, and label IDs within a conversation — don't re-fetch them for every operation.
 
