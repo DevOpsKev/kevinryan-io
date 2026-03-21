@@ -266,6 +266,56 @@ async function linearGraphQL(
   return json.data
 }
 
+/** Check if a string looks like a Linear identifier (e.g. KRA-123) rather than a UUID */
+function isLinearIdentifier(value: string): boolean {
+  return /^[A-Z]+-\d+$/.test(value)
+}
+
+/** Resolve an issue identifier (e.g. KRA-5) to its UUID. Returns the UUID, or an error string. */
+async function resolveIssueId(issueIdOrIdentifier: string): Promise<{ id?: string; error?: string }> {
+  if (!isLinearIdentifier(issueIdOrIdentifier)) {
+    return { id: issueIdOrIdentifier }
+  }
+  const data = await linearGraphQL(
+    `query IssueByIdentifier($filter: IssueFilter) {
+      issues(filter: $filter, first: 1) {
+        nodes { id identifier }
+      }
+    }`,
+    { filter: { identifier: { eq: issueIdOrIdentifier } } },
+  )
+  const result = data as { error?: string; issues?: { nodes: Array<{ id: string; identifier: string }> } }
+  if (result.error) return { error: result.error }
+  const node = result.issues?.nodes?.[0]
+  if (!node) return { error: `Issue not found: ${issueIdOrIdentifier}` }
+  return { id: node.id }
+}
+
+/** Extract error from linearGraphQL response */
+function getLinearError(data: unknown): string | null {
+  if (data && typeof data === 'object' && 'error' in data) {
+    return (data as { error: string }).error
+  }
+  return null
+}
+
+/** Validate a mutation response has success: true */
+function validateMutationSuccess(
+  data: unknown,
+  mutationName: string,
+): { success: true; result: Record<string, unknown> } | { success: false; error: string } {
+  const error = getLinearError(data)
+  if (error) return { success: false, error }
+  const mutation = (data as Record<string, unknown>)?.[mutationName] as
+    | { success?: boolean; [key: string]: unknown }
+    | undefined
+  if (!mutation) return { success: false, error: `No response from ${mutationName}` }
+  if (mutation.success === false) {
+    return { success: false, error: `${mutationName} returned success: false` }
+  }
+  return { success: true, result: mutation }
+}
+
 async function executeLinearTool(
   name: string,
   input: Record<string, unknown>,
@@ -274,34 +324,73 @@ async function executeLinearTool(
     return 'Linear integration is not configured. The LINEAR_API_KEY environment variable is missing.'
   }
 
-  if (name === 'list_linear_teams') {
-    const data = await linearGraphQL(`query Teams {
-      teams {
-        nodes {
-          id
-          name
-          key
-          description
+  try {
+    if (name === 'list_linear_teams') {
+      const data = await linearGraphQL(`query Teams {
+        teams {
+          nodes {
+            id
+            name
+            key
+            description
+          }
         }
+      }`)
+      const error = getLinearError(data)
+      if (error) return JSON.stringify({ error })
+      const teams = data as { teams?: { nodes: unknown[] } }
+      return JSON.stringify(teams?.teams?.nodes ?? data)
+    }
+
+    if (name === 'search_linear_issues') {
+      const query = input.query as string | undefined
+      const teamId = input.teamId as string | undefined
+      const projectId = input.projectId as string | undefined
+      const stateType = input.stateType as string | undefined
+      const assigneeId = input.assigneeId as string | undefined
+      const labelName = input.labelName as string | undefined
+      const limit = (input.limit as number) ?? 20
+
+      if (query) {
+        const data = await linearGraphQL(
+          `query IssueSearch($query: String!, $first: Int) {
+            issueSearch(query: $query, first: $first) {
+              nodes {
+                id
+                identifier
+                title
+                description
+                priority
+                priorityLabel
+                state { name type }
+                assignee { id name }
+                project { id name }
+                labels { nodes { name } }
+                dueDate
+                createdAt
+                updatedAt
+                url
+              }
+            }
+          }`,
+          { query, first: limit },
+        )
+        const error = getLinearError(data)
+        if (error) return JSON.stringify({ error })
+        const result = data as { issueSearch?: { nodes: unknown[] } }
+        return JSON.stringify(result?.issueSearch?.nodes ?? data)
       }
-    }`)
-    const teams = data as { teams?: { nodes: unknown[] } }
-    return JSON.stringify(teams?.teams?.nodes ?? data)
-  }
 
-  if (name === 'search_linear_issues') {
-    const query = input.query as string | undefined
-    const teamId = input.teamId as string | undefined
-    const projectId = input.projectId as string | undefined
-    const stateType = input.stateType as string | undefined
-    const assigneeId = input.assigneeId as string | undefined
-    const labelName = input.labelName as string | undefined
-    const limit = (input.limit as number) ?? 20
+      const filter: Record<string, unknown> = {}
+      if (teamId) filter.team = { id: { eq: teamId } }
+      if (projectId) filter.project = { id: { eq: projectId } }
+      if (stateType) filter.state = { type: { eq: stateType } }
+      if (assigneeId) filter.assignee = { id: { eq: assigneeId } }
+      if (labelName) filter.labels = { name: { eq: labelName } }
 
-    if (query) {
       const data = await linearGraphQL(
-        `query IssueSearch($query: String!, $first: Int) {
-          issueSearch(query: $query, first: $first) {
+        `query Issues($filter: IssueFilter, $first: Int) {
+          issues(filter: $filter, first: $first) {
             nodes {
               id
               identifier
@@ -310,8 +399,8 @@ async function executeLinearTool(
               priority
               priorityLabel
               state { name type }
-              assignee { name }
-              project { name }
+              assignee { id name }
+              project { id name }
               labels { nodes { name } }
               dueDate
               createdAt
@@ -320,235 +409,284 @@ async function executeLinearTool(
             }
           }
         }`,
-        { query, first: limit },
+        { filter, first: limit },
       )
-      const result = data as { issueSearch?: { nodes: unknown[] } }
-      return JSON.stringify(result?.issueSearch?.nodes ?? data)
+      const error = getLinearError(data)
+      if (error) return JSON.stringify({ error })
+      const result = data as { issues?: { nodes: unknown[] } }
+      return JSON.stringify(result?.issues?.nodes ?? data)
     }
 
-    const filter: Record<string, unknown> = {}
-    if (teamId) filter.team = { id: { eq: teamId } }
-    if (projectId) filter.project = { id: { eq: projectId } }
-    if (stateType) filter.state = { type: { eq: stateType } }
-    if (assigneeId) filter.assignee = { id: { eq: assigneeId } }
-    if (labelName) filter.labels = { name: { eq: labelName } }
+    if (name === 'create_linear_issue') {
+      const issueInput: Record<string, unknown> = {
+        title: input.title,
+        teamId: input.teamId,
+      }
+      if (input.description !== undefined) issueInput.description = input.description
+      if (input.projectId !== undefined) issueInput.projectId = input.projectId
+      if (input.assigneeId !== undefined) issueInput.assigneeId = input.assigneeId
+      if (input.priority !== undefined) issueInput.priority = input.priority
+      if (input.labelIds !== undefined) issueInput.labelIds = input.labelIds
+      if (input.dueDate !== undefined) issueInput.dueDate = input.dueDate
+      if (input.stateId !== undefined) issueInput.stateId = input.stateId
 
-    const data = await linearGraphQL(
-      `query Issues($filter: IssueFilter, $first: Int) {
-        issues(filter: $filter, first: $first) {
-          nodes {
-            id
-            identifier
-            title
-            description
-            priority
-            priorityLabel
-            state { name type }
-            assignee { name }
-            project { name }
-            labels { nodes { name } }
-            dueDate
-            createdAt
-            updatedAt
-            url
+      const data = await linearGraphQL(
+        `mutation IssueCreate($input: IssueCreateInput!) {
+          issueCreate(input: $input) {
+            success
+            issue {
+              id
+              identifier
+              title
+              url
+              state { name }
+              assignee { id name }
+              project { id name }
+            }
           }
-        }
-      }`,
-      { filter, first: limit },
-    )
-    const result = data as { issues?: { nodes: unknown[] } }
-    return JSON.stringify(result?.issues?.nodes ?? data)
-  }
-
-  if (name === 'create_linear_issue') {
-    const issueInput: Record<string, unknown> = {
-      title: input.title,
-      teamId: input.teamId,
+        }`,
+        { input: issueInput },
+      )
+      const validation = validateMutationSuccess(data, 'issueCreate')
+      if (!validation.success) return JSON.stringify({ error: validation.error })
+      return JSON.stringify(validation.result)
     }
-    if (input.description !== undefined) issueInput.description = input.description
-    if (input.projectId !== undefined) issueInput.projectId = input.projectId
-    if (input.assigneeId !== undefined) issueInput.assigneeId = input.assigneeId
-    if (input.priority !== undefined) issueInput.priority = input.priority
-    if (input.labelIds !== undefined) issueInput.labelIds = input.labelIds
-    if (input.dueDate !== undefined) issueInput.dueDate = input.dueDate
-    if (input.stateId !== undefined) issueInput.stateId = input.stateId
 
-    const data = await linearGraphQL(
-      `mutation IssueCreate($input: IssueCreateInput!) {
-        issueCreate(input: $input) {
-          success
-          issue {
-            id
-            identifier
-            title
-            url
-            state { name }
-            project { name }
+    if (name === 'update_linear_issue') {
+      const rawIssueId = input.issueId as string
+      const resolved = await resolveIssueId(rawIssueId)
+      if (resolved.error) return JSON.stringify({ error: resolved.error })
+
+      const updateInput: Record<string, unknown> = {}
+      if (input.title !== undefined) updateInput.title = input.title
+      if (input.description !== undefined) updateInput.description = input.description
+      if (input.stateId !== undefined) updateInput.stateId = input.stateId
+      if (input.assigneeId !== undefined) updateInput.assigneeId = input.assigneeId
+      if (input.priority !== undefined) updateInput.priority = input.priority
+      if (input.projectId !== undefined) updateInput.projectId = input.projectId
+      if (input.labelIds !== undefined) updateInput.labelIds = input.labelIds
+      if (input.dueDate !== undefined) updateInput.dueDate = input.dueDate
+
+      const data = await linearGraphQL(
+        `mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) {
+          issueUpdate(id: $id, input: $input) {
+            success
+            issue {
+              id
+              identifier
+              title
+              url
+              state { name }
+              assignee { id name }
+              project { id name }
+            }
           }
-        }
-      }`,
-      { input: issueInput },
-    )
-    const result = data as { issueCreate?: unknown }
-    return JSON.stringify(result?.issueCreate ?? data)
-  }
+        }`,
+        { id: resolved.id, input: updateInput },
+      )
+      const validation = validateMutationSuccess(data, 'issueUpdate')
+      if (!validation.success) return JSON.stringify({ error: validation.error })
+      return JSON.stringify(validation.result)
+    }
 
-  if (name === 'update_linear_issue') {
-    const issueId = input.issueId as string
-    const updateInput: Record<string, unknown> = {}
-    if (input.title !== undefined) updateInput.title = input.title
-    if (input.description !== undefined) updateInput.description = input.description
-    if (input.stateId !== undefined) updateInput.stateId = input.stateId
-    if (input.assigneeId !== undefined) updateInput.assigneeId = input.assigneeId
-    if (input.priority !== undefined) updateInput.priority = input.priority
-    if (input.projectId !== undefined) updateInput.projectId = input.projectId
-    if (input.labelIds !== undefined) updateInput.labelIds = input.labelIds
-    if (input.dueDate !== undefined) updateInput.dueDate = input.dueDate
+    if (name === 'list_linear_projects') {
+      const state = input.state as string | undefined
+      const limit = (input.limit as number) ?? 20
+      const filter: Record<string, unknown> = {}
+      if (state) filter.state = { eq: state }
 
-    const data = await linearGraphQL(
-      `mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) {
-        issueUpdate(id: $id, input: $input) {
-          success
-          issue {
-            id
-            identifier
-            title
-            url
-            state { name }
-          }
-        }
-      }`,
-      { id: issueId, input: updateInput },
-    )
-    const result = data as { issueUpdate?: unknown }
-    return JSON.stringify(result?.issueUpdate ?? data)
-  }
-
-  if (name === 'list_linear_projects') {
-    const state = input.state as string | undefined
-    const limit = (input.limit as number) ?? 20
-    const filter: Record<string, unknown> = {}
-    if (state) filter.state = { eq: state }
-
-    const data = await linearGraphQL(
-      `query Projects($filter: ProjectFilter, $first: Int) {
-        projects(filter: $filter, first: $first) {
-          nodes {
-            id
-            name
-            description
-            state
-            progress
-            startDate
-            targetDate
-            url
-            lead { name }
-            teams { nodes { name } }
-            issues {
-              nodes {
-                id
-                identifier
-                title
-                state { name type }
+      const data = await linearGraphQL(
+        `query Projects($filter: ProjectFilter, $first: Int) {
+          projects(filter: $filter, first: $first) {
+            nodes {
+              id
+              name
+              description
+              state
+              progress
+              startDate
+              targetDate
+              url
+              lead { name }
+              teams { nodes { name } }
+              issues {
+                nodes {
+                  id
+                  identifier
+                  title
+                  state { name type }
+                }
               }
             }
           }
-        }
-      }`,
-      { filter, first: limit },
-    )
-    const result = data as { projects?: { nodes: unknown[] } }
-    return JSON.stringify(result?.projects?.nodes ?? data)
-  }
-
-  if (name === 'create_linear_project') {
-    const projectInput: Record<string, unknown> = {
-      name: input.name,
-      teamIds: input.teamIds,
+        }`,
+        { filter, first: limit },
+      )
+      const error = getLinearError(data)
+      if (error) return JSON.stringify({ error })
+      const result = data as { projects?: { nodes: unknown[] } }
+      return JSON.stringify(result?.projects?.nodes ?? data)
     }
-    if (input.description !== undefined) projectInput.description = input.description
-    if (input.state !== undefined) projectInput.state = input.state
-    if (input.startDate !== undefined) projectInput.startDate = input.startDate
-    if (input.targetDate !== undefined) projectInput.targetDate = input.targetDate
-    if (input.leadId !== undefined) projectInput.leadId = input.leadId
 
-    const data = await linearGraphQL(
-      `mutation ProjectCreate($input: ProjectCreateInput!) {
-        projectCreate(input: $input) {
-          success
-          project {
-            id
-            name
-            url
-            state
+    if (name === 'create_linear_project') {
+      const projectInput: Record<string, unknown> = {
+        name: input.name,
+        teamIds: input.teamIds,
+      }
+      if (input.description !== undefined) projectInput.description = input.description
+      if (input.state !== undefined) projectInput.state = input.state
+      if (input.startDate !== undefined) projectInput.startDate = input.startDate
+      if (input.targetDate !== undefined) projectInput.targetDate = input.targetDate
+      if (input.leadId !== undefined) projectInput.leadId = input.leadId
+
+      const data = await linearGraphQL(
+        `mutation ProjectCreate($input: ProjectCreateInput!) {
+          projectCreate(input: $input) {
+            success
+            project {
+              id
+              name
+              url
+              state
+            }
           }
-        }
-      }`,
-      { input: projectInput },
-    )
-    const result = data as { projectCreate?: unknown }
-    return JSON.stringify(result?.projectCreate ?? data)
-  }
+        }`,
+        { input: projectInput },
+      )
+      const validation = validateMutationSuccess(data, 'projectCreate')
+      if (!validation.success) return JSON.stringify({ error: validation.error })
+      return JSON.stringify(validation.result)
+    }
 
-  if (name === 'add_linear_comment') {
-    const data = await linearGraphQL(
-      `mutation CommentCreate($input: CommentCreateInput!) {
-        commentCreate(input: $input) {
-          success
-          comment {
-            id
-            body
-            createdAt
-            url
+    if (name === 'add_linear_comment') {
+      const rawIssueId = input.issueId as string
+      const resolved = await resolveIssueId(rawIssueId)
+      if (resolved.error) return JSON.stringify({ error: resolved.error })
+
+      const data = await linearGraphQL(
+        `mutation CommentCreate($input: CommentCreateInput!) {
+          commentCreate(input: $input) {
+            success
+            comment {
+              id
+              body
+              createdAt
+              url
+            }
           }
-        }
-      }`,
-      { input: { issueId: input.issueId, body: input.body } },
-    )
-    const result = data as { commentCreate?: unknown }
-    return JSON.stringify(result?.commentCreate ?? data)
-  }
+        }`,
+        { input: { issueId: resolved.id, body: input.body } },
+      )
+      const validation = validateMutationSuccess(data, 'commentCreate')
+      if (!validation.success) return JSON.stringify({ error: validation.error })
+      return JSON.stringify(validation.result)
+    }
 
-  if (name === 'list_linear_workflow_states') {
-    const teamId = input.teamId as string
-    const data = await linearGraphQL(
-      `query WorkflowStates($filter: WorkflowStateFilter) {
-        workflowStates(filter: $filter) {
-          nodes {
-            id
-            name
-            type
-            position
-            team { name }
+    if (name === 'list_linear_workflow_states') {
+      const teamId = input.teamId as string
+      const data = await linearGraphQL(
+        `query WorkflowStates($filter: WorkflowStateFilter) {
+          workflowStates(filter: $filter) {
+            nodes {
+              id
+              name
+              type
+              position
+              team { name }
+            }
           }
-        }
-      }`,
-      { filter: { team: { id: { eq: teamId } } } },
-    )
-    const result = data as { workflowStates?: { nodes: unknown[] } }
-    return JSON.stringify(result?.workflowStates?.nodes ?? data)
-  }
+        }`,
+        { filter: { team: { id: { eq: teamId } } } },
+      )
+      const error = getLinearError(data)
+      if (error) return JSON.stringify({ error })
+      const result = data as { workflowStates?: { nodes: unknown[] } }
+      return JSON.stringify(result?.workflowStates?.nodes ?? data)
+    }
 
-  if (name === 'list_linear_labels') {
-    const limit = (input.limit as number) ?? 50
-    const data = await linearGraphQL(
-      `query Labels($first: Int) {
-        issueLabels(first: $first) {
-          nodes {
-            id
-            name
-            color
-            description
+    if (name === 'list_linear_labels') {
+      const limit = (input.limit as number) ?? 50
+      const data = await linearGraphQL(
+        `query Labels($first: Int) {
+          issueLabels(first: $first) {
+            nodes {
+              id
+              name
+              color
+              description
+            }
           }
-        }
-      }`,
-      { first: limit },
-    )
-    const result = data as { issueLabels?: { nodes: unknown[] } }
-    return JSON.stringify(result?.issueLabels?.nodes ?? data)
-  }
+        }`,
+        { first: limit },
+      )
+      const error = getLinearError(data)
+      if (error) return JSON.stringify({ error })
+      const result = data as { issueLabels?: { nodes: unknown[] } }
+      return JSON.stringify(result?.issueLabels?.nodes ?? data)
+    }
 
-  return `Unknown Linear tool: ${name}`
+    if (name === 'list_linear_users') {
+      const data = await linearGraphQL(
+        `query Users {
+          users {
+            nodes {
+              id
+              name
+              displayName
+              email
+              active
+              admin
+            }
+          }
+        }`,
+      )
+      const error = getLinearError(data)
+      if (error) return JSON.stringify({ error })
+      const result = data as { users?: { nodes: unknown[] } }
+      return JSON.stringify(result?.users?.nodes ?? data)
+    }
+
+    if (name === 'get_linear_issue_comments') {
+      const rawIssueId = input.issueId as string
+      const resolved = await resolveIssueId(rawIssueId)
+      if (resolved.error) return JSON.stringify({ error: resolved.error })
+
+      const data = await linearGraphQL(
+        `query IssueComments($id: String!) {
+          issue(id: $id) {
+            id
+            identifier
+            title
+            comments {
+              nodes {
+                id
+                body
+                createdAt
+                updatedAt
+                url
+                user { id name displayName }
+              }
+            }
+          }
+        }`,
+        { id: resolved.id },
+      )
+      const error = getLinearError(data)
+      if (error) return JSON.stringify({ error })
+      const result = data as { issue?: { comments?: { nodes: unknown[] }; identifier?: string; title?: string } }
+      if (!result.issue) return JSON.stringify({ error: `Issue not found: ${rawIssueId}` })
+      return JSON.stringify({
+        issueIdentifier: result.issue.identifier,
+        issueTitle: result.issue.title,
+        comments: result.issue.comments?.nodes ?? [],
+      })
+    }
+
+    return JSON.stringify({ error: `Unknown Linear tool: ${name}` })
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error'
+    return JSON.stringify({ error: `Linear tool "${name}" failed: ${message}` })
+  }
 }
 
 const linearToolNames = new Set([
@@ -561,6 +699,8 @@ const linearToolNames = new Set([
   'add_linear_comment',
   'list_linear_workflow_states',
   'list_linear_labels',
+  'list_linear_users',
+  'get_linear_issue_comments',
 ])
 
 const tools: Anthropic.Tool[] = [
@@ -877,6 +1017,31 @@ const tools: Anthropic.Tool[] = [
         limit: { type: 'number', description: 'Max results (default 50)' },
       },
       required: [],
+    },
+  },
+  {
+    name: 'list_linear_users',
+    description:
+      'List all members of the Linear workspace. Returns user IDs, names, display names, email addresses, and active/admin status. Use this to discover valid assignee IDs.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'get_linear_issue_comments',
+    description:
+      'Retrieve all comments on a Linear issue. Accepts issue UUID or identifier (e.g. KRA-5). Returns comment body, author, and timestamps.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        issueId: {
+          type: 'string',
+          description: 'Issue ID or identifier (e.g. KRA-5)',
+        },
+      },
+      required: ['issueId'],
     },
   },
 ]

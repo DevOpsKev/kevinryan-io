@@ -1,4 +1,7 @@
-# Spec 0011 — Linear Integration Bug Fixes
+---
+title: "Spec 0011: Linear Integration Bug Fixes"
+draft: true
+---
 
 ## Status
 
