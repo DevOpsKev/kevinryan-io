@@ -272,26 +272,30 @@ async function resolveLinearIssueId(issueIdOrIdentifier: string): Promise<string
     return issueIdOrIdentifier
   }
 
-  // Otherwise treat it as a short identifier (e.g. KRA-123) and resolve via issueSearch,
-  // then match the result where issue.identifier === issueIdOrIdentifier exactly.
-  // The filter-based `issues(filter: { identifier: { eq: ... } })` query does not
-  // reliably return results from the Linear API, so we use issueSearch instead.
+  // Parse short identifier e.g. "KRA-5" into team key and number
+  const match = issueIdOrIdentifier.match(/^([A-Za-z]+)-(\d+)$/)
+  if (!match) {
+    throw new Error(
+      `Invalid Linear issue identifier: "${issueIdOrIdentifier}". Expected format: TEAM-NUMBER (e.g. KRA-5)`,
+    )
+  }
+  const teamKey = match[1].toUpperCase()
+  const issueNumber = parseInt(match[2], 10)
+
   const data = await linearGraphQL(
-    `query IssueByIdentifier($term: String!) {
-      issueSearch(query: $term, first: 10) {
+    `query IssueByTeamAndNumber($number: Float!, $teamKey: String!) {
+      issues(filter: { number: { eq: $number }, team: { key: { eq: $teamKey } } }, first: 1) {
         nodes {
           id
           identifier
         }
       }
     }`,
-    { term: issueIdOrIdentifier },
+    { number: issueNumber, teamKey },
   )
 
-  const result = data as { issueSearch?: { nodes: Array<{ id: string; identifier: string }> } }
-  const issue = result?.issueSearch?.nodes?.find(
-    (n) => n.identifier === issueIdOrIdentifier,
-  )
+  const result = data as { issues?: { nodes: Array<{ id: string; identifier: string }> } }
+  const issue = result?.issues?.nodes?.[0]
   if (!issue) {
     throw new Error(`Linear issue not found: ${issueIdOrIdentifier}`)
   }
