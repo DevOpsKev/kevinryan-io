@@ -127,3 +127,9 @@ variable "github_mcp_token" {
   type        = string
   sensitive   = true
 }
+
+variable "linear_api_key" {
+  description = "Linear API key for HQ project management integration"
+  type        = string
+  sensitive   = true
+}
