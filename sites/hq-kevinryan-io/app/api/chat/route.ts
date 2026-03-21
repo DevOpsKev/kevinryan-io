@@ -911,6 +911,7 @@ export async function POST(request: Request) {
   const readable = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder()
+      let keepalive: ReturnType<typeof setInterval> | undefined
       try {
         while (true) {
           const stream = client.messages.stream({
@@ -940,6 +941,10 @@ export async function POST(request: Request) {
             content: finalMessage.content,
           })
 
+          keepalive = setInterval(() => {
+            controller.enqueue(encoder.encode(' '))
+          }, 15000)
+
           const toolResults: Anthropic.ToolResultBlockParam[] = []
           for (const toolUse of toolUseBlocks) {
             const result = linearToolNames.has(toolUse.name)
@@ -958,13 +963,18 @@ export async function POST(request: Request) {
             })
           }
 
+          clearInterval(keepalive)
+          keepalive = undefined
+
           conversationMessages.push({ role: 'user', content: toolResults })
         }
       } catch (err: unknown) {
+        clearInterval(keepalive)
         console.error('[HQ] Stream error:', err)
         const message = err instanceof Error ? err.message : 'Unknown error occurred'
         controller.enqueue(encoder.encode(`[HQ_ERROR] ${message}`))
       } finally {
+        clearInterval(keepalive)
         controller.close()
       }
     },
