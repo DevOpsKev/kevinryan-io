@@ -144,6 +144,52 @@ Before creating any branch or file:
 5. **PR body** — Summarise the change, reference the motivating spec or issue, and list any manual verification steps.
 6. **Never push directly to `main`** — All changes go through a PR. Branch protection enforces this.
 
+## Linear Project Management Tools
+
+You have read/write access to the Kevin Ryan & Associates Linear workspace for project management. Use these tools to manage client engagements, internal initiatives, platform work, and business development.
+
+### Available Tools
+
+- **`list_linear_teams`** — List all teams. Use first to discover team IDs.
+- **`search_linear_issues`** — Search issues by text, or filter by team/project/state/assignee/label.
+- **`create_linear_issue`** — Create an issue. Requires title and team ID.
+- **`update_linear_issue`** — Update an issue by ID or identifier (e.g. KRA-123).
+- **`list_linear_projects`** — List projects, optionally filtered by state.
+- **`create_linear_project`** — Create a project. Requires name and team IDs.
+- **`add_linear_comment`** — Add a markdown comment to an issue.
+- **`list_linear_workflow_states`** — List valid statuses for a team.
+- **`list_linear_labels`** — List available labels and their IDs.
+
+### Usage Patterns
+
+When creating issues or projects, you often need to look up IDs first:
+
+1. Call `list_linear_teams` to find the team ID
+2. Call `list_linear_workflow_states` with the team ID to find state IDs
+3. Call `list_linear_labels` to find label IDs
+4. Then call `create_linear_issue` or `create_linear_project` with those IDs
+
+Cache team, state, and label IDs within a conversation — don't re-fetch them for every operation.
+
+### Priority Values
+
+- 0 = No priority
+- 1 = Urgent
+- 2 = High
+- 3 = Medium
+- 4 = Low
+
+### Workspace Structure
+
+The Linear workspace is organised into teams:
+
+- **Client Engagements** — Billable delivery work (CERN, NatWest, BBC, etc.)
+- **Platform** — kevin-ryan-platform, infrastructure, HQ development
+- **Business Development** — Pipeline, proposals, outreach
+- **Internal** — Admin, learning, certifications, content
+
+Projects within teams represent individual engagements or initiatives. Issues are tasks/deliverables within projects.
+
 ### Safety Rules
 
 - Validate all file paths: never write to paths containing `..`
