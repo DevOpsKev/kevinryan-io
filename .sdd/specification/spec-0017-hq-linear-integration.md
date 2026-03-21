@@ -1,6 +1,6 @@
 ---
 title: "Spec 0017: HQ Linear Integration"
-draft: false
+draft: true
 ---
 
 ## Agent Roles
@@ -14,8 +14,8 @@ This specification is the single source of truth for what to build, how to verif
 **Reads:**
 
 - This specification
-- All files listed under "Current state" below
-- The provenance template at `.sdd/provenance/template.md`
+- Any prerequisites listed below
+- Updated provenance (on subsequent cycles, to address failing scenarios)
 
 **Produces:**
 
@@ -24,14 +24,15 @@ This specification is the single source of truth for what to build, how to verif
 
 **Instructions:**
 
-1. Read the full specification, all prerequisites, and all files listed under "Current state" before writing any code.
-2. Build the software as specified. Where the specification is silent on an implementation detail, make a reasonable decision and record it in the provenance.
-3. Write provenance as you build, not after. Every assumption, interpretation, and deviation is recorded as it happens. Use the provenance template at `.sdd/provenance/template.md`.
-4. For every assumption not explicitly stated in this spec, record it under "Assumptions" in the provenance.
-5. For every ambiguity in this spec, record it under "Ambiguities" with your interpretation and the decision you made.
-6. Do not write tests. Testing is not your role.
-7. When the build is complete, add a "Build Status" entry to the provenance summarising what was built.
-8. Commit the spec, implementation, and provenance together.
+1. Save this spec to `.sdd/specification/spec-0017-hq-linear-integration.md` in the repo. This is the canonical reference. Do not modify it after saving.
+2. Read the full specification, all prerequisites, and all files listed under "Current state" before writing any code.
+3. Build the software as specified. Where the specification is silent on an implementation detail, make a reasonable decision and record it in the provenance.
+4. Write provenance as you build, not after. Every assumption, interpretation, and deviation is recorded as it happens. Use the provenance template at `.sdd/provenance/template.md`.
+5. For every assumption not explicitly stated in this spec, record it under "Assumptions" in the provenance.
+6. For every ambiguity in this spec, record it under "Ambiguities" with your interpretation and the decision you made.
+7. Do not write tests. Testing is not your role.
+8. When the build is complete, add a "Build Status" entry to the provenance summarising what was built.
+9. Commit the spec, implementation, and provenance together.
 
 **On subsequent cycles (fixing failing scenarios):**
 
@@ -52,70 +53,102 @@ This specification is the single source of truth for what to build, how to verif
 
 **Produces:**
 
-- Prose scenarios at `.sdd/scenarios/spec-0017-hq-linear-integration.scenarios.md`
-- Executable test code in the `tests/` directory
+- Prose scenarios at `.sdd/scenarios/spec-0017-hq-linear-integration.scenarios.md` (use the scenario template at `.sdd/scenarios/template.md`)
+- Executable test code in the `tests/` directory, derived from the prose scenarios
 - Updates to the provenance document recording findings
 
 **Instructions:**
 
 1. Read this specification in full.
-2. Read the provenance document in full.
-3. Compare the provenance against the specification. Identify gaps, assumptions, ambiguities, silences, and deviations.
-4. Write prose scenarios. Each scenario must reference the specific spec requirement or provenance entry that triggered it.
-5. Implement each prose scenario as executable test code. Every test must trace back to a numbered scenario in the prose document.
+2. Read the provenance document at `.sdd/provenance/spec-0017-hq-linear-integration.provenance.md` in full.
+3. Compare the provenance against the specification. Identify:
+   - **Gaps:** Requirements in the spec that the provenance does not address.
+   - **Assumptions:** Decisions the builder made where the spec was silent. These are primary targets for scenarios.
+   - **Ambiguities:** Places where the builder interpreted an ambiguous requirement. Generate scenarios that test whether the interpretation was reasonable.
+   - **Silences:** Things the provenance does not mention at all. These may indicate missing implementation or missing provenance.
+   - **Deviations:** Anywhere the builder deviated from the spec. Generate scenarios that test the impact.
+4. Write prose scenarios to `.sdd/scenarios/spec-0017-hq-linear-integration.scenarios.md`. Each scenario must:
+   - Reference the specific spec requirement or provenance entry that triggered it.
+   - State what is being tested and why, in plain language.
+   - Define pass/fail criteria before any code is written.
+5. Implement each prose scenario as executable test code in `tests/`. Every test must trace back to a numbered scenario in the prose document.
 6. Run the tests against the built software.
-7. Update the provenance document. Append a "Testing Agent Findings" section.
+7. Update the provenance document. Append a "Testing Agent Findings" section (do not modify the builder's sections). Record:
+   - Gaps, assumptions, ambiguities, and silences found.
+   - Scenario results (pass/fail with references to scenario IDs).
+   - Recommendations: whether failing tests indicate a code fix, a spec clarification, or a provenance gap.
+
+**On subsequent cycles:**
+
+1. Re-read the updated provenance (including the builder's new entries).
+2. Reassess existing scenarios — are they still relevant? Do the builder's fixes resolve them?
+3. Generate new scenarios if the builder's fixes introduced new assumptions or decisions.
+4. Re-run all tests. Update the provenance with new results.
 
 ---
 
 ## Task
 
-1. Implement Linear API integration in the HQ chat application.
-2. Add Linear tool definitions and an `executeLinearTool` function to the chat API route.
-3. Update the Kubernetes ExternalSecret to include the Linear API key.
-4. Update the system prompt to document the new Linear tools.
-5. After completing all work, create a provenance record at `.sdd/provenance/spec-0017-hq-linear-integration.provenance.md`.
+1. Save this spec to `.sdd/specification/spec-0017-hq-linear-integration.md` in the repo.
+2. Implement all changes described below.
+3. After completing all work, create a provenance record at `.sdd/provenance/spec-0017-hq-linear-integration.provenance.md`. See the provenance template at `.sdd/provenance/template.md`.
 
 ## Prerequisites
 
-- Spec 0010 deployed: HQ chat interface is operational
-- Spec 0011 deployed: GitHub MCP tools pattern is established in `route.ts`
-- Read ADR-018 (`docs/adr/adr-018-secret-management.md`) — secrets are managed via Azure Key Vault + External Secrets Operator
+- Spec 0010 deployed: HQ chat interface with streaming and agentic tool loop
+- Spec 0011 deployed: GitHub MCP tools (the pattern this spec extends)
+- Read ADR context: The existing tool architecture uses hand-rolled Anthropic tool definitions with a server-side execution function that calls external APIs via `fetch`. This spec follows the same pattern for Linear.
 
 ## Context
 
-Kevin Ryan & Associates needs a project management solution integrated directly into HQ to manage client engagements, internal initiatives, and business development workstreams. Linear has been selected as the project management tool due to its AI-native design, clean API, and minimal overhead compared to alternatives like Jira.
+Kevin Ryan & Associates needs a project management system to track client engagements, internal initiatives, platform work, and business development. Linear has been selected as the tool — it is AI-native, lightweight, and has a clean GraphQL API.
 
-The integration follows the exact same pattern already established for GitHub tools — defining Anthropic tool schemas in the `tools` array and implementing an `executeLinearTool` function that calls Linear's GraphQL API directly. No MCP client library is needed.
+HQ (the AI assistant running at hq.kevinryan.io) needs direct access to Linear so that Kevin can manage workstreams conversationally. Rather than switching to the Linear UI for every task, Kevin should be able to say things like:
 
-Linear's GraphQL API endpoint is `https://api.linear.app/graphql`. Authentication uses a Personal API Key passed in the `Authorization` header. The API key will be stored in Azure Key Vault and injected via the External Secrets Operator, consistent with all other secrets in the platform.
+- "What's outstanding on the CERN workstream?"
+- "Create a task: draft SOW for Vodafone, due Friday"
+- "Mark the NatWest proposal as done"
+- "Give me a dashboard across all active engagements"
+
+The integration follows the same architectural pattern as the existing GitHub tools: define Anthropic tool schemas in the `tools` array, add an `executeLinearTool` function that calls Linear's GraphQL API via `fetch`, and route tool calls in the agentic loop.
 
 ### Current state (read these files before making changes)
 
 | File / Directory | What it does |
 |-----------------|-------------|
-| `sites/hq-kevinryan-io/app/api/chat/route.ts` | Chat API route with GitHub tool definitions and `executeGitHubTool` function. This is the primary file to modify. |
-| `sites/hq-kevinryan-io/config/hq-system-prompt.md` | System prompt for HQ. Must be updated to document the new Linear tools. |
-| `k8s/hq-kevinryan-io/externalsecret.yaml` | ExternalSecret manifest that maps Azure Key Vault secrets to K8s env vars. Must add `LINEAR_API_KEY`. |
-| `k8s/hq-kevinryan-io/deployment.yaml` | Deployment manifest. No changes needed — it already uses `envFrom` with `secretRef: hq-auth0-secrets`, so the new secret key will be available automatically. |
-| `sites/hq-kevinryan-io/package.json` | Package dependencies. No new dependencies are needed — all Linear API calls use `fetch`. |
+| `sites/hq-kevinryan-io/app/api/chat/route.ts` | Chat API route with tool definitions, `executeGitHubTool` function, and agentic streaming loop. This is the primary file to modify. |
+| `k8s/hq-kevinryan-io/deployment.yaml` | K8s deployment — currently references `hq-auth0-secrets` for env vars. |
+| `k8s/hq-kevinryan-io/externalsecret.yaml` | ExternalSecret pulling secrets from Azure Key Vault into K8s. Needs `LINEAR_API_KEY` added. |
+| `config/hq-system-prompt.md` | System prompt — needs updating to document Linear tools for HQ. |
 
 ### Key facts
 
 - **Linear GraphQL endpoint:** `https://api.linear.app/graphql`
-- **Auth method:** `Authorization: <API_KEY>` header (Linear API keys are passed directly, no `Bearer` prefix)
-- **Env var name:** `LINEAR_API_KEY`
-- **Azure Key Vault secret name:** `hq-linear-api-key`
-- **No new npm dependencies required** — uses native `fetch` for GraphQL calls
-- **All GraphQL queries use POST method** with `Content-Type: application/json`
+- **Authentication:** `Authorization: <LINEAR_API_KEY>` header (personal API key, no Bearer prefix needed for API keys)
+- **Azure Key Vault secret name:** `hq-linear-api-key` (to be created manually by Kevin)
+- **K8s secret key:** `LINEAR_API_KEY`
+- **Env var in container:** `LINEAR_API_KEY`
 
 ## 1. Add `executeLinearTool` function to `route.ts`
 
-Add a new function `executeLinearTool` alongside the existing `executeGitHubTool` function in `sites/hq-kevinryan-io/app/api/chat/route.ts`.
+Add a new function `executeLinearTool` in `sites/hq-kevinryan-io/app/api/chat/route.ts`, placed immediately after the existing `executeGitHubTool` function.
 
-### 1.1 Linear API helper
+The function signature should be:
 
-Create a helper function for making Linear GraphQL calls. Place it above `executeLinearTool`:
+```typescript
+async function executeLinearTool(
+  name: string,
+  input: Record<string, unknown>,
+): Promise<string>
+```
+
+It should call the Linear GraphQL API at `https://api.linear.app/graphql` using `fetch` with:
+
+- Method: `POST`
+- Headers: `Content-Type: application/json` and `Authorization: ${process.env.LINEAR_API_KEY}`
+- Body: JSON-encoded `{ query, variables }` object
+
+Add a helper function for making GraphQL requests:
 
 ```typescript
 const LINEAR_API_URL = 'https://api.linear.app/graphql'
@@ -125,57 +158,78 @@ async function linearGraphQL(query: string, variables?: Record<string, unknown>)
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: process.env.LINEAR_API_KEY ?? '',
+      'Authorization': `${process.env.LINEAR_API_KEY}`,
     },
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ query, variables: variables ?? {} }),
   })
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`Linear API error: ${res.status} ${text}`)
-  }
-  const json = (await res.json()) as { data?: unknown; errors?: Array<{ message: string }> }
-  if (json.errors && json.errors.length > 0) {
-    throw new Error(`Linear GraphQL error: ${json.errors.map((e) => e.message).join(', ')}`)
-  }
+  if (!res.ok) return { error: `Linear API error: ${res.status} ${res.statusText}` }
+  const json = await res.json() as { data?: unknown; errors?: Array<{ message: string }> }
+  if (json.errors) return { error: json.errors.map(e => e.message).join(', ') }
   return json.data
 }
 ```
 
-### 1.2 `executeLinearTool` function
+The `executeLinearTool` function must handle these tool names:
 
-Implement the following tool handlers inside `executeLinearTool`. Each tool maps to a specific GraphQL query or mutation.
+### 1.1 `list_linear_teams`
 
-```typescript
-async function executeLinearTool(
-  name: string,
-  input: Record<string, unknown>,
-): Promise<string> {
-  try {
-    // Tool implementations below
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Unknown Linear error'
-    return `Error: ${message}`
+Query all teams in the workspace. This is needed to discover team IDs for issue creation.
+
+```graphql
+query Teams {
+  teams {
+    nodes {
+      id
+      name
+      key
+      description
+    }
   }
 }
 ```
 
-#### Tool: `search_linear_issues`
+Return: JSON array of teams with id, name, key, description.
 
-Search for issues using Linear's text search. Supports filtering by team, project, and status.
+### 1.2 `search_linear_issues`
+
+Search issues with optional filters. Input parameters:
+
+- `query` (optional string) — text search term
+- `teamId` (optional string) — filter by team
+- `projectId` (optional string) — filter by project
+- `stateType` (optional string) — filter by state type: `backlog`, `unstarted`, `started`, `completed`, `cancelled`
+- `assigneeId` (optional string) — filter by assignee
+- `labelName` (optional string) — filter by label name
+- `limit` (optional number, default 20) — max results
+
+Build a GraphQL filter object dynamically based on which inputs are provided. Use the `issues` query with the `filter` parameter.
 
 ```graphql
-query SearchIssues($query: String!, $first: Int) {
-  searchIssues(query: $query, first: $first) {
+query Issues($filter: IssueFilter, $first: Int) {
+  issues(filter: $filter, first: $first) {
     nodes {
       id
       identifier
       title
       description
-      state { name }
       priority
-      assignee { name }
-      project { name }
-      team { name key }
+      priorityLabel
+      state {
+        name
+        type
+      }
+      assignee {
+        name
+      }
+      project {
+        name
+      }
+      labels {
+        nodes {
+          name
+        }
+      }
+      dueDate
       createdAt
       updatedAt
       url
@@ -184,46 +238,60 @@ query SearchIssues($query: String!, $first: Int) {
 }
 ```
 
-- Input: `query` (string, required), `limit` (number, optional, default 20)
-- Maps `limit` to the `first` GraphQL variable
-- Return the `nodes` array as JSON string
-
-#### Tool: `list_linear_issues`
-
-List issues with optional filters. This is for browsing/filtering rather than text search.
+When `query` is provided, use the `issueSearch` query instead:
 
 ```graphql
-query ListIssues($teamId: String, $projectId: String, $first: Int, $filter: IssueFilter) {
-  issues(first: $first, filter: $filter) {
+query IssueSearch($query: String!, $first: Int) {
+  issueSearch(query: $query, first: $first) {
     nodes {
       id
       identifier
       title
-      state { name }
+      description
       priority
-      assignee { name }
-      project { name }
-      team { name key }
+      priorityLabel
+      state {
+        name
+        type
+      }
+      assignee {
+        name
+      }
+      project {
+        name
+      }
+      labels {
+        nodes {
+          name
+        }
+      }
       dueDate
+      createdAt
+      updatedAt
       url
     }
   }
 }
 ```
 
-- Input: `teamKey` (string, optional), `projectName` (string, optional), `status` (string, optional), `limit` (number, optional, default 20)
-- Build the `filter` object dynamically based on which optional inputs are provided:
-  - If `teamKey` is provided: `filter.team = { key: { eq: teamKey } }`
-  - If `projectName` is provided: `filter.project = { name: { containsIgnoreCase: projectName } }`
-  - If `status` is provided: `filter.state = { name: { containsIgnoreCase: status } }`
-- Return the `nodes` array as JSON string
+Return: JSON array of issues with all the above fields.
 
-#### Tool: `create_linear_issue`
+### 1.3 `create_linear_issue`
 
-Create a new issue.
+Create a new issue. Input parameters:
+
+- `title` (required string) — issue title
+- `teamId` (required string) — team to create issue in
+- `description` (optional string) — markdown description
+- `projectId` (optional string) — project to associate with
+- `assigneeId` (optional string) — user to assign to
+- `priority` (optional number) — 0=none, 1=urgent, 2=high, 3=medium, 4=low
+- `labelIds` (optional string array) — label IDs to apply
+- `dueDate` (optional string) — ISO date string (YYYY-MM-DD)
+- `stateId` (optional string) — workflow state ID
 
 ```graphql
-mutation CreateIssue($input: IssueCreateInput!) {
+mutation IssueCreate($input: IssueCreateInput!) {
   issueCreate(input: $input) {
     success
     issue {
@@ -231,89 +299,136 @@ mutation CreateIssue($input: IssueCreateInput!) {
       identifier
       title
       url
+      state {
+        name
+      }
+      project {
+        name
+      }
     }
   }
 }
 ```
 
-- Input: `title` (string, required), `description` (string, optional), `teamKey` (string, required), `projectName` (string, optional), `priority` (number, optional — 0=none, 1=urgent, 2=high, 3=medium, 4=low), `labelNames` (string array, optional)
-- The `teamKey` must be resolved to a `teamId` before creating the issue. Query for the team first:
+The `$input` variable should be built from the provided parameters, omitting any that are undefined.
+
+Return: JSON with success boolean, issue id, identifier, title, url, state, and project.
+
+### 1.4 `update_linear_issue`
+
+Update an existing issue. Input parameters:
+
+- `issueId` (required string) — the issue ID or identifier (e.g. `KRA-123`)
+- `title` (optional string) — new title
+- `description` (optional string) — new description
+- `stateId` (optional string) — new state ID
+- `assigneeId` (optional string) — new assignee
+- `priority` (optional number) — new priority
+- `projectId` (optional string) — move to project
+- `labelIds` (optional string array) — replace labels
+- `dueDate` (optional string) — new due date (YYYY-MM-DD)
 
 ```graphql
-query GetTeam($key: String!) {
-  teams(filter: { key: { eq: $key } }) {
-    nodes { id }
-  }
-}
-```
-
-- If `projectName` is provided, resolve it to a `projectId`:
-
-```graphql
-query GetProject($name: String!) {
-  projects(filter: { name: { containsIgnoreCase: $name } }) {
-    nodes { id name }
-  }
-}
-```
-
-- If `labelNames` is provided, resolve each to a label ID:
-
-```graphql
-query GetLabels {
-  issueLabels(first: 100) {
-    nodes { id name }
-  }
-}
-```
-
-Then match by name (case-insensitive). Skip any label names that don't match.
-
-- Build the `input` object: `{ title, description, teamId, projectId, priority, labelIds }`
-- Return the created issue details as JSON string
-
-#### Tool: `update_linear_issue`
-
-Update an existing issue by its identifier (e.g. `ENG-123`).
-
-```graphql
-mutation UpdateIssue($id: String!, $input: IssueUpdateInput!) {
+mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) {
   issueUpdate(id: $id, input: $input) {
     success
     issue {
       id
       identifier
       title
-      state { name }
       url
+      state {
+        name
+      }
     }
   }
 }
 ```
 
-- Input: `issueIdentifier` (string, required — e.g. "ENG-123"), `title` (string, optional), `description` (string, optional), `status` (string, optional), `priority` (number, optional)
-- First resolve the identifier to an issue ID:
+Return: JSON with success boolean and updated issue details.
+
+### 1.5 `list_linear_projects`
+
+List projects with optional filtering. Input parameters:
+
+- `state` (optional string) — filter by project state: `planned`, `started`, `paused`, `completed`, `cancelled`
+- `limit` (optional number, default 20) — max results
 
 ```graphql
-query GetIssue($filter: IssueFilter!) {
-  issues(filter: $filter, first: 1) {
-    nodes { id team { states { nodes { id name } } } }
+query Projects($filter: ProjectFilter, $first: Int) {
+  projects(filter: $filter, first: $first) {
+    nodes {
+      id
+      name
+      description
+      state
+      progress
+      startDate
+      targetDate
+      url
+      lead {
+        name
+      }
+      teams {
+        nodes {
+          name
+        }
+      }
+      issues {
+        nodes {
+          id
+          identifier
+          title
+          state {
+            name
+            type
+          }
+        }
+      }
+    }
   }
 }
 ```
 
-Use filter: `{ number: { eq: <number> }, team: { key: { eq: <teamKey> } } }` — parse the identifier to extract the team key prefix and issue number.
+Return: JSON array of projects with all the above fields.
 
-- If `status` is provided, find the matching workflow state ID from the team's states and set `stateId` in the update input
-- Build the `input` object with only the provided fields
-- Return the updated issue details as JSON string
+### 1.6 `create_linear_project`
 
-#### Tool: `add_linear_comment`
+Create a new project. Input parameters:
 
-Add a comment to an issue.
+- `name` (required string) — project name
+- `teamIds` (required string array) — teams to associate with
+- `description` (optional string) — markdown description
+- `state` (optional string) — initial state, defaults to `planned`
+- `startDate` (optional string) — ISO date (YYYY-MM-DD)
+- `targetDate` (optional string) — ISO date (YYYY-MM-DD)
+- `leadId` (optional string) — project lead user ID
 
 ```graphql
-mutation AddComment($input: CommentCreateInput!) {
+mutation ProjectCreate($input: ProjectCreateInput!) {
+  projectCreate(input: $input) {
+    success
+    project {
+      id
+      name
+      url
+      state
+    }
+  }
+}
+```
+
+Return: JSON with success boolean and project details.
+
+### 1.7 `add_linear_comment`
+
+Add a comment to an issue. Input parameters:
+
+- `issueId` (required string) — the issue ID
+- `body` (required string) — markdown comment body
+
+```graphql
+mutation CommentCreate($input: CommentCreateInput!) {
   commentCreate(input: $input) {
     success
     comment {
@@ -326,258 +441,142 @@ mutation AddComment($input: CommentCreateInput!) {
 }
 ```
 
-- Input: `issueIdentifier` (string, required), `body` (string, required — supports markdown)
-- Resolve the identifier to an issue ID (same approach as `update_linear_issue`)
-- Return the created comment details as JSON string
+Return: JSON with success boolean and comment details.
 
-#### Tool: `list_linear_projects`
+### 1.8 `list_linear_workflow_states`
 
-List projects with optional status filter.
+List workflow states for a team. This is needed to know valid state IDs for issue creation/updates. Input parameters:
+
+- `teamId` (required string) — team ID
 
 ```graphql
-query ListProjects($first: Int, $filter: ProjectFilter) {
-  projects(first: $first, filter: $filter) {
+query WorkflowStates($filter: WorkflowStateFilter) {
+  workflowStates(filter: $filter) {
     nodes {
       id
       name
-      description
-      state
-      progress
-      startDate
-      targetDate
-      lead { name }
-      teams { nodes { name key } }
-      url
+      type
+      position
+      team {
+        name
+      }
     }
   }
 }
 ```
 
-- Input: `status` (string, optional — e.g. "started", "planned", "completed"), `limit` (number, optional, default 20)
-- If `status` is provided: `filter.state = { containsIgnoreCase: status }`
-- Return the `nodes` array as JSON string
+Return: JSON array of workflow states.
 
-#### Tool: `list_linear_teams`
+### 1.9 `list_linear_labels`
 
-List all teams in the workspace. Useful for discovering team keys.
+List labels in the workspace. Needed to know valid label IDs. Input parameters:
+
+- `limit` (optional number, default 50) — max results
 
 ```graphql
-query ListTeams {
-  teams {
+query Labels($first: Int) {
+  issueLabels(first: $first) {
     nodes {
       id
       name
-      key
+      color
       description
     }
   }
 }
 ```
 
-- Input: none required
-- Return the `nodes` array as JSON string
+Return: JSON array of labels.
+
+### Error handling
+
+If `LINEAR_API_KEY` is not set, return a helpful error message: `"Linear integration is not configured. The LINEAR_API_KEY environment variable is missing."`
+
+If the GraphQL response contains errors, return them formatted as a readable string.
 
 ## 2. Add Linear tool definitions to the `tools` array
 
-Add the following tool definitions to the `tools` array in `route.ts`, after the existing GitHub tools. Each definition follows the exact same Anthropic `Tool` schema pattern already used for GitHub tools.
+Add the following tool definitions to the `tools` array in `route.ts`, after the existing GitHub tool definitions:
+
+Each tool must have:
+
+- `name` — matching the tool name in `executeLinearTool`
+- `description` — clear description of what the tool does
+- `input_schema` — JSON Schema object describing the input parameters
+
+Tool definitions to add:
+
+1. **`list_linear_teams`** — "List all teams in the Linear workspace. Returns team IDs, names, keys, and descriptions. Use this to discover team IDs needed for creating issues and projects."
+   - No required parameters
+
+2. **`search_linear_issues`** — "Search and filter issues in Linear. Can search by text query, or filter by team, project, state type, assignee, or label. Returns issue details including identifier, title, state, assignee, project, labels, due date, and URL."
+   - Properties: query (string), teamId (string), projectId (string), stateType (string, enum: backlog/unstarted/started/completed/cancelled), assigneeId (string), labelName (string), limit (number)
+   - No required parameters
+
+3. **`create_linear_issue`** — "Create a new issue in Linear. Requires a title and team ID. Optionally set description, project, assignee, priority (0=none, 1=urgent, 2=high, 3=medium, 4=low), labels, due date, and initial state."
+   - Properties: title (string), teamId (string), description (string), projectId (string), assigneeId (string), priority (number), labelIds (array of strings), dueDate (string), stateId (string)
+   - Required: title, teamId
+
+4. **`update_linear_issue`** — "Update an existing Linear issue. The issueId can be the UUID or the short identifier like KRA-123. Any provided field will be updated; omitted fields remain unchanged."
+   - Properties: issueId (string), title (string), description (string), stateId (string), assigneeId (string), priority (number), projectId (string), labelIds (array of strings), dueDate (string)
+   - Required: issueId
+
+5. **`list_linear_projects`** — "List projects in Linear. Optionally filter by project state (planned, started, paused, completed, cancelled). Returns project details including progress, dates, lead, associated teams, and issues."
+   - Properties: state (string, enum: planned/started/paused/completed/cancelled), limit (number)
+   - No required parameters
+
+6. **`create_linear_project`** — "Create a new project in Linear. Requires a name and at least one team ID. Optionally set description, initial state, start/target dates, and project lead."
+   - Properties: name (string), teamIds (array of strings), description (string), state (string), startDate (string), targetDate (string), leadId (string)
+   - Required: name, teamIds
+
+7. **`add_linear_comment`** — "Add a comment to a Linear issue. The comment body supports markdown formatting."
+   - Properties: issueId (string), body (string)
+   - Required: issueId, body
+
+8. **`list_linear_workflow_states`** — "List workflow states (statuses) for a Linear team. Use this to discover valid state IDs for creating or updating issues. States are categorised as: backlog, unstarted, started, completed, cancelled."
+   - Properties: teamId (string)
+   - Required: teamId
+
+9. **`list_linear_labels`** — "List issue labels in the Linear workspace. Use this to discover valid label IDs for creating or updating issues."
+   - Properties: limit (number)
+   - No required parameters
+
+## 3. Update the tool dispatch in the agentic loop
+
+In the streaming loop inside the `POST` handler, the current code calls `executeGitHubTool` for all tool use blocks. Update this so that:
+
+1. If the tool name starts with `list_linear_`, `search_linear_`, `create_linear_`, `update_linear_`, or `add_linear_`, route to `executeLinearTool`
+2. Otherwise, continue routing to `executeGitHubTool`
+
+The simplest approach: define a set or array of Linear tool names and check membership. For example:
 
 ```typescript
-{
-  name: 'search_linear_issues',
-  description: 'Search for issues in Linear using text search. Use this when looking for issues by keyword, title, or description.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      query: {
-        type: 'string',
-        description: 'Search query text',
-      },
-      limit: {
-        type: 'number',
-        description: 'Maximum number of results to return (default 20)',
-      },
-    },
-    required: ['query'],
-  },
-},
-{
-  name: 'list_linear_issues',
-  description: 'List issues in Linear with optional filters for team, project, and status. Use this for browsing and filtering rather than text search.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      teamKey: {
-        type: 'string',
-        description: 'Filter by team key (e.g. "ENG", "BD", "PLT")',
-      },
-      projectName: {
-        type: 'string',
-        description: 'Filter by project name (partial match)',
-      },
-      status: {
-        type: 'string',
-        description: 'Filter by status name (e.g. "In Progress", "Todo", "Done")',
-      },
-      limit: {
-        type: 'number',
-        description: 'Maximum number of results to return (default 20)',
-      },
-    },
-    required: [],
-  },
-},
-{
-  name: 'create_linear_issue',
-  description: 'Create a new issue in Linear. Requires a title and team key. Optionally set project, priority, labels, and description.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      title: {
-        type: 'string',
-        description: 'Issue title',
-      },
-      description: {
-        type: 'string',
-        description: 'Issue description (supports markdown)',
-      },
-      teamKey: {
-        type: 'string',
-        description: 'Team key to create the issue in (e.g. "ENG", "BD")',
-      },
-      projectName: {
-        type: 'string',
-        description: 'Project name to associate the issue with (partial match)',
-      },
-      priority: {
-        type: 'number',
-        description: 'Priority: 0=none, 1=urgent, 2=high, 3=medium, 4=low',
-      },
-      labelNames: {
-        type: 'array',
-        items: { type: 'string' },
-        description: 'Label names to apply (e.g. ["billable", "spec-required"])',
-      },
-    },
-    required: ['title', 'teamKey'],
-  },
-},
-{
-  name: 'update_linear_issue',
-  description: 'Update an existing Linear issue by its identifier (e.g. "ENG-123"). Can update title, description, status, and priority.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      issueIdentifier: {
-        type: 'string',
-        description: 'Issue identifier (e.g. "ENG-123")',
-      },
-      title: {
-        type: 'string',
-        description: 'New title',
-      },
-      description: {
-        type: 'string',
-        description: 'New description (supports markdown)',
-      },
-      status: {
-        type: 'string',
-        description: 'New status name (e.g. "In Progress", "Done")',
-      },
-      priority: {
-        type: 'number',
-        description: 'New priority: 0=none, 1=urgent, 2=high, 3=medium, 4=low',
-      },
-    },
-    required: ['issueIdentifier'],
-  },
-},
-{
-  name: 'add_linear_comment',
-  description: 'Add a comment to a Linear issue. Supports markdown in the comment body.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      issueIdentifier: {
-        type: 'string',
-        description: 'Issue identifier (e.g. "ENG-123")',
-      },
-      body: {
-        type: 'string',
-        description: 'Comment body (supports markdown)',
-      },
-    },
-    required: ['issueIdentifier', 'body'],
-  },
-},
-{
-  name: 'list_linear_projects',
-  description: 'List projects in Linear with optional status filter. Shows project name, progress, lead, and associated teams.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      status: {
-        type: 'string',
-        description: 'Filter by project status (e.g. "started", "planned", "completed")',
-      },
-      limit: {
-        type: 'number',
-        description: 'Maximum number of results to return (default 20)',
-      },
-    },
-    required: [],
-  },
-},
-{
-  name: 'list_linear_teams',
-  description: 'List all teams in the Linear workspace. Useful for discovering team keys needed by other Linear tools.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {},
-    required: [],
-  },
-}
+const linearToolNames = new Set([
+  'list_linear_teams',
+  'search_linear_issues',
+  'create_linear_issue',
+  'update_linear_issue',
+  'list_linear_projects',
+  'create_linear_project',
+  'add_linear_comment',
+  'list_linear_workflow_states',
+  'list_linear_labels',
+])
 ```
 
-## 3. Update tool dispatch in the streaming loop
-
-In the `ReadableStream` `start` function, update the tool execution block to route Linear tools to `executeLinearTool`. Currently the code calls `executeGitHubTool` for all tools. Change the dispatch logic:
+Then in the tool execution loop:
 
 ```typescript
-for (const toolUse of toolUseBlocks) {
-  let result: string
-  if (toolUse.name.startsWith('search_linear_') ||
-      toolUse.name.startsWith('list_linear_') ||
-      toolUse.name.startsWith('create_linear_') ||
-      toolUse.name.startsWith('update_linear_') ||
-      toolUse.name.startsWith('add_linear_')) {
-    result = await executeLinearTool(
-      toolUse.name,
-      toolUse.input as Record<string, unknown>,
-    )
-  } else {
-    result = await executeGitHubTool(
-      toolUse.name,
-      toolUse.input as Record<string, unknown>,
-    )
-  }
-  toolResults.push({
-    type: 'tool_result',
-    tool_use_id: toolUse.id,
-    content: result,
-  })
-}
+const result = linearToolNames.has(toolUse.name)
+  ? await executeLinearTool(toolUse.name, toolUse.input as Record<string, unknown>)
+  : await executeGitHubTool(toolUse.name, toolUse.input as Record<string, unknown>)
 ```
 
-**Design notes:**
+## 4. Add `LINEAR_API_KEY` to Kubernetes secrets
 
-- The prefix-based routing is simple and extensible. As we add more integrations in the future, each gets its own `execute*Tool` function and prefix check.
-- The `web_search` tool is handled natively by the Anthropic SDK and never reaches this dispatch block, so no special case is needed.
+### 4.1 Update ExternalSecret
 
-## 4. Update ExternalSecret for Linear API key
-
-Add the `LINEAR_API_KEY` entry to `k8s/hq-kevinryan-io/externalsecret.yaml`:
-
-Add this entry to the `spec.data` array:
+In `k8s/hq-kevinryan-io/externalsecret.yaml`, add a new entry to the `data` array:
 
 ```yaml
     - secretKey: LINEAR_API_KEY
@@ -585,74 +584,108 @@ Add this entry to the `spec.data` array:
         key: hq-linear-api-key
 ```
 
-**Design notes:**
+This maps the Azure Key Vault secret `hq-linear-api-key` to the Kubernetes secret key `LINEAR_API_KEY`.
 
-- The Azure Key Vault secret name is `hq-linear-api-key`, following the existing naming convention (`hq-` prefix, kebab-case).
-- The env var `LINEAR_API_KEY` follows the existing `GITHUB_MCP_TOKEN` and `ANTHROPIC_API_KEY` naming convention (UPPER_SNAKE_CASE).
-- No changes needed to `deployment.yaml` — it already uses `envFrom: secretRef: hq-auth0-secrets` which will automatically include the new key.
+The deployment already uses `envFrom` with `secretRef: hq-auth0-secrets`, so the new secret key will automatically be available as an environment variable in the container. No changes to `deployment.yaml` are needed.
 
-## 5. Update system prompt with Linear tool documentation
+## 5. Update the system prompt
 
-Update `sites/hq-kevinryan-io/config/hq-system-prompt.md` to add documentation for the new Linear tools. Add a new section after the existing GitHub tools documentation.
+In `config/hq-system-prompt.md`, add a section documenting the Linear tools. Add it after the GitHub Write Tools section. The section should describe:
 
-The system prompt update should add:
+- The available Linear tools and when to use them
+- The recommended Linear workspace structure (Teams: Client Engagements, Platform, Business Development, Internal)
+- How to use tools together (e.g. list teams first to get IDs, then create issues)
+- Priority values: 0=none, 1=urgent, 2=high, 3=medium, 4=low
 
-1. A section explaining the Linear integration and available tools
-2. Tool descriptions matching the tool definitions
-3. Guidance on the recommended Linear workspace structure:
-   - **Teams:** Client Engagements, Platform, Business Development, Internal
-   - **Projects:** One per engagement or initiative
-   - **Labels:** `billable`, `non-billable`, `blocked`, `waiting-on-client`, `spec-required`
-4. Usage patterns — how to use Linear tools for common operations like "give me a dashboard", "what's outstanding on CERN", "create a task for the Vodafone SOW"
+Here is the content to add:
 
-**Important:** Read the existing system prompt file first and preserve ALL existing content. Add the Linear section in the appropriate location — after the GitHub Write Tools section and before any closing sections.
+```markdown
+## Linear Project Management Tools
+
+You have read/write access to the Kevin Ryan & Associates Linear workspace for project management. Use these tools to manage client engagements, internal initiatives, platform work, and business development.
+
+### Available Tools
+
+- **`list_linear_teams`** — List all teams. Use first to discover team IDs.
+- **`search_linear_issues`** — Search issues by text, or filter by team/project/state/assignee/label.
+- **`create_linear_issue`** — Create an issue. Requires title and team ID.
+- **`update_linear_issue`** — Update an issue by ID or identifier (e.g. KRA-123).
+- **`list_linear_projects`** — List projects, optionally filtered by state.
+- **`create_linear_project`** — Create a project. Requires name and team IDs.
+- **`add_linear_comment`** — Add a markdown comment to an issue.
+- **`list_linear_workflow_states`** — List valid statuses for a team.
+- **`list_linear_labels`** — List available labels and their IDs.
+
+### Usage Patterns
+
+When creating issues or projects, you often need to look up IDs first:
+
+1. Call `list_linear_teams` to find the team ID
+2. Call `list_linear_workflow_states` with the team ID to find state IDs
+3. Call `list_linear_labels` to find label IDs
+4. Then call `create_linear_issue` or `create_linear_project` with those IDs
+
+Cache team, state, and label IDs within a conversation — don't re-fetch them for every operation.
+
+### Priority Values
+
+- 0 = No priority
+- 1 = Urgent
+- 2 = High
+- 3 = Medium
+- 4 = Low
+
+### Workspace Structure
+
+The Linear workspace is organised into teams:
+
+- **Client Engagements** — Billable delivery work (CERN, NatWest, BBC, etc.)
+- **Platform** — kevin-ryan-platform, infrastructure, HQ development
+- **Business Development** — Pipeline, proposals, outreach
+- **Internal** — Admin, learning, certifications, content
+
+Projects within teams represent individual engagements or initiatives. Issues are tasks/deliverables within projects.
+```
 
 ## Constraints and Assumptions
 
-- **Constraint:** No new npm dependencies. All Linear API calls use native `fetch` with GraphQL queries.
-- **Constraint:** Authentication uses a Personal API Key (not OAuth2). This is appropriate because HQ is a single-user system (Kevin's tool), not a multi-tenant app.
-- **Constraint:** The Linear API key must not be hardcoded. It must come from the `LINEAR_API_KEY` environment variable, sourced via External Secrets Operator from Azure Key Vault.
-- **Assumption:** Kevin will create a Linear workspace and generate a Personal API Key before this integration goes live.
-- **Assumption:** Kevin will add the API key to Azure Key Vault with the name `hq-linear-api-key` as a manual step after merge.
-- **Assumption:** Linear's GraphQL API at `https://api.linear.app/graphql` is stable and does not require version pinning.
-- **Assumption:** The `searchIssues` query is available (it was added to Linear's API in 2023). If the builder encounters issues with this query during testing, fall back to `issues` with a `filter` that uses `title: { containsIgnoreCase: query }`.
+- **Constraint:** No new npm dependencies. The integration uses `fetch` (built into Node.js 22) to call Linear's GraphQL API directly, matching the existing GitHub tool pattern.
+- **Constraint:** The `LINEAR_API_KEY` must be a Linear personal API key, not an OAuth token. Personal API keys are passed in the Authorization header without a `Bearer` prefix.
+- **Assumption:** Kevin will create the Azure Key Vault secret `hq-linear-api-key` manually before deployment.
+- **Assumption:** The Linear workspace and teams already exist. This spec does not create the workspace structure — it provides tools for HQ to interact with whatever structure exists.
+- **Assumption:** The ExternalSecret controller is already running and the `azure-keyvault` ClusterSecretStore is configured (established in Spec 0003).
+- **Constraint:** Tool names follow the pattern `{verb}_linear_{resource}` to clearly distinguish them from GitHub tools and allow simple routing.
+- **Constraint:** The system prompt update is a documentation-only change to help HQ use the tools effectively. It does not change HQ's behaviour — the tools work regardless of whether the system prompt mentions them.
 
 ## Out of Scope
 
-- **Linear MCP client integration** — We are using direct GraphQL API calls, not the MCP protocol. This avoids adding MCP client dependencies and matches the existing tool pattern.
-- **Cycle management** — Linear cycles can be managed through Linear's UI. We may add cycle tools in a future spec.
-- **Webhook integration** — Real-time updates from Linear to HQ are not included. This could be a future enhancement.
-- **Team/workspace administration** — Creating teams, managing members, and workspace settings are done through Linear's UI.
-- **Custom views and filters** — Complex saved views are better managed in Linear's UI.
-- **OAuth2 authentication** — Not needed for a single-user system.
+- **Linear workspace setup** — Creating teams, labels, and workflow states in Linear is a manual task for Kevin.
+- **Cycle management** — Linear cycles are better managed through the Linear UI.
+- **Webhook integration** — Real-time updates from Linear to HQ are not in scope. HQ queries Linear on demand.
+- **OAuth flow** — We use a personal API key, not OAuth. OAuth would be needed only if multiple users authenticated separately.
+- **Linear SDK (`@linear/sdk`)** — We use raw GraphQL via `fetch` to avoid adding a dependency. The SDK can be considered in a future iteration if the raw approach becomes unwieldy.
+- **File attachments** — Uploading files to Linear issues is not in scope.
+- **Initiative/Roadmap features** — Linear's higher-level planning features are not exposed as tools in this iteration.
 
 ## Manual steps (not performed by the agent)
 
-1. **Create Linear workspace** — Go to linear.app and create a workspace for Kevin Ryan & Associates (if not already done).
-2. **Set up teams** — Create teams: Client Engagements, Platform, Business Development, Internal (with keys like `CE`, `PLT`, `BD`, `INT`).
-3. **Create labels** — Add workspace-level labels: `billable`, `non-billable`, `blocked`, `waiting-on-client`, `spec-required`.
-4. **Generate API key** — Go to Linear Settings > Account > Security & Access > Create a Personal API Key with full access.
-5. **Add secret to Azure Key Vault:**
+1. **Create Linear API key:** In Linear, go to Settings > Account > Security & Access and generate a Personal API Key.
+2. **Store in Azure Key Vault:**
 
 ```bash
-az keyvault secret set \
-  --vault-name kevinryanplatform \
-  --name hq-linear-api-key \
-  --value "<your-linear-api-key>"
+az keyvault secret set --vault-name kevinryan-kv --name hq-linear-api-key --value "<YOUR_LINEAR_API_KEY>"
 ```
 
-6. **Verify secret sync** — After the ExternalSecret manifest is deployed via Flux, verify:
+3. **Set up Linear workspace structure** (if not already done): Create teams (Client Engagements, Platform, Business Development, Internal), relevant projects, and labels (billable, non-billable, blocked, waiting-on-client, spec-required).
+
+Verify:
 
 ```bash
-kubectl get externalsecret hq-auth0-secrets -n hq-kevinryan-io
-```
+# Check the secret is in Key Vault
+az keyvault secret show --vault-name kevinryan-kv --name hq-linear-api-key --query "value" -o tsv
 
-The status should show `SecretSynced`.
-
-7. **Restart deployment** to pick up the new secret:
-
-```bash
-kubectl rollout restart deployment/hq-kevinryan-io -n hq-kevinryan-io
+# After deployment, check the secret is in K8s
+kubectl get secret hq-auth0-secrets -n hq-kevinryan-io -o jsonpath='{.data.LINEAR_API_KEY}' | base64 -d
 ```
 
 ## Provenance Record
@@ -663,16 +696,15 @@ After completing the work, create `.sdd/provenance/spec-0017-hq-linear-integrati
 
 After completing all work, confirm:
 
-1. The file `sites/hq-kevinryan-io/app/api/chat/route.ts` contains:
-   - A `linearGraphQL` helper function
-   - An `executeLinearTool` function handling all 7 Linear tools
-   - 7 new tool definitions in the `tools` array (search_linear_issues, list_linear_issues, create_linear_issue, update_linear_issue, add_linear_comment, list_linear_projects, list_linear_teams)
-   - Updated tool dispatch logic that routes Linear tools to `executeLinearTool`
-2. The file `k8s/hq-kevinryan-io/externalsecret.yaml` contains a `LINEAR_API_KEY` entry referencing `hq-linear-api-key`
-3. The file `sites/hq-kevinryan-io/config/hq-system-prompt.md` contains documentation for all 7 Linear tools
-4. `pnpm lint` passes with no errors
-5. `pnpm build` passes with no errors
-6. No new dependencies have been added to `package.json`
-7. All existing GitHub tool functionality is unchanged and still works
-8. The provenance record exists at `.sdd/provenance/spec-0017-hq-linear-integration.provenance.md` and contains all required sections
-9. All files (spec, implementation, provenance) are committed together
+1. This spec has been saved to `.sdd/specification/spec-0017-hq-linear-integration.md`
+2. `sites/hq-kevinryan-io/app/api/chat/route.ts` contains the `linearGraphQL` helper function
+3. `sites/hq-kevinryan-io/app/api/chat/route.ts` contains the `executeLinearTool` function handling all 9 tool names
+4. `sites/hq-kevinryan-io/app/api/chat/route.ts` contains all 9 Linear tool definitions in the `tools` array
+5. The agentic loop correctly routes Linear tool calls to `executeLinearTool` and GitHub tool calls to `executeGitHubTool`
+6. `k8s/hq-kevinryan-io/externalsecret.yaml` includes the `LINEAR_API_KEY` entry referencing `hq-linear-api-key`
+7. `config/hq-system-prompt.md` contains the Linear Project Management Tools section
+8. `pnpm lint` passes
+9. `pnpm build` passes
+10. No new dependencies have been added to `package.json`
+11. The provenance record exists at `.sdd/provenance/spec-0017-hq-linear-integration.provenance.md` and contains all required sections
+12. All files (spec, implementation, provenance) are committed together
