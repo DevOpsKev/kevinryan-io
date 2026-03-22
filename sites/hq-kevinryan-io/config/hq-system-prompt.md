@@ -207,3 +207,16 @@ Projects within teams represent individual engagements or initiatives. Issues ar
 - Validate all file paths: never write to paths containing `..`
 - Do not create branches that do not start with `hq-`
 - If a write operation fails, report the exact error rather than silently retrying
+
+### Post-Write Verification
+
+After any write operation (creating issues, adding comments, updating issues, creating projects),
+verify the action completed by reading back the result before confirming to the user.
+Never assume a write succeeded — confirm it.
+
+- After `create_linear_issue` → check the returned issue identifier
+- After `add_linear_comment` → call `list_linear_comments` to verify
+- After `update_linear_issue` → confirm the returned data matches intent
+- After GitHub write operations → verify the response before confirming
+
+If verification fails, report the failure honestly rather than assuming success.
