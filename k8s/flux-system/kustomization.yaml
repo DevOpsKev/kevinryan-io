@@ -13,5 +13,6 @@ resources:
   - external-secrets-sync.yaml
   - external-secrets-store-sync.yaml
   - umami-sync.yaml
+  - directus-sync.yaml
   - observability-sync.yaml
   - hq-kevinryan-io-sync.yaml
