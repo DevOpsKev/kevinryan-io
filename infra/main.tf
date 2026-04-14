@@ -132,6 +132,7 @@ module "postgresql" {
   vnet_name           = module.network.vnet_name
   vnet_id             = module.network.vnet_id
   admin_password      = random_password.pg_admin_password.result
+  databases           = ["umami_db", "grafana_db", "directus_db"]
 }
 
 resource "azurerm_key_vault_secret" "pg_admin_password" {
@@ -264,6 +265,81 @@ resource "cloudflare_record" "monitoring" {
   type    = "A"
   proxied = true
   ttl     = 1
+}
+
+resource "cloudflare_record" "dam" {
+  zone_id = var.cloudflare_zone_id
+  name    = "dam"
+  content = module.network.public_ip_address
+  type    = "A"
+  proxied = true
+  ttl     = 1
+}
+
+resource "azurerm_storage_account" "directus_blob" {
+  name                     = "kradirectusblob"
+  resource_group_name      = module.network.resource_group_name
+  location                 = module.network.resource_group_location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
+
+  blob_properties {
+    delete_retention_policy {
+      days = 30
+    }
+  }
+}
+
+resource "azurerm_storage_container" "directus_uploads" {
+  name                  = "directus-uploads"
+  storage_account_id    = azurerm_storage_account.directus_blob.id
+  container_access_type = "private"
+}
+
+resource "azurerm_key_vault_secret" "directus_blob_account_name" {
+  name         = "directus-blob-account-name"
+  value        = azurerm_storage_account.directus_blob.name
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "directus_blob_account_key" {
+  name         = "directus-blob-account-key"
+  value        = azurerm_storage_account.directus_blob.primary_access_key
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "random_password" "directus_key" {
+  length  = 64
+  special = false
+}
+
+resource "random_password" "directus_secret" {
+  length  = 64
+  special = false
+}
+
+resource "random_password" "directus_admin_password" {
+  length  = 32
+  special = false
+}
+
+resource "azurerm_key_vault_secret" "directus_key" {
+  name         = "directus-key"
+  value        = random_password.directus_key.result
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "directus_secret" {
+  name         = "directus-secret"
+  value        = random_password.directus_secret.result
+  key_vault_id = module.keyvault.key_vault_id
+}
+
+resource "azurerm_key_vault_secret" "directus_admin_password" {
+  name         = "directus-admin-password"
+  value        = random_password.directus_admin_password.result
+  key_vault_id = module.keyvault.key_vault_id
 }
 
 module "cloudflare_aiimmigrants" {

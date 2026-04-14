@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: directus
+  namespace: directus
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`dam.kevinryan.io`)
+      kind: Rule
+      services:
+        - name: directus
+          port: 80
+  tls: {}
