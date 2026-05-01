@@ -62,6 +62,7 @@ export default defineConfig({
         { label: 'Docker Builds', link: '/docker-builds/' },
         { label: 'Observability', link: '/observability/' },
         { label: 'Umami Analytics', link: '/umami/' },
+        { label: 'Forgejo Git Hosting', link: '/forgejo/' },
         {
           label: 'Site Architectures',
           collapsed: true,
