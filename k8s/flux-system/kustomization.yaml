@@ -17,3 +17,4 @@ resources:
   - observability-sync.yaml
   - hq-kevinryan-io-sync.yaml
   - forgejo-sync.yaml
+  - forgejo-runner-sync.yaml

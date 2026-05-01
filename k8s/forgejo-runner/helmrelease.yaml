@@ -1,0 +1,71 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forgejo-runner
+  namespace: forgejo-runner
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: forgejo-runner
+      version: "0.7.4"
+      sourceRef:
+        kind: HelmRepository
+        name: forgejo-runner
+        namespace: forgejo-runner
+      interval: 1h
+  install:
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    runner:
+      config:
+        create: true
+        existingInitSecret: forgejo-runner-token
+        file:
+          runner:
+            capacity: 1
+            labels:
+              - "ubuntu-latest:docker://node:20-bookworm"
+              - "ubuntu-22.04:docker://node:20-bookworm"
+              - "docker:docker://node:20-bookworm"
+          log:
+            level: info
+            job_level: info
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationPercentage: 70
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 60
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 60
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    dind:
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 2Gi

@@ -58,6 +58,8 @@ jobs:
           TF_VAR_auth0_domain: ${{ secrets.TF_VAR_AUTH0_DOMAIN }}
           TF_VAR_anthropic_api_key: ${{ secrets.TF_VAR_ANTHROPIC_API_KEY }}
           TF_VAR_github_mcp_token: ${{ secrets.TF_VAR_GITHUB_MCP_TOKEN }}
+          TF_VAR_linear_api_key: ${{ secrets.TF_VAR_LINEAR_API_KEY }}
+          TF_VAR_forgejo_runner_registration_token: ${{ secrets.TF_VAR_FORGEJO_RUNNER_REGISTRATION_TOKEN }}
 
       - name: Post plan to summary
         if: always()
@@ -133,3 +135,5 @@ jobs:
           TF_VAR_auth0_domain: ${{ secrets.TF_VAR_AUTH0_DOMAIN }}
           TF_VAR_anthropic_api_key: ${{ secrets.TF_VAR_ANTHROPIC_API_KEY }}
           TF_VAR_github_mcp_token: ${{ secrets.TF_VAR_GITHUB_MCP_TOKEN }}
+          TF_VAR_linear_api_key: ${{ secrets.TF_VAR_LINEAR_API_KEY }}
+          TF_VAR_forgejo_runner_registration_token: ${{ secrets.TF_VAR_FORGEJO_RUNNER_REGISTRATION_TOKEN }}
