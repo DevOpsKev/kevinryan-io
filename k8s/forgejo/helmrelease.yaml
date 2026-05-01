@@ -40,6 +40,9 @@ spec:
           DB_TYPE: postgres
           NAME: forgejo_db
           SSL_MODE: require
+        service:
+          DISABLE_REGISTRATION: true
+          SHOW_REGISTRATION_BUTTON: false
       additionalConfigFromEnvs:
         - name: FORGEJO__DATABASE__HOST
           valueFrom:
