@@ -43,6 +43,9 @@ spec:
         service:
           DISABLE_REGISTRATION: true
           SHOW_REGISTRATION_BUTTON: false
+        actions:
+          ENABLED: true
+          DEFAULT_ACTIONS_URL: github
       additionalConfigFromEnvs:
         - name: FORGEJO__DATABASE__HOST
           valueFrom:
