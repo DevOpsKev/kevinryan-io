@@ -16,3 +16,4 @@ resources:
   - directus-sync.yaml
   - observability-sync.yaml
   - hq-kevinryan-io-sync.yaml
+  - forgejo-sync.yaml
