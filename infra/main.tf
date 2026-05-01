@@ -186,6 +186,12 @@ resource "azurerm_key_vault_secret" "forgejo_admin_password" {
   key_vault_id = module.keyvault.key_vault_id
 }
 
+resource "azurerm_key_vault_secret" "forgejo_runner_registration_token" {
+  name         = "forgejo-runner-registration-token"
+  value        = var.forgejo_runner_registration_token
+  key_vault_id = module.keyvault.key_vault_id
+}
+
 resource "azurerm_key_vault_secret" "hq_auth0_secret" {
   name         = "hq-auth0-secret"
   value        = var.auth0_secret

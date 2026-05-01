@@ -133,3 +133,9 @@ variable "linear_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "forgejo_runner_registration_token" {
+  description = "Forgejo Actions runner registration token. Generated once via Forgejo Site Admin -> Actions -> Runners -> Create new runner. Reusable across multiple runner replicas."
+  type        = string
+  sensitive   = true
+}
