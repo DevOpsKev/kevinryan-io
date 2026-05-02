@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forgejo-runner-dind-daemon-config
+  namespace: forgejo-runner
+data:
+  # Lower the docker0 bridge MTU so job containers inherit a small enough
+  # eth0 MTU to avoid fragmentation on Azure CNI overlay / WireGuard tunnels.
+  # Symptom of MTU mismatch: `pip install`, `apt-get update`, `npm install`
+  # etc. hang or fail mid-stream during TLS handshake or large package
+  # downloads. 1400 is a safe first guess for Azure CNI overlay; drop to 1380
+  # for WireGuard/Calico or 1280 for Tailscale/IPv6 minimum if 1400 is still
+  # too large.
+  daemon.json: |
+    {
+      "mtu": 1400
+    }

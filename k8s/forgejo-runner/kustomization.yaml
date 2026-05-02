@@ -4,4 +4,5 @@ resources:
   - namespace.yaml
   - helmrepository.yaml
   - externalsecret.yaml
+  - dind-daemon-config.yaml
   - helmrelease.yaml

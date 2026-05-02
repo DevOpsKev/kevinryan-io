@@ -69,3 +69,18 @@ spec:
         limits:
           cpu: 1000m
           memory: 2Gi
+    # Mount /etc/docker/daemon.json into the dind container so the docker
+    # daemon picks up our MTU override at startup. The chart wires top-level
+    # `volumeMounts` onto the dind container only (see the chart's
+    # templates/deployment.yaml). Top-level `volumes` are pod-level. Changes
+    # to the ConfigMap require a pod restart:
+    #   kubectl rollout restart deploy/forgejo-runner -n forgejo-runner
+    volumes:
+      - name: dind-daemon-config
+        configMap:
+          name: forgejo-runner-dind-daemon-config
+    volumeMounts:
+      - name: dind-daemon-config
+        mountPath: /etc/docker/daemon.json
+        subPath: daemon.json
+        readOnly: true
