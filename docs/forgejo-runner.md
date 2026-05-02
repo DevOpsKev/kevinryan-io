@@ -144,12 +144,32 @@ The runner container connects to the daemon at `tcp://127.0.0.1:2376` with TLS v
 
 The dind sidecar starts `dockerd` inside the runner pod, which creates a `docker0` bridge with the default MTU of 1500. Every job container's `eth0` inherits that MTU. On Azure CNI overlay (and most VXLAN- or WireGuard-based pod networks) the underlying pod interface has a smaller effective MTU because of tunnel headers, so 1500-byte frames from the job container fragment or get black-holed. The classic symptom is `pip install` / `apt-get update` / `npm install` hanging mid-stream during a TLS handshake or a large package download with no obvious error.
 
-The fix is to lower `dockerd`'s `--mtu`. The WrenIX chart does not expose `args` for the dind container, but it does pass through pod-level `volumes` and `volumeMounts` — and looking at the chart's `templates/deployment.yaml`, the top-level `volumeMounts` value is wired onto the dind container only. We mount a small `ConfigMap` (`forgejo-runner-dind-daemon-config`) at `/etc/docker/daemon.json`:
+The fix is to lower `dockerd`'s bridge MTU. The WrenIX chart does not expose `args` for the dind container, but it does pass through pod-level `volumes` and `volumeMounts` — and looking at the chart's `templates/deployment.yaml`, the top-level `volumeMounts` value is wired onto the dind container only. We mount a small `ConfigMap` (`forgejo-runner-dind-daemon-config`) at `/etc/docker/daemon.json`:
 
 ```json
 {
-  "mtu": 1400
+  "mtu": 1400,
+  "default-network-opts": {
+    "bridge": {
+      "com.docker.network.driver.mtu": "1400"
+    }
+  }
 }
+```
+
+Both keys are intentional and **not** redundant.
+Per the [Docker daemon reference](https://docs.docker.com/reference/cli/dockerd/#default-network-options),
+`mtu` only applies to the built-in `docker0` bridge,
+while `default-network-opts.bridge.com.docker.network.driver.mtu` applies to every **new** user-created bridge network.
+The Forgejo runner creates one user-defined bridge network **per job**
+(because `runner.config.file.container.network: ""` in the WrenIX defaults),
+so without the `default-network-opts` block, job containers' `eth0` stays at 1500 even though `docker0` is 1400
+— the precise failure mode we hit on first deploy.
+
+Verification from inside a running job's container:
+
+```bash
+ip link show eth0   # expect: ... mtu 1400 ...
 ```
 
 1400 is a safe first guess for Azure CNI overlay. Drop to 1380 for WireGuard/Calico or 1280 for Tailscale / IPv6 minimum if the symptom persists. The `daemon.json` file is mounted with `subPath` so the rest of `/etc/docker/` remains writable for the entrypoint. Changes to the ConfigMap do not roll the pod automatically; after editing, run `kubectl rollout restart deploy/forgejo-runner -n forgejo-runner`.

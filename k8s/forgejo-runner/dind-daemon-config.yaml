@@ -5,14 +5,30 @@ metadata:
   name: forgejo-runner-dind-daemon-config
   namespace: forgejo-runner
 data:
-  # Lower the docker0 bridge MTU so job containers inherit a small enough
-  # eth0 MTU to avoid fragmentation on Azure CNI overlay / WireGuard tunnels.
+  # Lower the docker bridge MTU so job containers inherit a small enough eth0
+  # MTU to avoid fragmentation on Azure CNI overlay / WireGuard tunnels.
   # Symptom of MTU mismatch: `pip install`, `apt-get update`, `npm install`
   # etc. hang or fail mid-stream during TLS handshake or large package
   # downloads. 1400 is a safe first guess for Azure CNI overlay; drop to 1380
   # for WireGuard/Calico or 1280 for Tailscale/IPv6 minimum if 1400 is still
   # too large.
+  #
+  # Two settings are intentional and not redundant:
+  #   - `mtu`               -> applies ONLY to the built-in `docker0` bridge.
+  #   - `default-network-opts.bridge.com.docker.network.driver.mtu`
+  #                         -> applies to every NEW user-created bridge
+  #                            network. The Forgejo runner creates one of
+  #                            these per job (because `container.network: ""`
+  #                            in runner config), so without this key, job
+  #                            containers' eth0 stays at 1500 even though
+  #                            docker0 is 1400.
+  # Refs: https://docs.docker.com/reference/cli/dockerd/#default-network-options
   daemon.json: |
     {
-      "mtu": 1400
+      "mtu": 1400,
+      "default-network-opts": {
+        "bridge": {
+          "com.docker.network.driver.mtu": "1400"
+        }
+      }
     }
