@@ -36,6 +36,10 @@ spec:
           log:
             level: info
             job_level: info
+          container:
+            docker_host: automount
+            valid_volumes:
+              - /var/run/docker.sock
     autoscaling:
       enabled: true
       minReplicas: 1
