@@ -54,6 +54,7 @@ export default defineConfig({
           autogenerate: { directory: 'adr', collapsed: true },
         },
         { label: 'K3s Architecture', link: '/k3s/' },
+        { label: 'Node Access (SSH / kubectl / k9s)', link: '/node-access/' },
         { label: 'Terraform Infrastructure', link: '/terraform/' },
         { label: 'Cloudflare DNS & CDN', link: '/cloudflare/' },
         { label: 'Traefik Ingress', link: '/traefik/' },

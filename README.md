@@ -186,6 +186,68 @@ terraform apply
 
 Create a `production` environment in GitHub repo settings (Settings → Environments) with required reviewers. This gates `terraform apply` in CI.
 
+## Cluster Access
+
+Operators reach the two-node K3s cluster over SSH and run `kubectl`/`k9s` from a laptop via an SSH tunnel to the API. Port 6443 is **not** exposed in the NSG; traffic is source-restricted to a single admin IP (`admin_ip` in `infra/terraform.tfvars`). Full runbook: [`docs/node-access.md`](docs/node-access.md).
+
+### SSH into nodes
+
+```bash
+ssh kr-node1   # vm-kevinryan-node1 (K3s server)
+ssh kr-node2   # vm-kevinryan-node2 (K3s agent)
+```
+
+Requires `~/.ssh/config` entries (one-time setup):
+
+```sshconfig
+Host kr-node1
+  HostName 40.67.240.128
+  User azureuser
+  IdentityFile ~/.ssh/id_ed25519
+
+Host kr-node2
+  HostName 20.54.84.177
+  User azureuser
+  IdentityFile ~/.ssh/id_ed25519
+```
+
+### kubectl / k9s from your laptop
+
+```bash
+# 1. Bring up the API tunnel (backgrounded, forwards local 6443 -> node1 127.0.0.1:6443)
+ssh -fN -L 6443:127.0.0.1:6443 kr-node1
+
+# 2. Run kubectl / k9s against ~/.kube/kr-k3s.yaml
+KUBECONFIG=~/.kube/kr-k3s.yaml kubectl get nodes
+KUBECONFIG=~/.kube/kr-k3s.yaml k9s -A   # -A = all namespaces (workloads live in per-site ns)
+
+# 3. Tear down the tunnel when done
+pkill -f "ssh -fN -L 6443:127.0.0.1:6443"
+```
+
+The kubeconfig at `~/.kube/kr-k3s.yaml` is the K3s admin credential (copied from `/etc/rancher/k3s/k3s.yaml` on node1). Protect it like a root password; never commit it. The tunnel verifies TLS without `--insecure-skip-tls-verify` because the K3s serving cert SAN includes `127.0.0.1`.
+
+### When your public IP changes
+
+Uploads to `ssh` mean your IP rotated. Update the `AllowSSH` NSG rule (Azure CLI) or `admin_ip` in `infra/terraform.tfvars` + `terraform apply`:
+
+```bash
+# CLI shortcut (touches only the NSG rule, no VM impact)
+az network nsg rule update \
+  -g rg-kevinryan-io --nsg-name nsg-kevinryan-io -n AllowSSH \
+  --source-address-prefixes $(curl -s https://ifconfig.me)/32
+```
+
+### Rotating the admin SSH key
+
+Generate a new keypair and push the public key onto both nodes via the Azure VM agent (no reboot):
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519
+az vm user update -g rg-kevinryan-io -n vm-kevinryan-node1 -u azureuser --ssh-key-value "$(cat ~/.ssh/id_ed25519.pub)"
+az vm user update -g rg-kevinryan-io -n vm-kevinryan-node2 -u azureuser --ssh-key-value "$(cat ~/.ssh/id_ed25519.pub)"
+```
+
 ## Observability
 
 | Service | URL | Purpose |
