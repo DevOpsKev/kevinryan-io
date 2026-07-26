@@ -53,6 +53,11 @@ resource "azurerm_linux_virtual_machine" "main" {
   custom_data = var.custom_data
 
   lifecycle {
-    ignore_changes = [custom_data]
+    # custom_data is generated at first boot via cloud-init and must not be
+    # reconciled post-create. admin_ssh_key is immutable on an existing Azure
+    # VM (Azure rejects in-place updates to osProfile.linuxConfiguration.ssh),
+    # so we ignore it here too. it is only set at VM creation and will be
+    # reconciled cleanly on the next deploy on new hosting.
+    ignore_changes = [custom_data, admin_ssh_key]
   }
 }
