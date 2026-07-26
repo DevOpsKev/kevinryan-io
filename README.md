@@ -87,15 +87,19 @@ tessl install
 ### Run development servers
 
 ```bash
-pnpm dev:kevinryan-io    # kevinryan.io at localhost:3000
+# kevinryan.io at localhost:3000
+pnpm dev:kevinryan-io
 ```
 
 ### Build all sites
 
 ```bash
-pnpm build               # Build all sites (--if-present skips static HTML sites)
-pnpm --filter kevinryan-io build   # Build specific site
-pnpm --filter kevinryan-io lint    # Lint specific site
+# Build all sites (--if-present skips static HTML sites)
+pnpm build
+# Build specific site
+pnpm --filter kevinryan-io build
+# Lint specific site
+pnpm --filter kevinryan-io lint
 ```
 
 ## Project Structure
@@ -148,10 +152,14 @@ Sites with a build step (kevinryan.io, docs.kevinryan.io) use multi-stage Docker
 
 ```bash
 cd sites/kevinryan-io
-pnpm docker:build    # Build the production Docker image locally
-pnpm docker:up       # Build and start the container
-pnpm docker:down     # Stop and remove the container
-curl http://localhost:8080/healthz   # expect: ok
+# Build the production Docker image locally
+pnpm docker:build
+# Build and start the container
+pnpm docker:up
+# Stop and remove the container
+pnpm docker:down
+# expect: ok
+curl http://localhost:8080/healthz
 ```
 
 ## Infrastructure
@@ -193,8 +201,10 @@ Operators reach the two-node K3s cluster over SSH and run `kubectl`/`k9s` from a
 ### SSH into nodes
 
 ```bash
-ssh kr-node1   # vm-kevinryan-node1 (K3s server)
-ssh kr-node2   # vm-kevinryan-node2 (K3s agent)
+# vm-kevinryan-node1 (K3s server)
+ssh kr-node1
+# vm-kevinryan-node2 (K3s agent)
+ssh kr-node2
 ```
 
 Requires `~/.ssh/config` entries (one-time setup):
@@ -219,7 +229,8 @@ ssh -fN -L 6443:127.0.0.1:6443 kr-node1
 
 # 2. Run kubectl / k9s against ~/.kube/kr-k3s.yaml
 KUBECONFIG=~/.kube/kr-k3s.yaml kubectl get nodes
-KUBECONFIG=~/.kube/kr-k3s.yaml k9s -A   # -A = all namespaces (workloads live in per-site ns)
+# -A = all namespaces (workloads live in per-site ns)
+KUBECONFIG=~/.kube/kr-k3s.yaml k9s -A
 
 # 3. Tear down the tunnel when done
 pkill -f "ssh -fN -L 6443:127.0.0.1:6443"
@@ -296,7 +307,8 @@ This project uses [Tessl](https://tessl.io) to manage context and skills for AI 
 ```bash
 tessl init --agent claude-code
 tessl install
-tessl list    # Verify installed tiles
+# Verify installed tiles
+tessl list
 ```
 
 ## License

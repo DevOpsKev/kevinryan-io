@@ -29,11 +29,16 @@ This is a monorepo hosting multiple sites for Kevin Ryan (DevOps & AI Governance
 ## Build Commands
 
 ```bash
-pnpm install              # Install all workspace dependencies
-pnpm dev:kevinryan-io     # Dev server for kevinryan.io at localhost:3000
-pnpm build                # Build all sites
-pnpm --filter kevinryan-io build   # Build specific site
-pnpm --filter kevinryan-io lint    # Lint specific site
+# Install all workspace dependencies
+pnpm install
+# Dev server for kevinryan.io at localhost:3000
+pnpm dev:kevinryan-io
+# Build all sites
+pnpm build
+# Build specific site
+pnpm --filter kevinryan-io build
+# Lint specific site
+pnpm --filter kevinryan-io lint
 ```
 
 ## Directory Structure
@@ -94,6 +99,24 @@ To onboard a new site into Flux CD:
 3. Ensure static export compatibility
 4. Include alt attributes on all images
 5. Keep components under 200 lines
+
+## Documentation Conventions
+
+- In Markdown code blocks, never put `#` comments on the same line as a command. Place comments on their own line above the command.
+- Rationale: yanking a line in AstroVim should grab only the command, not the trailing comment.
+
+Example (correct):
+
+```bash
+# Build specific site
+pnpm --filter kevinryan-io build
+```
+
+Example (prohibited):
+
+```bash
+pnpm --filter kevinryan-io build   # Build specific site
+```
 
 ## Prohibited Patterns
 
