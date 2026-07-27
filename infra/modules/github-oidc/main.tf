@@ -70,6 +70,17 @@ resource "azurerm_role_assignment" "tfstate_blob" {
   principal_id         = azuread_service_principal.github_actions.object_id
 }
 
+# Storage Account Contributor on the tfstate storage account so the azurerm
+# backend (default account-key auth) can call listKeys during `terraform init`.
+# GitHub Actions' SP has no subscription-level inheritance, so the management-plane
+# listKeys action must be granted explicitly (Storage Blob Data Contributor is
+# data-plane only and does not satisfy the backend's key lookup).
+resource "azurerm_role_assignment" "tfstate_storage_contributor" {
+  scope                = var.tfstate_storage_account_id
+  role_definition_name = "Storage Account Contributor"
+  principal_id         = azuread_service_principal.github_actions.object_id
+}
+
 # Reader on tfstate resource group (terraform init needs to read storage account properties)
 resource "azurerm_role_assignment" "tfstate_reader" {
   scope                = var.tfstate_resource_group_id
