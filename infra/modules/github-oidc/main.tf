@@ -64,6 +64,17 @@ resource "azurerm_role_assignment" "rg_contributor" {
   principal_id         = azuread_service_principal.github_actions.object_id
 }
 
+# User Access Administrator on the main resource group so the SP can manage
+# azurerm_role_assignment resources (create/delete) during terraform apply.
+# Contributor alone cannot write/delete RBAC role assignments; this role is
+# required because the terraform config manages ~15 role assignments across
+# the RG / Key Vault / ACR / tfstate scopes.
+resource "azurerm_role_assignment" "rg_user_access_admin" {
+  scope                = var.resource_group_id
+  role_definition_name = "User Access Administrator"
+  principal_id         = azuread_service_principal.github_actions.object_id
+}
+
 resource "azurerm_role_assignment" "tfstate_blob" {
   scope                = var.tfstate_storage_account_id
   role_definition_name = "Storage Blob Data Contributor"
