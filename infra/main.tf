@@ -132,7 +132,7 @@ module "postgresql" {
   vnet_name           = module.network.vnet_name
   vnet_id             = module.network.vnet_id
   admin_password      = random_password.pg_admin_password.result
-  databases           = ["umami_db", "grafana_db", "directus_db", "forgejo_db"]
+  databases           = ["umami_db", "grafana_db", "directus_db"]
 }
 
 resource "azurerm_key_vault_secret" "pg_admin_password" {
@@ -172,23 +172,6 @@ resource "random_password" "grafana_admin_password" {
 resource "azurerm_key_vault_secret" "grafana_admin_password" {
   name         = "grafana-admin-password"
   value        = random_password.grafana_admin_password.result
-  key_vault_id = module.keyvault.key_vault_id
-}
-
-resource "random_password" "forgejo_admin_password" {
-  length  = 32
-  special = false
-}
-
-resource "azurerm_key_vault_secret" "forgejo_admin_password" {
-  name         = "forgejo-admin-password"
-  value        = random_password.forgejo_admin_password.result
-  key_vault_id = module.keyvault.key_vault_id
-}
-
-resource "azurerm_key_vault_secret" "forgejo_runner_registration_token" {
-  name         = "forgejo-runner-registration-token"
-  value        = var.forgejo_runner_registration_token
   key_vault_id = module.keyvault.key_vault_id
 }
 
@@ -293,16 +276,6 @@ resource "cloudflare_record" "dam" {
   ttl     = 1
 }
 
-# Standalone record — intentionally not in the cloudflare module's subdomains list
-# to avoid the site cache ruleset being applied to git traffic.
-resource "cloudflare_record" "git" {
-  zone_id = var.cloudflare_zone_id
-  name    = "git"
-  content = module.network.public_ip_address
-  type    = "A"
-  proxied = true
-  ttl     = 1
-}
 
 resource "azurerm_storage_account" "directus_blob" {
   name                     = "kradirectusblob"

@@ -184,7 +184,6 @@ When implementing a spec:
 
 ### Restrictions
 
-- Never commit directly to `main`
 - Never modify a spec file after the initial save
 - Never skip the build verification checklist
 - Never add dependencies without justification recorded in provenance
