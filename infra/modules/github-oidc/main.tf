@@ -93,6 +93,11 @@ output "client_id" {
   value       = azuread_application.github_actions.client_id
 }
 
+output "principal_id" {
+  description = "Object (principal) ID of the GitHub Actions service principal"
+  value       = azuread_service_principal.github_actions.object_id
+}
+
 output "tenant_id" {
   description = "Azure AD tenant ID"
   value       = azuread_service_principal.github_actions.application_tenant_id

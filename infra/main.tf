@@ -380,3 +380,16 @@ module "github_oidc" {
   tfstate_storage_account_id = data.azurerm_storage_account.tfstate.id
   tfstate_resource_group_id  = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/rg-kevinryan-tfstate"
 }
+
+# Permanent Key Vault Secrets Officer for the GitHub Actions SP so CI can
+# read/write secrets regardless of which identity last ran terraform. The
+# keyvault module's terraform_secrets_officer assignment tracks
+# data.azurerm_client_config.current.object_id (whoever runs terraform), which
+# flip-flops between the local user and the CI SP; without this permanent
+# grant the SP has no Key Vault role and every azurerm_key_vault_secret
+# refresh 403s with ForbiddenByRbac during CI plans.
+resource "azurerm_role_assignment" "github_actions_kv_secrets_officer" {
+  scope                = module.keyvault.key_vault_id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = module.github_oidc.principal_id
+}
