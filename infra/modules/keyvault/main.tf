@@ -21,4 +21,15 @@ resource "azurerm_role_assignment" "terraform_secrets_officer" {
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = var.terraform_object_id
+
+  # principal_id comes from data.azurerm_client_config.current.object_id (the
+  # identity running terraform), which differs between local (user) and CI (SP).
+  # Without ignore_changes this forces a replacement on every run that flips
+  # the identity, and the recreate collides (409 RoleAssignmentExists) with the
+  # permanent github_actions_kv_secrets_officer grant when CI targets the SP.
+  # Freeze the assignment on whichever identity first created it; the CI SP's
+  # Key Vault access is provided by the permanent grant in main.tf instead.
+  lifecycle {
+    ignore_changes = [principal_id]
+  }
 }
