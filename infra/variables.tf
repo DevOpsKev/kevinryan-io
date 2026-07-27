@@ -51,13 +51,13 @@ variable "github_token" {
 variable "github_repo_owner" {
   description = "GitHub repository owner"
   type        = string
-  default     = "DevOpsKev"
+  default     = "kevin-ryan-associates"
 }
 
 variable "github_repo_name" {
   description = "GitHub repository name"
   type        = string
-  default     = "kevin-ryan-platform"
+  default     = "kra-platform"
 }
 
 variable "cloudflare_zone_id_aiimmigrants" {
