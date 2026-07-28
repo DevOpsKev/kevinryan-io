@@ -3,58 +3,62 @@ title: GitHub Actions Workflows
 description: Comprehensive guide to the GitHub Actions workflows that build, deploy, and manage infrastructure for the Kevin Ryan platform.
 ---
 
-This platform uses GitHub Actions for all CI/CD. There are eight workflows in total — seven site deployment workflows and one infrastructure workflow. All workflow files live in `.github/workflows/`.
+This platform uses GitHub Actions for all CI/CD. There are two workflows in total — one unified site deployment workflow (`deploy.yml`) and one infrastructure workflow (`terraform.yml`). All workflow files live in `.github/workflows/`.
 
 ## Design Principles
 
 Every workflow in this repository follows a consistent set of conventions:
 
-- **Path-filtered triggers.** Each workflow only runs when files in its relevant directory change on `main`, avoiding unnecessary builds.
+- **Path-filtered triggers.** The deploy workflow only runs when files under `sites/**` or `docs/**` change on `main`, avoiding unnecessary builds.
 - **Pinned action versions.** All third-party actions are pinned to full commit SHAs rather than tags, preventing supply-chain attacks from tag mutation.
 - **OIDC authentication.** Azure credentials are never stored as secrets. GitHub Actions authenticates via OpenID Connect federated identity, configured in the `github-oidc` Terraform module.
-- **Concurrency control.** Each deploy workflow uses a concurrency group with `cancel-in-progress: false`, ensuring in-flight deployments complete before the next one starts.
-- **Manual dispatch.** All deploy workflows support `workflow_dispatch` for manual reruns without requiring a code change.
+- **Concurrency control.** Each site deploys under a per-site concurrency group (`deploy-<site>`, `cancel-in-progress: false`), ensuring in-flight deployments complete before the next one starts while still allowing different sites to deploy in parallel.
+- **Manual dispatch.** The deploy workflow supports `workflow_dispatch` with a `site` dropdown (including an `all` option) for manual reruns without requiring a code change.
 
-## Site Deployment Workflows
+## Site Deployment Workflow
 
-All seven sites share an identical deployment pattern. The only differences between them are the path filter, Dockerfile location, image name, and manifest path.
+A single workflow (`deploy.yml`) builds and deploys every containerized site. A `detect` job inspects the push and emits a matrix of changed sites (or takes a single selected site / `all` via `workflow_dispatch`); a `deploy` job then fans out over that matrix. Each site shares an identical deployment pattern — only the Dockerfile location, image name, and manifest path differ, all derived from the matrix site name.
 
 ### Shared Pipeline
 
 ```mermaid
 graph TD
-    A[Push to main<br/>path filter matches] --> B[Checkout + compute short SHA]
-    B --> C[Log in to GHCR]
-    C --> D[Log in to Azure via OIDC]
-    D --> E[Log in to ACR]
-    E --> F[Docker Buildx build + push]
-    F --> G[Update K8s deployment manifest<br/>with new image tag]
-    G --> H[Commit + push manifest<br/>with retry loop]
+    A[Push to main<br/>sites/ or docs/ changed] --> B[detect job<br/>compute matrix of changed sites]
+    B --> C[deploy matrix fans out<br/>one job per site]
+    C --> D[Checkout + compute short SHA]
+    D --> E[Log in to Azure via OIDC]
+    E --> F[Log in to ACR]
+    F --> G[Docker Buildx build + push to ACR]
+    G --> H[Update K8s deployment manifest<br/>with new image tag]
+    H --> I[Commit + push manifest<br/>with retry loop]
 ```
 
 ### Step-by-Step Breakdown
 
-#### Checkout and compute short SHA
+#### Detect job
+
+For push events, the `detect` job diffs `github.event.before..github.event.after` and extracts the site directory names (files under `sites/<site>/…` map to that site; files under `docs/…` map to the `docs-kevinryan-io` site). It keeps only sites that have both a `sites/<site>/Dockerfile` and a `k8s/<site>/deployment.yaml`, and emits a JSON array consumed by the `deploy` matrix. For `workflow_dispatch`, it uses the selected `site` input (or all sites when `all` is chosen).
+
+#### Checkout and compute short SHA (per deploy matrix job)
 
 The repository is checked out and the short commit SHA is captured. This SHA becomes the Docker image tag, providing a direct link between every running container and the commit that produced it.
 
 #### Authenticate to registries
 
-Three logins happen in sequence:
+Two logins happen in sequence:
 
-- **GHCR** — using the built-in `GITHUB_TOKEN`
 - **Azure** — via OIDC (`azure/login` with `client-id`, `tenant-id`, `subscription-id`)
 - **ACR** — using the Azure CLI session established in the previous step
 
+The workflow pushes only to ACR; GHCR is no longer used.
+
 #### Docker build and push
 
-Each image is built with Docker Buildx (enabling build cache via GitHub Actions cache) and pushed with four tags:
+Each image is built with Docker Buildx (enabling build cache via GitHub Actions cache) and pushed to ACR with two tags:
 
 | Tag | Registry | Purpose |
 |-----|----------|---------|
-| `<sha>` | GHCR | Immutable version reference |
-| `latest` | GHCR | Convenience for local development |
-| `<sha>` | ACR | Production deployment (K8s pulls from here) |
+| `<sha>` | ACR | Production deployment (K8s pulls from here); immutable version reference |
 | `latest` | ACR | Rollback convenience |
 
 The `COMMIT_SHA` build arg is passed so the application can embed its version at build time.
@@ -65,30 +69,25 @@ The workflow uses `sed` to replace the image tag in `k8s/<site>/deployment.yaml`
 
 #### Commit and push with retry
 
-The manifest change is committed as `[deploy] <site>: <sha>` and pushed to `main`. A retry loop (5 attempts with exponential backoff) handles race conditions when multiple site workflows push concurrently. Each attempt does a `git pull --rebase` before pushing.
+The manifest change is committed as `[deploy] <site>: <sha>` and pushed to `main`. A retry loop (5 attempts with exponential backoff) handles race conditions when multiple matrix jobs push concurrently. Each attempt does a `git pull --rebase` before pushing.
 
 ### Workflow Inventory
 
-| Workflow | File | Trigger Path | Site |
-|----------|------|--------------|------|
-| Build and Deploy | `deploy.yml` | `sites/kevinryan-io/**` | kevinryan.io |
-| Build and Deploy Brand | `deploy-brand.yml` | `sites/brand-kevinryan-io/**` | brand.kevinryan.io |
-| Build and Deploy Docs | `deploy-docs.yml` | `sites/docs-kevinryan-io/**` or `docs/**` | docs.kevinryan.io |
-| Build and Deploy AI-Immigrants | `deploy-aiimmigrants.yml` | `sites/aiimmigrants-com/**` | aiimmigrants.com |
-| Build and Deploy SpecMCP | `deploy-specmcp.yml` | `sites/specmcp-ai/**` | specmcp.ai |
-| Build and Deploy SDD Book | `deploy-sddbook.yml` | `sites/sddbook-com/**` | sddbook.com |
-| Build and Deploy Distributed Equity | `deploy-distributedequity.yml` | `sites/distributedequity-org/**` | distributedequity.org |
+All sites are deployed by a single workflow:
 
-The docs workflow is the only one with two trigger paths — changes to either the site source (`sites/docs-kevinryan-io/**`) or the shared documentation content (`docs/**`) will trigger a rebuild, since the docs site symlinks content from the `docs/` directory.
+| Workflow | File | Trigger Path | Sites |
+|----------|------|--------------|-------|
+| Build and Deploy Site | `deploy.yml` | `sites/**` and `docs/**` | aiimmigrants.com, brand.kevinryan.io, distributedequity.org, docs.kevinryan.io, hq.kevinryan.io, kevinryan.io, sddbook.com, specmcp.ai |
+
+The `detect` job maps changed paths to sites: files under `sites/<site>/…` map to that site, and files under `docs/…` map to the `docs-kevinryan-io` site, since the docs site symlinks content from the `docs/` directory. Increasing the SHA range (or choosing `all` in `workflow_dispatch`) gives rebuilds for multiple sites in a single run via the matrix.
 
 ### Permissions
 
-Every deploy workflow requests three permission scopes:
+The deploy workflow requests two permission scopes:
 
 | Permission | Reason |
 |------------|--------|
 | `contents: write` | Commit the updated K8s manifest back to `main` |
-| `packages: write` | Push Docker images to GHCR |
 | `id-token: write` | Request an OIDC token for Azure authentication |
 
 ## Terraform Workflow
@@ -158,13 +157,13 @@ The Terraform workflow passes several secrets as environment variables:
 - **Pinned actions.** Every `uses:` reference is pinned to a full commit SHA with a version comment, preventing compromised tags from injecting malicious code.
 - **Least privilege.** Each workflow requests only the permissions it needs. Deploy workflows need write access; Terraform only needs read.
 - **Environment protection.** Terraform apply requires manual approval via GitHub's `production` environment, preventing accidental infrastructure changes.
-- **Concurrency groups.** Prevent parallel deployments to the same site from creating race conditions in the cluster.
+- **Concurrency groups.** Per-site groups prevent parallel deployments to the same site from creating race conditions in the cluster.
 
-## Adding a New Site Workflow
+## Adding a New Site
 
-To add a deployment workflow for a new site:
+The unified workflow auto-discovers new sites — no workflow editing required to trigger on changes:
 
-1. Copy any existing `deploy-*.yml` file
-2. Update the `name`, `paths` filter, concurrency `group`, Dockerfile `file` path, image name in `tags`, and the `sed` command to target the correct manifest
-3. Ensure the site has a `Dockerfile` and corresponding `k8s/<site>/deployment.yaml`
-4. The new workflow will trigger on the next push to `main` that changes files in the site's directory
+1. Add the site package under `sites/<site>/` with a `Dockerfile`
+2. Add the Flux manifests under `k8s/<site>/` including a `deployment.yaml` whose `image:` references `${ACR_LOGIN_SERVER}/<site>:<tag>`
+3. Add the site name to the `workflow_dispatch.inputs.site.options` dropdown in `deploy.yml` so it can be manually dispatched
+4. The next push to `main` that changes files under `sites/<site>/` will automatically trigger a build and deploy
