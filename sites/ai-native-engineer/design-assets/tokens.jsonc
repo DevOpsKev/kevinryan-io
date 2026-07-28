@@ -1,0 +1,206 @@
+{
+  // ═══════════════════════════════════════════════════════════════
+  // THE AI-NATIVE ENGINEER — DESIGN TOKENS
+  // v1.0.0 · single source for theme.css, PDF pipeline and EPUB
+  // Generators must read this file rather than reading theme.css.
+  // ═══════════════════════════════════════════════════════════════
+
+  "meta": {
+    "name": "ai-native-engineer",
+    "version": "1.0.0",
+    "basis": "Nord (Arctic Ice Studio) · Swiss International Style",
+    "radius": 0,               // global. There is no rounded corner anywhere.
+    "elevation": "none"        // no shadows. Depth is hairlines + bg-sink only.
+  },
+
+  // ── Raw palette. Fixed. Never referenced by a component. ────────
+  "palette": {
+    "nord0": "#2E3440", "nord1": "#3B4252", "nord2": "#434C5E", "nord3": "#4C566A",
+    "nord4": "#D8DEE9", "nord5": "#E5E9F0", "nord6": "#ECEFF4",
+    "nord7": "#8FBCBB", "nord8": "#88C0D0", "nord9": "#81A1C1", "nord10": "#5E81AC",
+    "nord11": "#BF616A", "nord12": "#D08770", "nord13": "#EBCB8B",
+    "nord14": "#A3BE8C", "nord15": "#B48EAD"
+  },
+
+  // ── Semantic colour. Components use ONLY these keys. ────────────
+  "color": {
+    "dark": {
+      "bg": "#2E3440",          // page
+      "bgRaise": "#333A47",     // panels above the page
+      "bgSink": "#292F3A",      // code blocks, wells, hover
+      "line": "#3F4756",        // structural hairline
+      "lineSoft": "#373E4B",    // list separators
+      "ink": "#ECEFF4",         // primary text
+      "ink2": "#D8DEE9",        // body, secondary
+      "ink3": "#8892A4",        // metadata, muted, disabled
+      "accent": "#88C0D0",      // the only interactive colour
+      "accent2": "#81A1C1",
+      "accentInk": "#2E3440",   // text on an accent fill
+      "ok": "#A3BE8C",          // published, progress complete
+      "warn": "#EBCB8B",        // drafting, default callout
+      "danger": "#BF616A",      // failure mode, destructive
+      "info": "#8FBCBB",        // neutral aside
+      "special": "#B48EAD",     // spec references
+      "alt": "#D08770",         // reserved, unused
+      "scrim": "rgba(46,52,64,.72)",
+      "code": {
+        "fg": "#D8DEE9", "key": "#81A1C1", "str": "#A3BE8C",
+        "com": "#4C566A", "num": "#EBCB8B", "fn": "#B48EAD"
+      }
+    },
+    "light": {
+      "bg": "#ECEFF4",
+      "bgRaise": "#FFFFFF",
+      "bgSink": "#E5E9F0",
+      "line": "#CDD5E0",
+      "lineSoft": "#DDE3EC",
+      "ink": "#2E3440",
+      "ink2": "#3B4252",
+      "ink3": "#6B7688",
+      "accent": "#5E81AC",      // Frost darkens for contrast on light
+      "accent2": "#4C6E9C",
+      "accentInk": "#ECEFF4",
+      "ok": "#6E8F5A",
+      "warn": "#A98A3E",
+      "danger": "#A4515A",
+      "info": "#5E8A89",
+      "special": "#8D6A87",
+      "alt": "#B06B4F",
+      "scrim": "rgba(46,52,64,.45)",
+      "code": {
+        "fg": "#3B4252", "key": "#5E81AC", "str": "#5F7F4B",
+        "com": "#8A93A5", "num": "#9A7B2E", "fn": "#8D6A87"
+      }
+    }
+  },
+
+  // ── Type ────────────────────────────────────────────────────────
+  "font": {
+    // Loaded from Google Fonts. Self-host for production and for the
+    // PDF pipeline, which needs woff2 embedded as base64.
+    "display": { "family": "Archivo", "weights": [400, 500, 600, 700], "role": "headings, UI names, pull quotes" },
+    "body":    { "family": "IBM Plex Sans", "weights": [400, 500, 600], "italic": true, "role": "reading body only" },
+    "mono":    { "family": "IBM Plex Mono", "weights": [400, 500, 600], "role": "numbers, metadata, code, buttons, labels" }
+  },
+
+  // Twelve fixed steps. Nothing sits between them.
+  "typeScale": {
+    "micro":   { "px": 10,  "rem": "0.625rem",  "font": "mono",    "track": "0.12em", "case": "upper", "use": "pills, gauge label" },
+    "label":   { "px": 11,  "rem": "0.6875rem", "font": "mono",    "track": "0.09em", "case": "upper", "use": "rail headings, metadata keys" },
+    "caption": { "px": 12,  "rem": "0.75rem",   "font": "mono",    "track": "0.06em", "case": "upper", "use": "buttons, code captions, section marks" },
+    "code":    { "px": 13,  "rem": "0.8125rem", "font": "mono",    "lh": 1.65, "use": "code blocks, on-this-page" },
+    "ui":      { "px": 14,  "rem": "0.875rem",  "font": "body",    "lh": 1.45, "use": "interface body, TOC, table cells" },
+    "read":    { "px": 17,  "rem": "1.0625rem", "font": "body",    "lh": 1.72, "use": "reading body" },
+    "lead":    { "px": 19,  "rem": "1.1875rem", "font": "body",    "lh": 1.62, "use": "opening paragraph, cover deck" },
+    "h3":      { "px": 21,  "rem": "1.3125rem", "font": "display", "lh": 1.3,  "weight": 600, "track": "-0.015em" },
+    "h2":      { "px": 24,  "rem": "1.5rem",    "font": "display", "lh": 1.2,  "weight": 600, "track": "-0.02em" },
+    "h1":      { "px": 44,  "rem": "2.75rem",   "font": "display", "lh": 1.05, "weight": 700, "track": "-0.03em",
+                 "clamp": "clamp(1.875rem, 3.6vw, 2.75rem)" },
+    "numeral": { "px": 72,  "rem": "4.5rem",    "font": "display", "lh": 1.0,  "weight": 700, "track": "-0.04em",
+                 "color": "line", "use": "chapter numeral, decorative" },
+    "display": { "px": 100, "rem": "6.25rem",   "font": "display", "lh": 0.92, "weight": 700, "track": "-0.035em",
+                 "clamp": "clamp(2.75rem, 7.5vw, 6.25rem)", "use": "book title, cover only" }
+  },
+
+  // Semantic heading map. Generators must not invent extra levels.
+  "headings": {
+    "t-display": { "step": "display", "scope": "cover only, once per site" },
+    "t-numeral": { "step": "numeral", "scope": "chapter number, never a link" },
+    "h1":        { "step": "h1", "scope": "chapter title, one per page", "maxWidth": "20ch" },
+    "h2":        { "step": "h2", "scope": "section", "marker": ".sec-mark in accent mono above" },
+    "h3":        { "step": "h3", "scope": "subsection, no marker" },
+    "h4":        { "step": "label", "scope": "utility label only, outside the reading hierarchy" }
+  },
+
+  // ── Spacing. 8px unit. Use the scale, not arbitrary values. ──────
+  "space": {
+    "unit": 8,
+    "scale": { "1": 8, "2": 16, "3": 24, "4": 32, "5": 40, "6": 48, "7": 56, "8": 64, "10": 80, "14": 112 },
+    "applied": {
+      "paragraphBottom": 3,
+      "h2MarginTop": 6,
+      "h3MarginTop": 5,
+      "codeBlockMargin": 4,
+      "calloutMargin": 4,
+      "quoteMargin": 5,
+      "articlePadding": 7,
+      "articlePaddingBottom": 14,
+      "pagerMarginTop": 10
+    }
+  },
+
+  // ── Layout ──────────────────────────────────────────────────────
+  "layout": {
+    "topbar": 52,
+    "rail": 264,            // contents
+    "gauge": 44,            // spine gauge column
+    "aside": 220,           // on this page
+    "gridCols": 12,         // cover only: main 1-8, side 9-12
+    "readerShell": "264px 44px minmax(0,1fr) 220px",
+    "measure": { "narrow": "56ch", "normal": "68ch", "wide": "82ch" },
+    "measureBodySize": { "narrow": "1rem", "normal": "1.0625rem", "wide": "1.125rem" },
+    "breakpoints": {
+      "tablet": 1180,       // on-this-page rail drops
+      "mobile": 900         // gauge drops, contents becomes a drawer
+    }
+  },
+
+  "border": {
+    "hairline": 1,          // every structural line
+    "emphasis": 2,          // active markers, blockquote edge, callout edge
+    "radius": 0,
+    "dashed": "empty state only"
+  },
+
+  // ── Motion ──────────────────────────────────────────────────────
+  "motion": {
+    "ease": "cubic-bezier(.2,.7,.3,1)",
+    "fast": 140,            // hover, colour
+    "base": 220,            // drawers
+    "slow": 250,            // theme switch
+    "gaugeFill": "100ms linear",
+    "progressHair": "80ms linear",
+    "reducedMotion": "all transitions and animations suppressed",
+    "entryAnimation": false // motion responds to input only
+  },
+
+  // ── Component contract. Class name → required structure. ────────
+  "components": {
+    "btn":         { "variants": ["--primary", "--quiet"], "states": [":hover", ":disabled"], "rule": "one primary per view" },
+    "tool":        { "structure": "top rail control, full 52px height, divided by left hairlines", "on": "aria-pressed=true" },
+    "pill":        { "variants": ["--live", "--draft", "--plan"], "rule": "exactly three, mapped to book state" },
+    "callout":     { "structure": ".callout > .callout-label + p", "variants": ["--note", "--info", "--spec", "--ok", "--danger"], "rule": "no icons" },
+    "figure.code": { "structure": "figcaption (path + .btn-copy) + pre", "tokens": ["tok-key", "tok-str", "tok-com", "tok-num", "tok-fn"], "rule": "caption required, holds a real path" },
+    "meta-panel":  { "structure": ".row > .k + .v" },
+    "table":       { "rule": "no vertical rules, no zebra, no outer border; .num for tabular figures" },
+    "index-row":   { "structure": "grid 38px 1fr auto", "hover": "padding-left 8px" },
+    "toc-item":    { "structure": "grid 30px 1fr", "active": "aria-current=true", "muted": "data-status=plan" },
+    "onpage-item": { "active": ".is-active" },
+    "pager":       { "structure": "two equal columns split by a hairline, .next right aligned" },
+    "gauge":       { "structure": ".gauge-track > .gauge-fill + .gauge-tick* + .gauge-pct", "rule": "one per page, signature element" },
+    "empty-state": { "rule": "only dashed border in the system; one quiet action out" },
+    "overlay":     { "structure": ".overlay > .panel > .field + .result*" },
+    "footnotes":   { "structure": ".fn-ref in prose, .footnotes > ol at page foot" }
+  },
+
+  // ── Hard constraints for generators ─────────────────────────────
+  "constraints": [
+    "Reference semantic colour keys only. A component never names a nord* value.",
+    "Use the twelve type steps as given. No intermediate sizes.",
+    "No border radius, shadows, gradients, glows or glass.",
+    "No new accent colour. No fourth status.",
+    "Uppercase is set in the mono face only, with tracking opened.",
+    "Dashed borders appear only on the empty state.",
+    "Reading columns never exceed the measure token.",
+    "Spacing comes from the scale. No arbitrary pixel values.",
+    "State colour is used only where it encodes state.",
+    "Motion responds to input. Nothing animates on entry."
+  ],
+
+  "a11y": {
+    "focusRing": "2px solid accent, 3px offset, square",
+    "contrastFloor": { "body": 7.0, "muted": 4.5 },
+    "reducedMotion": true,
+    "keyboard": { "next": "ArrowRight", "prev": "ArrowLeft", "search": "/", "contents": "g", "theme": "t", "close": "Escape" }
+  }
+}

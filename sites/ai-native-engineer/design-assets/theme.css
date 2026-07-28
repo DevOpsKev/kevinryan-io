@@ -1,0 +1,554 @@
+/* ═══════════════════════════════════════════════════════════════
+   THE AI-NATIVE ENGINEER — THEME
+   v1.0.0 · Nord palette · Swiss International Style
+   Canonical stylesheet. Do not fork values; change them here.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────────────────────────
+   1. FONTS
+   Archivo      display / headings / UI labels
+   IBM Plex Sans  long-form reading
+   IBM Plex Mono  structure: numbers, metadata, code, controls
+   ─────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+/* ───────────────────────────────────────────────────────────────
+   2. TOKENS
+   ─────────────────────────────────────────────────────────────── */
+:root{
+  /* --- Nord raw ramp. Never use these directly in components. --- */
+  --nord0:#2E3440; --nord1:#3B4252; --nord2:#434C5E; --nord3:#4C566A;
+  --nord4:#D8DEE9; --nord5:#E5E9F0; --nord6:#ECEFF4;
+  --nord7:#8FBCBB; --nord8:#88C0D0; --nord9:#81A1C1; --nord10:#5E81AC;
+  --nord11:#BF616A; --nord12:#D08770; --nord13:#EBCB8B; --nord14:#A3BE8C; --nord15:#B48EAD;
+
+  /* --- Type families --- */
+  --font-display:'Archivo',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  /* --- Type scale. Fixed steps. Do not interpolate between them. --- */
+  --size-micro:0.625rem;    /* 10px  pills, gauge label */
+  --size-label:0.6875rem;   /* 11px  rail headings, mono UI */
+  --size-caption:0.75rem;   /* 12px  buttons, captions */
+  --size-code:0.8125rem;    /* 13px  code blocks, on-this-page */
+  --size-ui:0.875rem;       /* 14px  interface body, TOC */
+  --size-read:1.0625rem;    /* 17px  reading body */
+  --size-lead:1.1875rem;    /* 19px  lead paragraph, deck */
+  --size-h3:1.3125rem;      /* 21px  subsection, pull quote */
+  --size-h2:1.5rem;         /* 24px  section heading */
+  --size-h1:2.75rem;        /* 44px  chapter title, upper bound */
+  --size-numeral:4.5rem;    /* 72px  chapter numeral */
+  --size-display:6.25rem;   /* 100px book title, upper bound */
+
+  /* --- Fluid upper bounds, clamped --- */
+  --fluid-h1:clamp(1.875rem, 3.6vw, var(--size-h1));
+  --fluid-display:clamp(2.75rem, 7.5vw, var(--size-display));
+
+  /* --- Line heights --- */
+  --lh-display:0.92; --lh-title:1.05; --lh-heading:1.2;
+  --lh-lead:1.62; --lh-body:1.72; --lh-ui:1.45; --lh-code:1.65;
+
+  /* --- Tracking. Display tightens, mono opens. --- */
+  --track-display:-0.035em; --track-title:-0.03em; --track-heading:-0.02em;
+  --track-tight:-0.015em; --track-body:0;
+  --track-mono:0.06em; --track-mono-wide:0.09em; --track-mono-xwide:0.12em;
+
+  /* --- Weights --- */
+  --w-regular:400; --w-medium:500; --w-semibold:600; --w-bold:700;
+
+  /* --- Spacing. 8px unit. Use the scale, not arbitrary values. --- */
+  --u:8px;
+  --sp-1:8px; --sp-2:16px; --sp-3:24px; --sp-4:32px; --sp-5:40px;
+  --sp-6:48px; --sp-7:56px; --sp-8:64px; --sp-10:80px; --sp-14:112px;
+
+  /* --- Layout --- */
+  --rail:264px;        /* contents rail */
+  --gauge:44px;        /* spine gauge column */
+  --aside:220px;       /* on-this-page rail */
+  --topbar:52px;
+  --measure:68ch;      /* reading measure, normal */
+  --grid-cols:12;
+  --bp-mobile:900px; --bp-tablet:1180px;
+
+  /* --- Borders. Everything is a hairline. No radius anywhere. --- */
+  --hair:1px;
+  --radius:0;
+  --border-emphasis:2px;   /* active markers, blockquote, callout edge */
+
+  /* --- Motion --- */
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --dur-fast:140ms; --dur:220ms; --dur-slow:250ms;
+}
+
+/* --- Reading measure variants, set on <html data-measure> --- */
+html[data-measure="narrow"]{ --measure:56ch; --size-read:1rem; }
+html[data-measure="normal"]{ --measure:68ch; --size-read:1.0625rem; }
+html[data-measure="wide"]  { --measure:82ch; --size-read:1.125rem; }
+
+/* ───────────────────────────────────────────────────────────────
+   3. SEMANTIC COLOUR
+   Components reference ONLY these. Both themes define all of them.
+   ─────────────────────────────────────────────────────────────── */
+html[data-theme="dark"]{
+  --bg:var(--nord0);          /* page */
+  --bg-raise:#333A47;         /* panels above page */
+  --bg-sink:#292F3A;          /* code, wells, hover */
+  --line:#3F4756;             /* structural hairline */
+  --line-soft:#373E4B;        /* list separators */
+  --ink:var(--nord6);         /* primary text */
+  --ink-2:var(--nord4);       /* body / secondary */
+  --ink-3:#8892A4;            /* meta, muted, disabled */
+  --accent:var(--nord8);      /* single interactive accent */
+  --accent-2:var(--nord9);    /* accent, quieter */
+  --accent-ink:var(--nord0);  /* text on accent fill */
+  --ok:var(--nord14); --warn:var(--nord13); --danger:var(--nord11);
+  --info:var(--nord7); --special:var(--nord15); --alt:var(--nord12);
+  --scrim:rgba(46,52,64,.72);
+}
+html[data-theme="light"]{
+  --bg:var(--nord6);
+  --bg-raise:#FFFFFF;
+  --bg-sink:var(--nord5);
+  --line:#CDD5E0;
+  --line-soft:#DDE3EC;
+  --ink:var(--nord0);
+  --ink-2:var(--nord1);
+  --ink-3:#6B7688;
+  --accent:var(--nord10);
+  --accent-2:#4C6E9C;
+  --accent-ink:var(--nord6);
+  --ok:#6E8F5A; --warn:#A98A3E; --danger:#A4515A;
+  --info:#5E8A89; --special:#8D6A87; --alt:#B06B4F;
+  --scrim:rgba(46,52,64,.45);
+}
+
+/* Syntax colours. Same names both themes. */
+html[data-theme="dark"]{
+  --code-fg:var(--nord4); --code-key:var(--nord9); --code-str:var(--nord14);
+  --code-com:var(--nord3); --code-num:var(--nord13); --code-fn:var(--nord15);
+}
+html[data-theme="light"]{
+  --code-fg:var(--nord1); --code-key:var(--nord10); --code-str:#5F7F4B;
+  --code-com:#8A93A5; --code-num:#9A7B2E; --code-fn:#8D6A87;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   4. BASE
+   ─────────────────────────────────────────────────────────────── */
+*,*::before,*::after{ box-sizing:border-box }
+html{ -webkit-text-size-adjust:100% }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:var(--size-read);
+  line-height:var(--lh-body);
+  font-feature-settings:"ss01","cv05";
+  transition:background var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease);
+}
+a{ color:inherit }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
+img{ max-width:100%; display:block }
+::selection{ background:var(--accent); color:var(--accent-ink) }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:var(--radius) }
+
+/* ───────────────────────────────────────────────────────────────
+   5. TYPOGRAPHY
+   Semantic map:
+     .t-display  book title, cover only, once per site
+     .t-numeral  chapter numeral, decorative, uses --line as colour
+     h1          chapter title
+     h2          section heading, carries § marker
+     h3          subsection heading
+     h4          rail / utility heading, mono uppercase
+     .t-lead     opening paragraph of a section
+     p           reading body
+     .t-meta     mono metadata line
+   ─────────────────────────────────────────────────────────────── */
+.t-display{
+  font-family:var(--font-display); font-weight:var(--w-bold);
+  font-size:var(--fluid-display); line-height:var(--lh-display);
+  letter-spacing:var(--track-display); margin:0 0 var(--sp-3); max-width:14ch;
+}
+.t-display em{ font-style:normal; display:block; color:var(--ink-3) }
+
+.t-numeral{
+  font-family:var(--font-display); font-weight:var(--w-bold);
+  font-size:var(--size-numeral); line-height:1;
+  letter-spacing:-0.04em; color:var(--line); display:block; margin-bottom:var(--sp-2);
+}
+
+h1,.t-h1{
+  font-family:var(--font-display); font-weight:var(--w-bold);
+  font-size:var(--fluid-h1); line-height:var(--lh-title);
+  letter-spacing:var(--track-title); margin:0 0 var(--sp-2); max-width:20ch;
+}
+h2,.t-h2{
+  font-family:var(--font-display); font-weight:var(--w-semibold);
+  font-size:var(--size-h2); line-height:var(--lh-heading);
+  letter-spacing:var(--track-heading); margin:var(--sp-6) 0 var(--sp-2);
+  scroll-margin-top:calc(var(--topbar) + var(--sp-2));
+}
+h3,.t-h3{
+  font-family:var(--font-display); font-weight:var(--w-semibold);
+  font-size:var(--size-h3); line-height:1.3;
+  letter-spacing:var(--track-tight); margin:var(--sp-5) 0 var(--sp-1);
+}
+h4,.t-h4{
+  font-family:var(--font-mono); font-weight:var(--w-medium);
+  font-size:var(--size-label); line-height:1.3;
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 var(--sp-2);
+}
+
+/* § marker sitting above a heading */
+.sec-mark{
+  display:block; font-family:var(--font-mono); font-weight:var(--w-medium);
+  font-size:var(--size-caption); letter-spacing:var(--track-mono);
+  color:var(--accent); margin-bottom:6px; text-transform:none;
+}
+
+.t-lead{ font-size:var(--size-lead); line-height:var(--lh-lead); color:var(--ink-2) }
+p{ margin:0 0 var(--sp-3) }
+strong{ font-weight:var(--w-semibold); color:var(--ink) }
+em{ font-style:italic; color:var(--ink-2) }
+
+.t-meta{
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase; color:var(--ink-3);
+}
+.t-caption{ font-family:var(--font-mono); font-size:var(--size-caption); color:var(--ink-3) }
+
+/* reading column */
+.prose{ max-width:var(--measure) }
+
+/* ───────────────────────────────────────────────────────────────
+   6. LISTS
+   Marker is a 9px accent rule, not a bullet.
+   ─────────────────────────────────────────────────────────────── */
+.prose ul{ margin:0 0 var(--sp-3); padding-left:0; list-style:none }
+.prose ul li{ position:relative; padding-left:var(--sp-3); margin-bottom:var(--sp-1) }
+.prose ul li::before{
+  content:""; position:absolute; left:0; top:.72em;
+  width:9px; height:var(--hair); background:var(--accent);
+}
+.prose ol{ margin:0 0 var(--sp-3); padding-left:0; list-style:none; counter-reset:o }
+.prose ol li{ position:relative; padding-left:var(--sp-4); margin-bottom:var(--sp-1); counter-increment:o }
+.prose ol li::before{
+  content:counter(o,decimal-leading-zero); position:absolute; left:0; top:.1em;
+  font-family:var(--font-mono); font-size:var(--size-caption); color:var(--ink-3);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   7. RULES AND DIVIDERS
+   ─────────────────────────────────────────────────────────────── */
+.rule{ height:var(--hair); background:var(--line); border:0; margin:var(--sp-5) 0 }
+.rule--soft{ background:var(--line-soft) }
+.rule--accent{ background:var(--accent); width:48px; margin:var(--sp-4) 0 }
+
+/* ───────────────────────────────────────────────────────────────
+   8. PULL QUOTE
+   ─────────────────────────────────────────────────────────────── */
+blockquote,.quote{
+  margin:var(--sp-5) 0; padding-left:var(--sp-3);
+  border-left:var(--border-emphasis) solid var(--accent);
+  font-family:var(--font-display); font-weight:var(--w-medium);
+  font-size:var(--size-h3); line-height:1.35;
+  letter-spacing:var(--track-tight); color:var(--ink);
+}
+.quote cite{
+  display:block; margin-top:var(--sp-2); font-family:var(--font-mono);
+  font-size:var(--size-label); font-style:normal; letter-spacing:var(--track-mono);
+  text-transform:uppercase; color:var(--ink-3);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   9. CODE
+   ─────────────────────────────────────────────────────────────── */
+code.inline,:not(pre) > code{
+  font-family:var(--font-mono); font-size:.875em;
+  background:var(--bg-sink); border:var(--hair) solid var(--line-soft);
+  padding:1px 5px; border-radius:var(--radius);
+}
+figure.code{
+  margin:var(--sp-4) 0; border:var(--hair) solid var(--line);
+  background:var(--bg-sink); border-radius:var(--radius);
+}
+figure.code > figcaption{
+  display:flex; justify-content:space-between; align-items:center; gap:var(--sp-2);
+  padding:8px 12px; border-bottom:var(--hair) solid var(--line);
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase; color:var(--ink-3);
+}
+figure.code pre{
+  margin:0; padding:var(--sp-2); overflow-x:auto;
+  font-family:var(--font-mono); font-size:var(--size-code);
+  line-height:var(--lh-code); color:var(--code-fg);
+}
+/* syntax token classes */
+.tok-key{ color:var(--code-key) }
+.tok-str{ color:var(--code-str) }
+.tok-com{ color:var(--code-com) }
+.tok-num{ color:var(--code-num) }
+.tok-fn { color:var(--code-fn) }
+
+.btn-copy{
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase;
+  color:var(--ink-3); transition:color var(--dur-fast) var(--ease);
+}
+.btn-copy:hover{ color:var(--accent) }
+.btn-copy.is-done{ color:var(--ok) }
+
+/* ───────────────────────────────────────────────────────────────
+   10. CALLOUTS
+   Left edge carries the semantic colour. Body stays neutral.
+   ─────────────────────────────────────────────────────────────── */
+.callout{
+  margin:var(--sp-4) 0; padding:20px var(--sp-3);
+  background:var(--bg-sink);
+  border:var(--hair) solid var(--line);
+  border-left:var(--border-emphasis) solid var(--accent);
+}
+.callout > .callout-label{
+  display:block; font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  color:var(--accent); margin-bottom:6px;
+}
+.callout > p{ margin:0; font-size:var(--size-ui); line-height:1.6; color:var(--ink-2) }
+.callout--note   { border-left-color:var(--warn) }    .callout--note .callout-label{ color:var(--warn) }
+.callout--info   { border-left-color:var(--info) }    .callout--info .callout-label{ color:var(--info) }
+.callout--danger { border-left-color:var(--danger) }  .callout--danger .callout-label{ color:var(--danger) }
+.callout--ok     { border-left-color:var(--ok) }      .callout--ok .callout-label{ color:var(--ok) }
+.callout--spec   { border-left-color:var(--special) } .callout--spec .callout-label{ color:var(--special) }
+
+/* ───────────────────────────────────────────────────────────────
+   11. BUTTONS
+   ─────────────────────────────────────────────────────────────── */
+.btn{
+  display:inline-flex; align-items:center; gap:12px;
+  padding:13px 20px; border:var(--hair) solid var(--line);
+  font-family:var(--font-mono); font-size:var(--size-caption);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase;
+  text-decoration:none; border-radius:var(--radius);
+  transition:border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent) }
+.btn small{ opacity:.6; text-transform:none; letter-spacing:0 }
+.btn--primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:var(--w-semibold) }
+.btn--primary:hover{ filter:brightness(1.08); color:var(--accent-ink) }
+.btn--quiet{ border-color:transparent; color:var(--ink-3); padding-left:0 }
+.btn--quiet:hover{ color:var(--accent) }
+.btn:disabled{ opacity:.35; cursor:default; border-color:var(--line); color:var(--ink-3) }
+
+/* top rail control */
+.tool{
+  height:var(--topbar); padding:0 var(--sp-2);
+  border-left:var(--hair) solid var(--line); color:var(--ink-3);
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono); text-transform:uppercase;
+  transition:color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.tool:hover{ color:var(--ink); background:var(--bg-sink) }
+.tool[aria-pressed="true"]{ color:var(--accent) }
+
+/* ───────────────────────────────────────────────────────────────
+   12. STATUS PILLS
+   State, not decoration. Only these three exist.
+   ─────────────────────────────────────────────────────────────── */
+.pill{
+  display:inline-block; font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  padding:2px 7px; white-space:nowrap;
+  border:var(--hair) solid var(--line); color:var(--ink-3); border-radius:var(--radius);
+}
+.pill--live { color:var(--ok);   border-color:color-mix(in srgb, var(--ok) 45%, transparent) }
+.pill--draft{ color:var(--warn); border-color:color-mix(in srgb, var(--warn) 45%, transparent) }
+.pill--plan { color:var(--ink-3) }
+
+.dot{ width:7px; height:7px; display:inline-block; background:var(--ok); margin-right:7px; vertical-align:1px }
+
+/* ───────────────────────────────────────────────────────────────
+   13. METADATA PANEL
+   ─────────────────────────────────────────────────────────────── */
+.meta-panel{
+  border:var(--hair) solid var(--line); background:var(--bg-sink);
+  font-family:var(--font-mono); font-size:var(--size-caption);
+}
+.meta-panel .row{
+  display:flex; justify-content:space-between; gap:var(--sp-1);
+  padding:10px 14px; border-bottom:var(--hair) solid var(--line-soft);
+}
+.meta-panel .row:last-child{ border-bottom:0 }
+.meta-panel .k{
+  color:var(--ink-3); font-size:var(--size-label);
+  letter-spacing:var(--track-mono); text-transform:uppercase;
+}
+.meta-panel .v{ color:var(--ink-2); text-align:right }
+
+/* ───────────────────────────────────────────────────────────────
+   14. TABLE
+   ─────────────────────────────────────────────────────────────── */
+table{ width:100%; border-collapse:collapse; margin:var(--sp-4) 0; font-size:var(--size-ui) }
+thead th{
+  text-align:left; padding:10px 14px 10px 0;
+  border-bottom:var(--hair) solid var(--line);
+  font-family:var(--font-mono); font-weight:var(--w-medium); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase; color:var(--ink-3);
+}
+tbody td{ padding:12px 14px 12px 0; border-bottom:var(--hair) solid var(--line-soft); color:var(--ink-2); vertical-align:top }
+tbody tr:last-child td{ border-bottom:var(--hair) solid var(--line) }
+td.num,th.num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; padding-right:0 }
+
+/* ───────────────────────────────────────────────────────────────
+   15. FIGURE WITH IMAGE
+   ─────────────────────────────────────────────────────────────── */
+figure.fig{ margin:var(--sp-5) 0 }
+figure.fig img{ border:var(--hair) solid var(--line) }
+figure.fig figcaption{
+  margin-top:12px; padding-top:10px; border-top:var(--hair) solid var(--line-soft);
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono); color:var(--ink-3); line-height:1.5;
+}
+figure.fig figcaption b{ color:var(--accent); font-weight:var(--w-medium); text-transform:uppercase }
+
+/* ───────────────────────────────────────────────────────────────
+   16. FOOTNOTES
+   ─────────────────────────────────────────────────────────────── */
+.fn-ref{
+  font-family:var(--font-mono); font-size:.7em; vertical-align:super;
+  color:var(--accent); text-decoration:none; padding:0 2px;
+}
+.footnotes{ margin-top:var(--sp-6); padding-top:var(--sp-3); border-top:var(--hair) solid var(--line) }
+.footnotes ol{ counter-reset:fn; padding:0; list-style:none; margin:0 }
+.footnotes li{
+  position:relative; padding-left:var(--sp-4); margin-bottom:12px; counter-increment:fn;
+  font-size:var(--size-ui); line-height:1.55; color:var(--ink-3);
+}
+.footnotes li::before{
+  content:counter(fn); position:absolute; left:0; top:.15em;
+  font-family:var(--font-mono); font-size:var(--size-label); color:var(--accent);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   17. NAVIGATION: index rows, TOC, pager, on-this-page
+   ─────────────────────────────────────────────────────────────── */
+.index-row{
+  display:grid; grid-template-columns:38px 1fr auto; gap:var(--sp-2); align-items:baseline;
+  padding:11px 0; border-bottom:var(--hair) solid var(--line-soft);
+  text-decoration:none; width:100%; text-align:left;
+  transition:padding-left var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.index-row:hover{ padding-left:8px; color:var(--accent) }
+.index-row .n{ font-family:var(--font-mono); font-size:var(--size-caption); color:var(--ink-3) }
+.index-row:hover .n{ color:var(--accent) }
+.index-row .t{ font-family:var(--font-display); font-weight:var(--w-medium); font-size:1rem; letter-spacing:-.01em }
+
+.toc-item{
+  display:grid; grid-template-columns:30px 1fr; gap:12px; width:100%; text-align:left;
+  padding:9px var(--sp-3); border-left:var(--border-emphasis) solid transparent;
+  transition:background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.toc-item:hover{ background:var(--bg-sink) }
+.toc-item .n{ font-family:var(--font-mono); font-size:var(--size-label); color:var(--ink-3); padding-top:3px }
+.toc-item .t{ font-size:var(--size-ui); line-height:1.4; color:var(--ink-2) }
+.toc-item[aria-current="true"]{ border-left-color:var(--accent); background:var(--bg-sink) }
+.toc-item[aria-current="true"] .t{ color:var(--ink); font-weight:var(--w-medium) }
+.toc-item[aria-current="true"] .n{ color:var(--accent) }
+.toc-item[data-status="plan"] .t{ color:var(--ink-3) }
+
+.onpage-item{
+  display:block; width:100%; text-align:left;
+  font-size:var(--size-code); line-height:1.4; color:var(--ink-3);
+  padding:6px 0 6px 12px; border-left:var(--hair) solid var(--line);
+  transition:color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.onpage-item:hover{ color:var(--ink-2) }
+.onpage-item.is-active{ color:var(--accent); border-left-color:var(--accent) }
+
+.pager{ display:grid; grid-template-columns:1fr 1fr; gap:var(--hair); margin-top:var(--sp-10); border-top:var(--hair) solid var(--line) }
+.pager button{ padding:var(--sp-3); text-align:left; transition:background var(--dur-fast) var(--ease) }
+.pager button:hover:not(:disabled){ background:var(--bg-sink) }
+.pager button:disabled{ opacity:.3; cursor:default }
+.pager .dir{
+  display:block; margin-bottom:6px; font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase; color:var(--ink-3);
+}
+.pager .nm{ font-family:var(--font-display); font-weight:var(--w-medium); font-size:1rem }
+.pager .next{ text-align:right; border-left:var(--hair) solid var(--line) }
+
+/* ───────────────────────────────────────────────────────────────
+   18. SPINE GAUGE — the signature element
+   Vertical read-progress rule. One per page. Never decorative.
+   ─────────────────────────────────────────────────────────────── */
+.gauge{ display:flex; justify-content:center; padding:var(--sp-4) 0; height:100% }
+.gauge-track{ position:relative; width:3px; background:var(--line-soft); height:100% }
+.gauge-fill{ position:absolute; left:0; top:0; width:3px; height:0; background:var(--accent); transition:height .1s linear }
+.gauge-fill::after{ content:""; position:absolute; left:-3.5px; bottom:-1px; width:10px; height:2px; background:var(--accent) }
+.gauge-tick{ position:absolute; left:-6px; width:15px; height:var(--hair); background:var(--line) }
+.gauge-pct{
+  position:absolute; left:50%; bottom:var(--sp-2);
+  transform:translateX(-50%) rotate(180deg); writing-mode:vertical-rl;
+  font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:0.14em; color:var(--ink-3);
+}
+.progress-hair{ position:fixed; inset:0 auto auto 0; height:2px; width:0; background:var(--accent); z-index:120; transition:width 80ms linear }
+
+/* ───────────────────────────────────────────────────────────────
+   19. EMPTY STATE
+   Dashed border only here. Signals absence, never used elsewhere.
+   ─────────────────────────────────────────────────────────────── */
+.empty-state{ border:var(--hair) dashed var(--line); padding:var(--sp-6); max-width:var(--measure) }
+.empty-state h4{ font-family:var(--font-display); font-size:1.125rem; text-transform:none; letter-spacing:var(--track-tight); color:var(--ink); margin:0 0 var(--sp-1) }
+.empty-state p{ color:var(--ink-3); font-size:var(--size-ui); margin:0 0 var(--sp-3) }
+
+/* ───────────────────────────────────────────────────────────────
+   20. OVERLAY AND SEARCH
+   ─────────────────────────────────────────────────────────────── */
+.overlay{ position:fixed; inset:0; z-index:200; background:var(--scrim); display:flex; justify-content:center; padding-top:12vh }
+.panel{ width:min(640px,92vw); background:var(--bg); border:var(--hair) solid var(--line); max-height:70vh; display:flex; flex-direction:column }
+.field{
+  width:100%; padding:18px 20px; background:none; border:0;
+  border-bottom:var(--hair) solid var(--line); color:var(--ink);
+  font-family:var(--font-mono); font-size:var(--size-ui);
+}
+.field::placeholder{ color:var(--ink-3) }
+.field:focus{ outline:0 }
+.result{ display:block; width:100%; text-align:left; padding:13px 20px; border-bottom:var(--hair) solid var(--line-soft) }
+.result:hover,.result.is-active{ background:var(--bg-sink) }
+.result .r-src{
+  display:block; margin-bottom:4px; font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase; color:var(--accent);
+}
+.result .r-txt{ font-size:var(--size-ui); color:var(--ink-2); line-height:1.45 }
+mark{ background:color-mix(in srgb, var(--warn) 30%, transparent); color:var(--ink) }
+
+/* ───────────────────────────────────────────────────────────────
+   21. LAYOUT
+   ─────────────────────────────────────────────────────────────── */
+.grid-12{ display:grid; grid-template-columns:repeat(var(--grid-cols),1fr) }
+.reader-shell{ display:grid; grid-template-columns:var(--rail) var(--gauge) minmax(0,1fr) var(--aside); align-items:start }
+.sticky-rail{ position:sticky; top:var(--topbar); height:calc(100vh - var(--topbar)); overflow-y:auto }
+
+@media (max-width:1180px){
+  .reader-shell{ grid-template-columns:var(--rail) var(--gauge) minmax(0,1fr) }
+}
+@media (max-width:900px){
+  .reader-shell{ grid-template-columns:1fr }
+  .pager{ grid-template-columns:1fr }
+  .pager .next{ text-align:left; border-left:0; border-top:var(--hair) solid var(--line) }
+  .t-numeral{ font-size:3rem }
+}
+
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important } }
+
+@media print{
+  body{ background:#fff; color:#000; font-size:11pt }
+  .prose{ max-width:none }
+  .gauge,.progress-hair,.tool,.pager,.overlay{ display:none !important }
+  figure.code{ break-inside:avoid }
+  h1,h2,h3{ break-after:avoid }
+}

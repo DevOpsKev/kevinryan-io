@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="dark" data-measure="normal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Theme sheet · The AI-Native Engineer</title>
+
+<!-- ═══ CANONICAL THEME · identical to theme.css ═══ -->
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   THE AI-NATIVE ENGINEER — THEME
+   v1.0.0 · Nord palette · Swiss International Style
+   Canonical stylesheet. Do not fork values; change them here.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────────────────────────
+   1. FONTS
+   Archivo      display / headings / UI labels
+   IBM Plex Sans  long-form reading
+   IBM Plex Mono  structure: numbers, metadata, code, controls
+   ─────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+/* ───────────────────────────────────────────────────────────────
+   2. TOKENS
+   ─────────────────────────────────────────────────────────────── */
+:root{
+  /* --- Nord raw ramp. Never use these directly in components. --- */
+  --nord0:#2E3440; --nord1:#3B4252; --nord2:#434C5E; --nord3:#4C566A;
+  --nord4:#D8DEE9; --nord5:#E5E9F0; --nord6:#ECEFF4;
+  --nord7:#8FBCBB; --nord8:#88C0D0; --nord9:#81A1C1; --nord10:#5E81AC;
+  --nord11:#BF616A; --nord12:#D08770; --nord13:#EBCB8B; --nord14:#A3BE8C; --nord15:#B48EAD;
+
+  /* --- Type families --- */
+  --font-display:'Archivo',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  /* --- Type scale. Fixed steps. Do not interpolate between them. --- */
+  --size-micro:0.625rem;    /* 10px  pills, gauge label */
+  --size-label:0.6875rem;   /* 11px  rail headings, mono UI */
+  --size-caption:0.75rem;   /* 12px  buttons, captions */
+  --size-code:0.8125rem;    /* 13px  code blocks, on-this-page */
+  --size-ui:0.875rem;       /* 14px  interface body, TOC */
+  --size-read:1.0625rem;    /* 17px  reading body */
+  --size-lead:1.1875rem;    /* 19px  lead paragraph, deck */
+  --size-h3:1.3125rem;      /* 21px  subsection, pull quote */
+  --size-h2:1.5rem;         /* 24px  section heading */
+  --size-h1:2.75rem;        /* 44px  chapter title, upper bound */
+  --size-numeral:4.5rem;    /* 72px  chapter numeral */
+  --size-display:6.25rem;   /* 100px book title, upper bound */
+
+  /* --- Fluid upper bounds, clamped --- */
+  --fluid-h1:clamp(1.875rem, 3.6vw, var(--size-h1));
+  --fluid-display:clamp(2.75rem, 7.5vw, var(--size-display));
+
+  /* --- Line heights --- */
+  --lh-display:0.92; --lh-title:1.05; --lh-heading:1.2;
+  --lh-lead:1.62; --lh-body:1.72; --lh-ui:1.45; --lh-code:1.65;
+
+  /* --- Tracking. Display tightens, mono opens. --- */
+  --track-display:-0.035em; --track-title:-0.03em; --track-heading:-0.02em;
+  --track-tight:-0.015em; --track-body:0;
+  --track-mono:0.06em; --track-mono-wide:0.09em; --track-mono-xwide:0.12em;
+
+  /* --- Weights --- */
+  --w-regular:400; --w-medium:500; --w-semibold:600; --w-bold:700;
+
+  /* --- Spacing. 8px unit. Use the scale, not arbitrary values. --- */
+  --u:8px;
+  --sp-1:8px; --sp-2:16px; --sp-3:24px; --sp-4:32px; --sp-5:40px;
+  --sp-6:48px; --sp-7:56px; --sp-8:64px; --sp-10:80px; --sp-14:112px;
+
+  /* --- Layout --- */
+  --rail:264px;        /* contents rail */
+  --gauge:44px;        /* spine gauge column */
+  --aside:220px;       /* on-this-page rail */
+  --topbar:52px;
+  --measure:68ch;      /* reading measure, normal */
+  --grid-cols:12;
+  --bp-mobile:900px; --bp-tablet:1180px;
+
+  /* --- Borders. Everything is a hairline. No radius anywhere. --- */
+  --hair:1px;
+  --radius:0;
+  --border-emphasis:2px;   /* active markers, blockquote, callout edge */
+
+  /* --- Motion --- */
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --dur-fast:140ms; --dur:220ms; --dur-slow:250ms;
+}
+
+/* --- Reading measure variants, set on <html data-measure> --- */
+html[data-measure="narrow"]{ --measure:56ch; --size-read:1rem; }
+html[data-measure="normal"]{ --measure:68ch; --size-read:1.0625rem; }
+html[data-measure="wide"]  { --measure:82ch; --size-read:1.125rem; }
+
+/* ───────────────────────────────────────────────────────────────
+   3. SEMANTIC COLOUR
+   Components reference ONLY these. Both themes define all of them.
+   ─────────────────────────────────────────────────────────────── */
+html[data-theme="dark"]{
+  --bg:var(--nord0);          /* page */
+  --bg-raise:#333A47;         /* panels above page */
+  --bg-sink:#292F3A;          /* code, wells, hover */
+  --line:#3F4756;             /* structural hairline */
+  --line-soft:#373E4B;        /* list separators */
+  --ink:var(--nord6);         /* primary text */
+  --ink-2:var(--nord4);       /* body / secondary */
+  --ink-3:#8892A4;            /* meta, muted, disabled */
+  --accent:var(--nord8);      /* single interactive accent */
+  --accent-2:var(--nord9);    /* accent, quieter */
+  --accent-ink:var(--nord0);  /* text on accent fill */
+  --ok:var(--nord14); --warn:var(--nord13); --danger:var(--nord11);
+  --info:var(--nord7); --special:var(--nord15); --alt:var(--nord12);
+  --scrim:rgba(46,52,64,.72);
+}
+html[data-theme="light"]{
+  --bg:var(--nord6);
+  --bg-raise:#FFFFFF;
+  --bg-sink:var(--nord5);
+  --line:#CDD5E0;
+  --line-soft:#DDE3EC;
+  --ink:var(--nord0);
+  --ink-2:var(--nord1);
+  --ink-3:#6B7688;
+  --accent:var(--nord10);
+  --accent-2:#4C6E9C;
+  --accent-ink:var(--nord6);
+  --ok:#6E8F5A; --warn:#A98A3E; --danger:#A4515A;
+  --info:#5E8A89; --special:#8D6A87; --alt:#B06B4F;
+  --scrim:rgba(46,52,64,.45);
+}
+
+/* Syntax colours. Same names both themes. */
+html[data-theme="dark"]{
+  --code-fg:var(--nord4); --code-key:var(--nord9); --code-str:var(--nord14);
+  --code-com:var(--nord3); --code-num:var(--nord13); --code-fn:var(--nord15);
+}
+html[data-theme="light"]{
+  --code-fg:var(--nord1); --code-key:var(--nord10); --code-str:#5F7F4B;
+  --code-com:#8A93A5; --code-num:#9A7B2E; --code-fn:#8D6A87;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   4. BASE
+   ─────────────────────────────────────────────────────────────── */
+*,*::before,*::after{ box-sizing:border-box }
+html{ -webkit-text-size-adjust:100% }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:var(--size-read);
+  line-height:var(--lh-body);
+  font-feature-settings:"ss01","cv05";
+  transition:background var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease);
+}
+a{ color:inherit }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
+img{ max-width:100%; display:block }
+::selection{ background:var(--accent); color:var(--accent-ink) }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:var(--radius) }
+
+/* ───────────────────────────────────────────────────────────────
+   5. TYPOGRAPHY
+   Semantic map:
+     .t-display  book title, cover only, once per site
+     .t-numeral  chapter numeral, decorative, uses --line as colour
+     h1          chapter title
+     h2          section heading, carries § marker
+     h3          subsection heading
+     h4          rail / utility heading, mono uppercase
+     .t-lead     opening paragraph of a section
+     p           reading body
+     .t-meta     mono metadata line
+   ─────────────────────────────────────────────────────────────── */
+.t-display{
+  font-family:var(--font-display); font-weight:var(--w-bold);
+  font-size:var(--fluid-display); line-height:var(--lh-display);
+  letter-spacing:var(--track-display); margin:0 0 var(--sp-3); max-width:14ch;
+}
+.t-display em{ font-style:normal; display:block; color:var(--ink-3) }
+
+.t-numeral{
+  font-family:var(--font-display); font-weight:var(--w-bold);
+  font-size:var(--size-numeral); line-height:1;
+  letter-spacing:-0.04em; color:var(--line); display:block; margin-bottom:var(--sp-2);
+}
+
+h1,.t-h1{
+  font-family:var(--font-display); font-weight:var(--w-bold);
+  font-size:var(--fluid-h1); line-height:var(--lh-title);
+  letter-spacing:var(--track-title); margin:0 0 var(--sp-2); max-width:20ch;
+}
+h2,.t-h2{
+  font-family:var(--font-display); font-weight:var(--w-semibold);
+  font-size:var(--size-h2); line-height:var(--lh-heading);
+  letter-spacing:var(--track-heading); margin:var(--sp-6) 0 var(--sp-2);
+  scroll-margin-top:calc(var(--topbar) + var(--sp-2));
+}
+h3,.t-h3{
+  font-family:var(--font-display); font-weight:var(--w-semibold);
+  font-size:var(--size-h3); line-height:1.3;
+  letter-spacing:var(--track-tight); margin:var(--sp-5) 0 var(--sp-1);
+}
+h4,.t-h4{
+  font-family:var(--font-mono); font-weight:var(--w-medium);
+  font-size:var(--size-label); line-height:1.3;
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 var(--sp-2);
+}
+
+/* § marker sitting above a heading */
+.sec-mark{
+  display:block; font-family:var(--font-mono); font-weight:var(--w-medium);
+  font-size:var(--size-caption); letter-spacing:var(--track-mono);
+  color:var(--accent); margin-bottom:6px; text-transform:none;
+}
+
+.t-lead{ font-size:var(--size-lead); line-height:var(--lh-lead); color:var(--ink-2) }
+p{ margin:0 0 var(--sp-3) }
+strong{ font-weight:var(--w-semibold); color:var(--ink) }
+em{ font-style:italic; color:var(--ink-2) }
+
+.t-meta{
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase; color:var(--ink-3);
+}
+.t-caption{ font-family:var(--font-mono); font-size:var(--size-caption); color:var(--ink-3) }
+
+/* reading column */
+.prose{ max-width:var(--measure) }
+
+/* ───────────────────────────────────────────────────────────────
+   6. LISTS
+   Marker is a 9px accent rule, not a bullet.
+   ─────────────────────────────────────────────────────────────── */
+.prose ul{ margin:0 0 var(--sp-3); padding-left:0; list-style:none }
+.prose ul li{ position:relative; padding-left:var(--sp-3); margin-bottom:var(--sp-1) }
+.prose ul li::before{
+  content:""; position:absolute; left:0; top:.72em;
+  width:9px; height:var(--hair); background:var(--accent);
+}
+.prose ol{ margin:0 0 var(--sp-3); padding-left:0; list-style:none; counter-reset:o }
+.prose ol li{ position:relative; padding-left:var(--sp-4); margin-bottom:var(--sp-1); counter-increment:o }
+.prose ol li::before{
+  content:counter(o,decimal-leading-zero); position:absolute; left:0; top:.1em;
+  font-family:var(--font-mono); font-size:var(--size-caption); color:var(--ink-3);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   7. RULES AND DIVIDERS
+   ─────────────────────────────────────────────────────────────── */
+.rule{ height:var(--hair); background:var(--line); border:0; margin:var(--sp-5) 0 }
+.rule--soft{ background:var(--line-soft) }
+.rule--accent{ background:var(--accent); width:48px; margin:var(--sp-4) 0 }
+
+/* ───────────────────────────────────────────────────────────────
+   8. PULL QUOTE
+   ─────────────────────────────────────────────────────────────── */
+blockquote,.quote{
+  margin:var(--sp-5) 0; padding-left:var(--sp-3);
+  border-left:var(--border-emphasis) solid var(--accent);
+  font-family:var(--font-display); font-weight:var(--w-medium);
+  font-size:var(--size-h3); line-height:1.35;
+  letter-spacing:var(--track-tight); color:var(--ink);
+}
+.quote cite{
+  display:block; margin-top:var(--sp-2); font-family:var(--font-mono);
+  font-size:var(--size-label); font-style:normal; letter-spacing:var(--track-mono);
+  text-transform:uppercase; color:var(--ink-3);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   9. CODE
+   ─────────────────────────────────────────────────────────────── */
+code.inline,:not(pre) > code{
+  font-family:var(--font-mono); font-size:.875em;
+  background:var(--bg-sink); border:var(--hair) solid var(--line-soft);
+  padding:1px 5px; border-radius:var(--radius);
+}
+figure.code{
+  margin:var(--sp-4) 0; border:var(--hair) solid var(--line);
+  background:var(--bg-sink); border-radius:var(--radius);
+}
+figure.code > figcaption{
+  display:flex; justify-content:space-between; align-items:center; gap:var(--sp-2);
+  padding:8px 12px; border-bottom:var(--hair) solid var(--line);
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase; color:var(--ink-3);
+}
+figure.code pre{
+  margin:0; padding:var(--sp-2); overflow-x:auto;
+  font-family:var(--font-mono); font-size:var(--size-code);
+  line-height:var(--lh-code); color:var(--code-fg);
+}
+/* syntax token classes */
+.tok-key{ color:var(--code-key) }
+.tok-str{ color:var(--code-str) }
+.tok-com{ color:var(--code-com) }
+.tok-num{ color:var(--code-num) }
+.tok-fn { color:var(--code-fn) }
+
+.btn-copy{
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase;
+  color:var(--ink-3); transition:color var(--dur-fast) var(--ease);
+}
+.btn-copy:hover{ color:var(--accent) }
+.btn-copy.is-done{ color:var(--ok) }
+
+/* ───────────────────────────────────────────────────────────────
+   10. CALLOUTS
+   Left edge carries the semantic colour. Body stays neutral.
+   ─────────────────────────────────────────────────────────────── */
+.callout{
+  margin:var(--sp-4) 0; padding:20px var(--sp-3);
+  background:var(--bg-sink);
+  border:var(--hair) solid var(--line);
+  border-left:var(--border-emphasis) solid var(--accent);
+}
+.callout > .callout-label{
+  display:block; font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  color:var(--accent); margin-bottom:6px;
+}
+.callout > p{ margin:0; font-size:var(--size-ui); line-height:1.6; color:var(--ink-2) }
+.callout--note   { border-left-color:var(--warn) }    .callout--note .callout-label{ color:var(--warn) }
+.callout--info   { border-left-color:var(--info) }    .callout--info .callout-label{ color:var(--info) }
+.callout--danger { border-left-color:var(--danger) }  .callout--danger .callout-label{ color:var(--danger) }
+.callout--ok     { border-left-color:var(--ok) }      .callout--ok .callout-label{ color:var(--ok) }
+.callout--spec   { border-left-color:var(--special) } .callout--spec .callout-label{ color:var(--special) }
+
+/* ───────────────────────────────────────────────────────────────
+   11. BUTTONS
+   ─────────────────────────────────────────────────────────────── */
+.btn{
+  display:inline-flex; align-items:center; gap:12px;
+  padding:13px 20px; border:var(--hair) solid var(--line);
+  font-family:var(--font-mono); font-size:var(--size-caption);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase;
+  text-decoration:none; border-radius:var(--radius);
+  transition:border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent) }
+.btn small{ opacity:.6; text-transform:none; letter-spacing:0 }
+.btn--primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:var(--w-semibold) }
+.btn--primary:hover{ filter:brightness(1.08); color:var(--accent-ink) }
+.btn--quiet{ border-color:transparent; color:var(--ink-3); padding-left:0 }
+.btn--quiet:hover{ color:var(--accent) }
+.btn:disabled{ opacity:.35; cursor:default; border-color:var(--line); color:var(--ink-3) }
+
+/* top rail control */
+.tool{
+  height:var(--topbar); padding:0 var(--sp-2);
+  border-left:var(--hair) solid var(--line); color:var(--ink-3);
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono); text-transform:uppercase;
+  transition:color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.tool:hover{ color:var(--ink); background:var(--bg-sink) }
+.tool[aria-pressed="true"]{ color:var(--accent) }
+
+/* ───────────────────────────────────────────────────────────────
+   12. STATUS PILLS
+   State, not decoration. Only these three exist.
+   ─────────────────────────────────────────────────────────────── */
+.pill{
+  display:inline-block; font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  padding:2px 7px; white-space:nowrap;
+  border:var(--hair) solid var(--line); color:var(--ink-3); border-radius:var(--radius);
+}
+.pill--live { color:var(--ok);   border-color:color-mix(in srgb, var(--ok) 45%, transparent) }
+.pill--draft{ color:var(--warn); border-color:color-mix(in srgb, var(--warn) 45%, transparent) }
+.pill--plan { color:var(--ink-3) }
+
+.dot{ width:7px; height:7px; display:inline-block; background:var(--ok); margin-right:7px; vertical-align:1px }
+
+/* ───────────────────────────────────────────────────────────────
+   13. METADATA PANEL
+   ─────────────────────────────────────────────────────────────── */
+.meta-panel{
+  border:var(--hair) solid var(--line); background:var(--bg-sink);
+  font-family:var(--font-mono); font-size:var(--size-caption);
+}
+.meta-panel .row{
+  display:flex; justify-content:space-between; gap:var(--sp-1);
+  padding:10px 14px; border-bottom:var(--hair) solid var(--line-soft);
+}
+.meta-panel .row:last-child{ border-bottom:0 }
+.meta-panel .k{
+  color:var(--ink-3); font-size:var(--size-label);
+  letter-spacing:var(--track-mono); text-transform:uppercase;
+}
+.meta-panel .v{ color:var(--ink-2); text-align:right }
+
+/* ───────────────────────────────────────────────────────────────
+   14. TABLE
+   ─────────────────────────────────────────────────────────────── */
+table{ width:100%; border-collapse:collapse; margin:var(--sp-4) 0; font-size:var(--size-ui) }
+thead th{
+  text-align:left; padding:10px 14px 10px 0;
+  border-bottom:var(--hair) solid var(--line);
+  font-family:var(--font-mono); font-weight:var(--w-medium); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-wide); text-transform:uppercase; color:var(--ink-3);
+}
+tbody td{ padding:12px 14px 12px 0; border-bottom:var(--hair) solid var(--line-soft); color:var(--ink-2); vertical-align:top }
+tbody tr:last-child td{ border-bottom:var(--hair) solid var(--line) }
+td.num,th.num{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; text-align:right; padding-right:0 }
+
+/* ───────────────────────────────────────────────────────────────
+   15. FIGURE WITH IMAGE
+   ─────────────────────────────────────────────────────────────── */
+figure.fig{ margin:var(--sp-5) 0 }
+figure.fig img{ border:var(--hair) solid var(--line) }
+figure.fig figcaption{
+  margin-top:12px; padding-top:10px; border-top:var(--hair) solid var(--line-soft);
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono); color:var(--ink-3); line-height:1.5;
+}
+figure.fig figcaption b{ color:var(--accent); font-weight:var(--w-medium); text-transform:uppercase }
+
+/* ───────────────────────────────────────────────────────────────
+   16. FOOTNOTES
+   ─────────────────────────────────────────────────────────────── */
+.fn-ref{
+  font-family:var(--font-mono); font-size:.7em; vertical-align:super;
+  color:var(--accent); text-decoration:none; padding:0 2px;
+}
+.footnotes{ margin-top:var(--sp-6); padding-top:var(--sp-3); border-top:var(--hair) solid var(--line) }
+.footnotes ol{ counter-reset:fn; padding:0; list-style:none; margin:0 }
+.footnotes li{
+  position:relative; padding-left:var(--sp-4); margin-bottom:12px; counter-increment:fn;
+  font-size:var(--size-ui); line-height:1.55; color:var(--ink-3);
+}
+.footnotes li::before{
+  content:counter(fn); position:absolute; left:0; top:.15em;
+  font-family:var(--font-mono); font-size:var(--size-label); color:var(--accent);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   17. NAVIGATION: index rows, TOC, pager, on-this-page
+   ─────────────────────────────────────────────────────────────── */
+.index-row{
+  display:grid; grid-template-columns:38px 1fr auto; gap:var(--sp-2); align-items:baseline;
+  padding:11px 0; border-bottom:var(--hair) solid var(--line-soft);
+  text-decoration:none; width:100%; text-align:left;
+  transition:padding-left var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.index-row:hover{ padding-left:8px; color:var(--accent) }
+.index-row .n{ font-family:var(--font-mono); font-size:var(--size-caption); color:var(--ink-3) }
+.index-row:hover .n{ color:var(--accent) }
+.index-row .t{ font-family:var(--font-display); font-weight:var(--w-medium); font-size:1rem; letter-spacing:-.01em }
+
+.toc-item{
+  display:grid; grid-template-columns:30px 1fr; gap:12px; width:100%; text-align:left;
+  padding:9px var(--sp-3); border-left:var(--border-emphasis) solid transparent;
+  transition:background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.toc-item:hover{ background:var(--bg-sink) }
+.toc-item .n{ font-family:var(--font-mono); font-size:var(--size-label); color:var(--ink-3); padding-top:3px }
+.toc-item .t{ font-size:var(--size-ui); line-height:1.4; color:var(--ink-2) }
+.toc-item[aria-current="true"]{ border-left-color:var(--accent); background:var(--bg-sink) }
+.toc-item[aria-current="true"] .t{ color:var(--ink); font-weight:var(--w-medium) }
+.toc-item[aria-current="true"] .n{ color:var(--accent) }
+.toc-item[data-status="plan"] .t{ color:var(--ink-3) }
+
+.onpage-item{
+  display:block; width:100%; text-align:left;
+  font-size:var(--size-code); line-height:1.4; color:var(--ink-3);
+  padding:6px 0 6px 12px; border-left:var(--hair) solid var(--line);
+  transition:color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.onpage-item:hover{ color:var(--ink-2) }
+.onpage-item.is-active{ color:var(--accent); border-left-color:var(--accent) }
+
+.pager{ display:grid; grid-template-columns:1fr 1fr; gap:var(--hair); margin-top:var(--sp-10); border-top:var(--hair) solid var(--line) }
+.pager button{ padding:var(--sp-3); text-align:left; transition:background var(--dur-fast) var(--ease) }
+.pager button:hover:not(:disabled){ background:var(--bg-sink) }
+.pager button:disabled{ opacity:.3; cursor:default }
+.pager .dir{
+  display:block; margin-bottom:6px; font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase; color:var(--ink-3);
+}
+.pager .nm{ font-family:var(--font-display); font-weight:var(--w-medium); font-size:1rem }
+.pager .next{ text-align:right; border-left:var(--hair) solid var(--line) }
+
+/* ───────────────────────────────────────────────────────────────
+   18. SPINE GAUGE — the signature element
+   Vertical read-progress rule. One per page. Never decorative.
+   ─────────────────────────────────────────────────────────────── */
+.gauge{ display:flex; justify-content:center; padding:var(--sp-4) 0; height:100% }
+.gauge-track{ position:relative; width:3px; background:var(--line-soft); height:100% }
+.gauge-fill{ position:absolute; left:0; top:0; width:3px; height:0; background:var(--accent); transition:height .1s linear }
+.gauge-fill::after{ content:""; position:absolute; left:-3.5px; bottom:-1px; width:10px; height:2px; background:var(--accent) }
+.gauge-tick{ position:absolute; left:-6px; width:15px; height:var(--hair); background:var(--line) }
+.gauge-pct{
+  position:absolute; left:50%; bottom:var(--sp-2);
+  transform:translateX(-50%) rotate(180deg); writing-mode:vertical-rl;
+  font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:0.14em; color:var(--ink-3);
+}
+.progress-hair{ position:fixed; inset:0 auto auto 0; height:2px; width:0; background:var(--accent); z-index:120; transition:width 80ms linear }
+
+/* ───────────────────────────────────────────────────────────────
+   19. EMPTY STATE
+   Dashed border only here. Signals absence, never used elsewhere.
+   ─────────────────────────────────────────────────────────────── */
+.empty-state{ border:var(--hair) dashed var(--line); padding:var(--sp-6); max-width:var(--measure) }
+.empty-state h4{ font-family:var(--font-display); font-size:1.125rem; text-transform:none; letter-spacing:var(--track-tight); color:var(--ink); margin:0 0 var(--sp-1) }
+.empty-state p{ color:var(--ink-3); font-size:var(--size-ui); margin:0 0 var(--sp-3) }
+
+/* ───────────────────────────────────────────────────────────────
+   20. OVERLAY AND SEARCH
+   ─────────────────────────────────────────────────────────────── */
+.overlay{ position:fixed; inset:0; z-index:200; background:var(--scrim); display:flex; justify-content:center; padding-top:12vh }
+.panel{ width:min(640px,92vw); background:var(--bg); border:var(--hair) solid var(--line); max-height:70vh; display:flex; flex-direction:column }
+.field{
+  width:100%; padding:18px 20px; background:none; border:0;
+  border-bottom:var(--hair) solid var(--line); color:var(--ink);
+  font-family:var(--font-mono); font-size:var(--size-ui);
+}
+.field::placeholder{ color:var(--ink-3) }
+.field:focus{ outline:0 }
+.result{ display:block; width:100%; text-align:left; padding:13px 20px; border-bottom:var(--hair) solid var(--line-soft) }
+.result:hover,.result.is-active{ background:var(--bg-sink) }
+.result .r-src{
+  display:block; margin-bottom:4px; font-family:var(--font-mono); font-size:var(--size-micro);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase; color:var(--accent);
+}
+.result .r-txt{ font-size:var(--size-ui); color:var(--ink-2); line-height:1.45 }
+mark{ background:color-mix(in srgb, var(--warn) 30%, transparent); color:var(--ink) }
+
+/* ───────────────────────────────────────────────────────────────
+   21. LAYOUT
+   ─────────────────────────────────────────────────────────────── */
+.grid-12{ display:grid; grid-template-columns:repeat(var(--grid-cols),1fr) }
+.reader-shell{ display:grid; grid-template-columns:var(--rail) var(--gauge) minmax(0,1fr) var(--aside); align-items:start }
+.sticky-rail{ position:sticky; top:var(--topbar); height:calc(100vh - var(--topbar)); overflow-y:auto }
+
+@media (max-width:1180px){
+  .reader-shell{ grid-template-columns:var(--rail) var(--gauge) minmax(0,1fr) }
+}
+@media (max-width:900px){
+  .reader-shell{ grid-template-columns:1fr }
+  .pager{ grid-template-columns:1fr }
+  .pager .next{ text-align:left; border-left:0; border-top:var(--hair) solid var(--line) }
+  .t-numeral{ font-size:3rem }
+}
+
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important } }
+
+@media print{
+  body{ background:#fff; color:#000; font-size:11pt }
+  .prose{ max-width:none }
+  .gauge,.progress-hair,.tool,.pager,.overlay{ display:none !important }
+  figure.code{ break-inside:avoid }
+  h1,h2,h3{ break-after:avoid }
+}
+
+</style>
+
+<!-- ═══ SPECIMEN CHROME · not part of the theme ═══ -->
+<style>
+  .sheet{ max-width:1240px; margin:0 auto; padding:0 var(--sp-4) var(--sp-14) }
+  .sheet-head{ padding:var(--sp-8) 0 var(--sp-5); border-bottom:var(--hair) solid var(--line) }
+  .sec{ padding:var(--sp-7) 0; border-bottom:var(--hair) solid var(--line) }
+  .sec > .sec-no{
+    font-family:var(--font-mono); font-size:var(--size-label); letter-spacing:var(--track-mono-xwide);
+    text-transform:uppercase; color:var(--accent); display:block; margin-bottom:10px;
+  }
+  .sec > h2{ margin-top:0 }
+  .sec > .sec-note{ color:var(--ink-3); font-size:var(--size-ui); max-width:60ch; margin:0 0 var(--sp-4) }
+  .split{ display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:var(--sp-5); align-items:start }
+  @media (max-width:960px){ .split{ grid-template-columns:1fr } }
+  .spec{
+    border:var(--hair) solid var(--line); background:var(--bg-sink);
+    font-family:var(--font-mono); font-size:var(--size-label); line-height:1.7; color:var(--ink-3);
+    padding:14px 16px; position:sticky; top:calc(var(--topbar) + var(--sp-2));
+  }
+  .spec b{ color:var(--accent); font-weight:var(--w-medium); display:block; margin-bottom:8px; letter-spacing:var(--track-mono) }
+  .spec i{ color:var(--ink-2); font-style:normal }
+  .spec hr{ border:0; height:var(--hair); background:var(--line); margin:10px 0 }
+  .demo{ padding:var(--sp-3); border:var(--hair) solid var(--line-soft); background:var(--bg-raise) }
+  .demo + .demo{ border-top:0 }
+  .row-lbl{ font-family:var(--font-mono); font-size:var(--size-micro); letter-spacing:var(--track-mono-xwide);
+            text-transform:uppercase; color:var(--ink-3); margin-bottom:10px }
+  .swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:var(--hair); background:var(--line) }
+  .sw{ background:var(--bg); padding:0 }
+  .sw .chip{ height:64px }
+  .sw .txt{ padding:9px 11px; font-family:var(--font-mono); font-size:var(--size-micro); line-height:1.7 }
+  .sw .nm{ color:var(--ink-2); letter-spacing:var(--track-mono); text-transform:uppercase; display:block }
+  .sw .hx{ color:var(--ink-3) }
+  .scale-row{ display:grid; grid-template-columns:120px 1fr; gap:var(--sp-3); align-items:baseline;
+              padding:14px 0; border-bottom:var(--hair) solid var(--line-soft) }
+  .scale-row .tag{ font-family:var(--font-mono); font-size:var(--size-micro); letter-spacing:var(--track-mono);
+                   text-transform:uppercase; color:var(--ink-3); line-height:1.6 }
+  .scale-row .tag i{ display:block; color:var(--accent); font-style:normal }
+  .stack{ display:flex; flex-wrap:wrap; gap:12px; align-items:center }
+  .gauge-demo{ height:220px; width:44px; border:var(--hair) solid var(--line) }
+  .do-dont{ display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3) }
+  @media (max-width:760px){ .do-dont{ grid-template-columns:1fr } }
+  .rules{ border:var(--hair) solid var(--line); padding:var(--sp-3) }
+  .rules.no{ border-left:var(--border-emphasis) solid var(--danger) }
+  .rules.yes{ border-left:var(--border-emphasis) solid var(--ok) }
+  .rules h5{ margin:0 0 12px; font-family:var(--font-mono); font-size:var(--size-label);
+             letter-spacing:var(--track-mono-xwide); text-transform:uppercase; font-weight:var(--w-medium) }
+  .rules.no h5{ color:var(--danger) } .rules.yes h5{ color:var(--ok) }
+  .rules ul{ margin:0; padding:0; list-style:none }
+  .rules li{ position:relative; padding-left:var(--sp-3); margin-bottom:10px; font-size:var(--size-ui); color:var(--ink-2); line-height:1.5 }
+  .rules li::before{ content:""; position:absolute; left:0; top:.7em; width:9px; height:var(--hair); background:currentColor; opacity:.4 }
+  .toolbar{ display:flex; align-items:center; justify-content:space-between; height:var(--topbar);
+            border-bottom:var(--hair) solid var(--line); position:sticky; top:0; background:var(--bg); z-index:50;
+            padding-left:var(--sp-4) }
+  .toolbar b{ font-family:var(--font-display); font-weight:var(--w-bold); font-size:var(--size-code); letter-spacing:-.01em }
+  .fake-rail{ border:var(--hair) solid var(--line); width:264px; max-width:100%; padding:var(--sp-2) 0 }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>Theme sheet · v1.0.0 · The AI-Native Engineer</b>
+  <div style="display:flex">
+    <button class="tool" id="t-measure">Aa <span id="m-label">normal</span></button>
+    <button class="tool" id="t-theme">◐ Light</button>
+  </div>
+</div>
+
+<div class="sheet">
+
+  <header class="sheet-head">
+    <p class="t-meta" style="margin:0 0 var(--sp-3)">Design system reference · generated for implementation</p>
+    <h1 style="max-width:24ch">Theme sheet</h1>
+    <p class="t-lead" style="max-width:62ch">Every token, type step and component in the book theme, rendered at true size with its specification alongside. Nothing here is illustrative. If a value appears in this sheet, it is the value.</p>
+    <div class="stack" style="margin-top:var(--sp-3)">
+      <span class="pill pill--live">Nord palette</span>
+      <span class="pill pill--live">Swiss grid</span>
+      <span class="pill pill--live">Zero radius</span>
+      <span class="pill pill--live">Hairline borders</span>
+    </div>
+  </header>
+
+  <!-- 01 COLOUR ─────────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">01</span>
+    <h2>Colour</h2>
+    <p class="sec-note">Two layers. The raw Nord ramp is fixed and never referenced by a component. Components use semantic tokens only, which is what makes the light theme a one-line switch.</p>
+
+    <div class="split">
+      <div>
+        <p class="row-lbl">Semantic tokens · current theme</p>
+        <div class="swatches" style="margin-bottom:var(--sp-4)">
+          <div class="sw"><div class="chip" style="background:var(--bg)"></div><div class="txt"><span class="nm">bg</span><span class="hx">page surface</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg-raise)"></div><div class="txt"><span class="nm">bg-raise</span><span class="hx">panels</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--bg-sink)"></div><div class="txt"><span class="nm">bg-sink</span><span class="hx">code, wells, hover</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--line)"></div><div class="txt"><span class="nm">line</span><span class="hx">structural hairline</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--line-soft)"></div><div class="txt"><span class="nm">line-soft</span><span class="hx">list separators</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--ink)"></div><div class="txt"><span class="nm">ink</span><span class="hx">primary text</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--ink-2)"></div><div class="txt"><span class="nm">ink-2</span><span class="hx">body, secondary</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--ink-3)"></div><div class="txt"><span class="nm">ink-3</span><span class="hx">meta, muted</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--accent)"></div><div class="txt"><span class="nm">accent</span><span class="hx">the only interactive colour</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--accent-2)"></div><div class="txt"><span class="nm">accent-2</span><span class="hx">accent, quieter</span></div></div>
+        </div>
+
+        <p class="row-lbl">Semantic state · used where it means something</p>
+        <div class="swatches" style="margin-bottom:var(--sp-4)">
+          <div class="sw"><div class="chip" style="background:var(--ok)"></div><div class="txt"><span class="nm">ok</span><span class="hx">published, progress</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--warn)"></div><div class="txt"><span class="nm">warn</span><span class="hx">drafting, callout</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--danger)"></div><div class="txt"><span class="nm">danger</span><span class="hx">destructive, error</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--info)"></div><div class="txt"><span class="nm">info</span><span class="hx">neutral aside</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--special)"></div><div class="txt"><span class="nm">special</span><span class="hx">spec references</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--alt)"></div><div class="txt"><span class="nm">alt</span><span class="hx">reserved</span></div></div>
+        </div>
+
+        <p class="row-lbl">Nord ramp · raw, never referenced directly</p>
+        <div class="swatches">
+          <div class="sw"><div class="chip" style="background:var(--nord0)"></div><div class="txt"><span class="nm">nord0</span><span class="hx">#2E3440</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord1)"></div><div class="txt"><span class="nm">nord1</span><span class="hx">#3B4252</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord2)"></div><div class="txt"><span class="nm">nord2</span><span class="hx">#434C5E</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord3)"></div><div class="txt"><span class="nm">nord3</span><span class="hx">#4C566A</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord4)"></div><div class="txt"><span class="nm">nord4</span><span class="hx">#D8DEE9</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord5)"></div><div class="txt"><span class="nm">nord5</span><span class="hx">#E5E9F0</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord6)"></div><div class="txt"><span class="nm">nord6</span><span class="hx">#ECEFF4</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord7)"></div><div class="txt"><span class="nm">nord7</span><span class="hx">#8FBCBB</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord8)"></div><div class="txt"><span class="nm">nord8</span><span class="hx">#88C0D0</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord9)"></div><div class="txt"><span class="nm">nord9</span><span class="hx">#81A1C1</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord10)"></div><div class="txt"><span class="nm">nord10</span><span class="hx">#5E81AC</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord11)"></div><div class="txt"><span class="nm">nord11</span><span class="hx">#BF616A</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord12)"></div><div class="txt"><span class="nm">nord12</span><span class="hx">#D08770</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord13)"></div><div class="txt"><span class="nm">nord13</span><span class="hx">#EBCB8B</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord14)"></div><div class="txt"><span class="nm">nord14</span><span class="hx">#A3BE8C</span></div></div>
+          <div class="sw"><div class="chip" style="background:var(--nord15)"></div><div class="txt"><span class="nm">nord15</span><span class="hx">#B48EAD</span></div></div>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Rules</b>
+        <i>--accent</i> is the only colour used for interaction. Links, active states, focus rings, the gauge fill.<hr>
+        <i>--ok / --warn / --danger</i> encode state. Never used to brighten a layout.<hr>
+        <i>--alt</i> and <i>--special</i> are reserved. Do not introduce a seventh accent.<hr>
+        Themes switch on <i>html[data-theme]</i>. Values are dark and light, not inverted.<hr>
+        Contrast floor: body text ≥ 7:1, muted ≥ 4.5:1.
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 TYPE SCALE ─────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">02</span>
+    <h2>Type scale</h2>
+    <p class="sec-note">Twelve fixed steps. Nothing sits between them. Two steps are fluid and clamped because they carry the page at cover and chapter scale.</p>
+
+    <div class="split">
+      <div>
+        <div class="scale-row"><div class="tag">--size-display<i>100px / 0.92</i>clamp 2.75rem–6.25rem</div><div style="font-family:var(--font-display);font-weight:700;font-size:var(--size-display);line-height:.92;letter-spacing:-.035em">Aa</div></div>
+        <div class="scale-row"><div class="tag">--size-numeral<i>72px / 1.0</i>colour: --line</div><div style="font-family:var(--font-display);font-weight:700;font-size:var(--size-numeral);line-height:1;letter-spacing:-.04em;color:var(--line)">03</div></div>
+        <div class="scale-row"><div class="tag">--size-h1<i>44px / 1.05</i>clamp 1.875rem–2.75rem</div><div style="font-family:var(--font-display);font-weight:700;font-size:var(--size-h1);line-height:1.05;letter-spacing:-.03em">Specification</div></div>
+        <div class="scale-row"><div class="tag">--size-h2<i>24px / 1.2</i>weight 600</div><div style="font-family:var(--font-display);font-weight:600;font-size:var(--size-h2);line-height:1.2;letter-spacing:-.02em">The shape of a locked spec</div></div>
+        <div class="scale-row"><div class="tag">--size-h3<i>21px / 1.3</i>weight 600</div><div style="font-family:var(--font-display);font-weight:600;font-size:var(--size-h3);line-height:1.3;letter-spacing:-.015em">Blocking questions</div></div>
+        <div class="scale-row"><div class="tag">--size-lead<i>19px / 1.62</i>colour: --ink-2</div><div style="font-size:var(--size-lead);line-height:1.62;color:var(--ink-2)">Opening paragraph of a section.</div></div>
+        <div class="scale-row"><div class="tag">--size-read<i>17px / 1.72</i>reading body</div><div style="font-size:var(--size-read);line-height:1.72">Reading body. The measure is 68 characters at this step.</div></div>
+        <div class="scale-row"><div class="tag">--size-ui<i>14px / 1.45</i>interface</div><div style="font-size:var(--size-ui)">Interface body, contents rail, table cells.</div></div>
+        <div class="scale-row"><div class="tag">--size-code<i>13px / 1.65</i>mono</div><div style="font-family:var(--font-mono);font-size:var(--size-code)">const spec = lock(intent);</div></div>
+        <div class="scale-row"><div class="tag">--size-caption<i>12px</i>mono, 0.06em</div><div style="font-family:var(--font-mono);font-size:var(--size-caption);letter-spacing:.06em">§ 3.2  BUTTONS AND CAPTIONS</div></div>
+        <div class="scale-row"><div class="tag">--size-label<i>11px</i>mono, 0.09em, upper</div><div style="font-family:var(--font-mono);font-size:var(--size-label);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)">Rail heading · metadata</div></div>
+        <div class="scale-row" style="border-bottom:0"><div class="tag">--size-micro<i>10px</i>mono, 0.12em, upper</div><div style="font-family:var(--font-mono);font-size:var(--size-micro);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">Pill · gauge label</div></div>
+      </div>
+
+      <div class="spec">
+        <b>Families</b>
+        <i>Archivo</i> — display, headings, UI names. 400/500/600/700.<hr>
+        <i>IBM Plex Sans</i> — reading body only. 400/500/600 + italic.<hr>
+        <i>IBM Plex Mono</i> — all structure: numbers, metadata, code, buttons, labels. 400/500/600.<hr>
+        <b>Tracking</b>
+        Display tightens as it grows: −0.035em at 100px, −0.02em at 24px, 0 at body.<hr>
+        Mono opens as it shrinks: 0.06em at 12px, 0.12em at 10px, always uppercase below 12px.<hr>
+        <b>Measure</b>
+        <i>--measure</i> 56ch / 68ch / 82ch on <i>html[data-measure]</i>. Body size moves with it.
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 HEADINGS ───────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">03</span>
+    <h2>Headings in context</h2>
+    <p class="sec-note">The semantic map. An agent should output this hierarchy without inventing intermediate levels.</p>
+
+    <div class="split">
+      <div class="demo">
+        <span class="t-numeral">03</span>
+        <h1>The Specification as Contract</h1>
+        <div class="t-meta" style="display:flex;gap:var(--sp-2);align-items:center;padding-top:var(--sp-2);border-top:var(--hair) solid var(--line);margin-bottom:var(--sp-5)">
+          <span class="pill pill--live">Published</span><span>18 min read</span><span>·</span><span>rev a91f3c2</span>
+        </div>
+        <div class="prose">
+          <h2><span class="sec-mark">§ 3.1</span>What makes a specification a contract</h2>
+          <p class="t-lead">A description becomes a contract when something downstream can be held to it. Prose descriptions cannot do this. They accommodate.</p>
+          <p>A specification is a contract when three things are true. It is committed before the work starts. It is the sole authority when the code and the description disagree. And the tests are derived from it rather than from the implementation.</p>
+          <h3>Committed before the work starts</h3>
+          <p>If the spec is not in version control before generation, you have no contract. You have a chat log.<a class="fn-ref" href="#fn1">1</a></p>
+          <h4>Rail and utility heading</h4>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Map</b>
+        <i>.t-display</i> book title. Cover only. Once per site.<hr>
+        <i>.t-numeral</i> chapter number. Decorative weight, colour <i>--line</i>. Never a link.<hr>
+        <i>h1</i> chapter title. One per page.<hr>
+        <i>h2</i> section. Carries <i>.sec-mark</i> above it in accent mono.<hr>
+        <i>h3</i> subsection. No marker.<hr>
+        <i>h4</i> utility label only. Mono, uppercase, <i>--ink-3</i>. Not part of the reading hierarchy.<hr>
+        <b>Spacing</b>
+        h2 margin-top <i>--sp-6</i> · h3 <i>--sp-5</i> · p bottom <i>--sp-3</i>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 PROSE ──────────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">04</span>
+    <h2>Prose elements</h2>
+    <p class="sec-note">Everything inside <code class="inline">.prose</code>. The measure is applied by the container, never by the element.</p>
+
+    <div class="split">
+      <div class="demo prose">
+        <p>Body text at seventeen pixels over a sixty-eight character measure. <strong>Strong sits at weight 600</strong> and lifts to <code class="inline">--ink</code>. <em>Italic drops to --ink-2.</em> Inline code such as <code class="inline">specs/014-rate-limit/spec.md</code> takes a hairline border and the sunken background.</p>
+
+        <p class="row-lbl">Unordered list · marker is a 9px accent rule</p>
+        <ul>
+          <li>Limit is applied per tenant id, not per IP</li>
+          <li>On rejection, return 429 with Retry-After in whole seconds</li>
+          <li>The counter is shared across all instances</li>
+        </ul>
+
+        <p class="row-lbl">Ordered list · leading zero, mono</p>
+        <ol>
+          <li>Commit the specification</li>
+          <li>Run the builder against the committed file</li>
+          <li>Derive tests from behaviour statements</li>
+        </ol>
+
+        <hr class="rule">
+
+        <blockquote>Generation stopped being the constraint. Specification became the constraint.</blockquote>
+
+        <div class="quote" style="margin-top:var(--sp-5)">
+          An out of date specification is not documentation debt. It is a false statement about the system.
+          <cite>Chapter 03 · The Specification as Contract</cite>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Containers</b>
+        <i>.prose</i> sets <i>max-width:var(--measure)</i>. Nothing else sets a measure.<hr>
+        <b>Lists</b>
+        <i>ul</i> marker: 9×1px <i>--accent</i> rule at top .72em. No discs, ever.<hr>
+        <i>ol</i> counter: <i>decimal-leading-zero</i>, mono, <i>--ink-3</i>.<hr>
+        <b>Rules</b>
+        <i>.rule</i> full width · <i>.rule--soft</i> separators · <i>.rule--accent</i> 48px accent stub<hr>
+        <b>Quotes</b>
+        <i>blockquote</i> and <i>.quote</i> are the same treatment. Display face, 21px, 2px accent left edge. <i>cite</i> is optional.
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 CODE ───────────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">05</span>
+    <h2>Code</h2>
+    <p class="sec-note">One block pattern. Caption carries the file path on the left and the copy control on the right. Syntax uses five token classes and no more.</p>
+
+    <div class="split">
+      <div>
+        <figure class="code">
+          <figcaption><span>specs/014-rate-limit/spec.md</span><button class="btn-copy">Copy</button></figcaption>
+          <pre><span class="tok-key">---</span>
+<span class="tok-num">id</span>: <span class="tok-str">014-rate-limit</span>
+<span class="tok-num">status</span>: <span class="tok-str">locked</span>
+<span class="tok-num">authority</span>: <span class="tok-str">this document</span>
+<span class="tok-key">---</span>
+
+<span class="tok-key">## Behaviour</span>
+B1. Limit is applied per tenant id, not per IP.
+B2. Limit is 120 requests per rolling 60 seconds.
+
+<span class="tok-key">## Open</span>
+<span class="tok-com">O1. BLOCKING. Fail open or fail closed when the
+    shared counter store is unavailable?</span></pre>
+        </figure>
+
+        <figure class="code">
+          <figcaption><span>lib/limiter.ts</span><button class="btn-copy">Copy</button></figcaption>
+          <pre><span class="tok-com">// derived from spec 014, behaviour B1–B5</span>
+<span class="tok-key">export async function</span> <span class="tok-fn">check</span>(tenant: <span class="tok-key">string</span>) {
+  <span class="tok-key">const</span> hits = <span class="tok-key">await</span> store.<span class="tok-fn">incr</span>(tenant, <span class="tok-num">60</span>);
+  <span class="tok-key">if</span> (hits &gt; <span class="tok-num">120</span>) <span class="tok-key">throw new</span> <span class="tok-fn">TooMany</span>(<span class="tok-str">'retry-after'</span>);
+}</pre>
+        </figure>
+      </div>
+
+      <div class="spec">
+        <b>Structure</b>
+        <i>figure.code &gt; figcaption + pre</i>. The caption is required and always holds a real path.<hr>
+        <b>Tokens</b>
+        <i>.tok-key</i> keywords, fences<br>
+        <i>.tok-str</i> strings<br>
+        <i>.tok-com</i> comments<br>
+        <i>.tok-num</i> numbers, keys<br>
+        <i>.tok-fn</i> functions, identifiers<hr>
+        No sixth class. If a highlighter needs more, map it down.<hr>
+        <b>Values</b>
+        13px / 1.65 · padding <i>--sp-2</i> · background <i>--bg-sink</i> · horizontal scroll, never wrap<hr>
+        <i>.btn-copy.is-done</i> turns <i>--ok</i> for 1400ms.
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 CALLOUTS ───────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">06</span>
+    <h2>Callouts</h2>
+    <p class="sec-note">Colour lives on the left edge and the label. The body stays neutral so a page with five callouts does not turn into a fruit salad.</p>
+
+    <div class="split">
+      <div>
+        <div class="callout callout--note"><span class="callout-label">The pattern</span><p>Ambiguity does not stop generation. It gets absorbed into it.</p></div>
+        <div class="callout callout--info"><span class="callout-label">Aside</span><p>Context that helps but is not load bearing for the argument.</p></div>
+        <div class="callout callout--spec"><span class="callout-label">Spec reference</span><p>Behaviour statements B1 through B5 in specification 014.</p></div>
+        <div class="callout callout--ok"><span class="callout-label">What good looks like</span><p>The blocking question was found before generation, so the defect never existed.</p></div>
+        <div class="callout callout--danger"><span class="callout-label">Failure mode</span><p>A stale specification is more dangerous than no specification, because people trust it.</p></div>
+      </div>
+
+      <div class="spec">
+        <b>Variants</b>
+        <i>.callout--note</i> → warn · the default in prose<br>
+        <i>.callout--info</i> → info<br>
+        <i>.callout--spec</i> → special<br>
+        <i>.callout--ok</i> → ok<br>
+        <i>.callout--danger</i> → danger<hr>
+        <b>Anatomy</b>
+        <i>.callout &gt; .callout-label + p</i><br>
+        Label: 10px mono, uppercase, 0.12em, semantic colour.<br>
+        Body: 14px, <i>--ink-2</i>, single paragraph.<hr>
+        Left edge 2px. All other edges hairline <i>--line</i>. Background <i>--bg-sink</i>.<hr>
+        No icons. The label is the icon.
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 CONTROLS ───────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">07</span>
+    <h2>Controls</h2>
+    <p class="sec-note">All buttons are mono, uppercase and square. Exactly one primary per view.</p>
+
+    <div class="split">
+      <div>
+        <div class="demo">
+          <p class="row-lbl">Buttons</p>
+          <div class="stack">
+            <button class="btn btn--primary">Start reading <small>· ch. 00</small></button>
+            <button class="btn">↓ PDF <small>· 4.2 MB</small></button>
+            <button class="btn">↓ EPUB <small>· 1.1 MB</small></button>
+            <button class="btn btn--quiet">Skip to contents →</button>
+            <button class="btn" disabled>Unavailable</button>
+          </div>
+        </div>
+        <div class="demo">
+          <p class="row-lbl">Top rail tools</p>
+          <div class="stack" style="gap:0;border:var(--hair) solid var(--line);width:max-content">
+            <button class="tool" style="border-left:0">⌕ Search</button>
+            <button class="tool">Aa</button>
+            <button class="tool" aria-pressed="true">◐ Light</button>
+          </div>
+        </div>
+        <div class="demo">
+          <p class="row-lbl">Field and focus</p>
+          <input class="field" style="border:var(--hair) solid var(--line);max-width:380px" placeholder="Search the book…">
+          <p style="margin:var(--sp-2) 0 0;font-size:var(--size-ui);color:var(--ink-3)">Focus ring: 2px <code class="inline">--accent</code>, 3px offset, square. Tab to the field to see it.</p>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Button</b>
+        padding 13px 20px · 12px mono · 0.09em · uppercase · hairline border · radius 0<hr>
+        <i>.btn</i> default, hover borders and colours to accent<br>
+        <i>.btn--primary</i> accent fill, <i>--accent-ink</i> text, weight 600<br>
+        <i>.btn--quiet</i> borderless, no left padding<br>
+        <i>:disabled</i> opacity .35<hr>
+        <i>small</i> inside a button drops to 60% opacity and loses the tracking. Use it for size and chapter hints.<hr>
+        <b>Tool</b>
+        Full 52px rail height, divided by left hairlines. <i>aria-pressed="true"</i> is the on state.
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 STATUS AND DATA ────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">08</span>
+    <h2>Status and data</h2>
+    <p class="sec-note">Three pills exist because the book has three states. Do not add a fourth to describe a mood.</p>
+
+    <div class="split">
+      <div>
+        <div class="demo">
+          <p class="row-lbl">Pills</p>
+          <div class="stack">
+            <span class="pill pill--live">Published</span>
+            <span class="pill pill--draft">Drafting</span>
+            <span class="pill pill--plan">Outlined</span>
+            <span class="t-meta" style="margin-left:12px"><span class="dot"></span>Building in public</span>
+          </div>
+        </div>
+
+        <div class="demo">
+          <p class="row-lbl">Metadata panel</p>
+          <div class="meta-panel" style="max-width:420px">
+            <div class="row"><span class="k">Edition</span><span class="v">0.4.0 · living draft</span></div>
+            <div class="row"><span class="k">Last commit</span><span class="v">28 Jul 2026 · a91f3c2</span></div>
+            <div class="row"><span class="k">Chapters</span><span class="v">4 published · 2 drafting</span></div>
+            <div class="row"><span class="k">Licence</span><span class="v">CC BY-NC-SA 4.0</span></div>
+          </div>
+        </div>
+
+        <div class="demo">
+          <p class="row-lbl">Table</p>
+          <table>
+            <thead><tr><th>Artefact</th><th>Owner</th><th class="num">Lines</th></tr></thead>
+            <tbody>
+              <tr><td>Specification</td><td>Specifier agent, with a person</td><td class="num">142</td></tr>
+              <tr><td>Scenarios</td><td>Specifier agent</td><td class="num">88</td></tr>
+              <tr><td>Implementation</td><td>Builder agent</td><td class="num">1,204</td></tr>
+              <tr><td>Tests</td><td>Tester agent</td><td class="num">396</td></tr>
+              <tr><td>Provenance</td><td>Harness</td><td class="num">31</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Pills</b>
+        <i>.pill--live</i> ok · published<br>
+        <i>.pill--draft</i> warn · drafting<br>
+        <i>.pill--plan</i> ink-3 · outlined<hr>
+        Border uses <i>color-mix(in srgb, [state] 45%, transparent)</i> so the ring is quieter than the text.<hr>
+        <b>Table</b>
+        No vertical rules. No zebra. No outer border. Header is mono uppercase 11px.<br>
+        First cell has zero left padding so the column aligns to the text edge.<br>
+        <i>.num</i> right aligns and switches on tabular figures.<hr>
+        <b>Meta panel</b>
+        Key left in 11px mono uppercase, value right in 12px mono <i>--ink-2</i>.
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 NAVIGATION ─────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">09</span>
+    <h2>Navigation</h2>
+    <p class="sec-note">Four patterns: the cover index, the contents rail, the on-this-page rail, and the pager. Active state is always a 2px accent left edge.</p>
+
+    <div class="split">
+      <div>
+        <div class="demo">
+          <p class="row-lbl">Cover index row · hover shifts 8px right</p>
+          <a class="index-row" href="#"><span class="n">03</span><span class="t">The Specification as Contract</span><span class="pill pill--live">Published</span></a>
+          <a class="index-row" href="#"><span class="n">04</span><span class="t">Four Agents, Five Artefacts</span><span class="pill pill--draft">Drafting</span></a>
+          <a class="index-row" href="#"><span class="n">05</span><span class="t">Provenance and the Audit Trail</span><span class="pill pill--plan">Outlined</span></a>
+        </div>
+
+        <div class="demo" style="display:flex;gap:var(--sp-4);flex-wrap:wrap">
+          <div>
+            <p class="row-lbl">Contents rail</p>
+            <div class="fake-rail">
+              <h4 style="padding:0 var(--sp-3)">Contents</h4>
+              <button class="toc-item"><span class="n">02</span><span class="t">What an AI-Native Engineer Actually Does</span></button>
+              <button class="toc-item" aria-current="true"><span class="n">03</span><span class="t">The Specification as Contract</span></button>
+              <div style="padding:0 var(--sp-3) var(--sp-1)">
+                <button class="onpage-item" style="border:0;padding-left:42px">3.1&nbsp; What makes a specification a contract</button>
+                <button class="onpage-item" style="border:0;padding-left:42px">3.2&nbsp; The shape of a locked spec</button>
+              </div>
+              <button class="toc-item" data-status="plan"><span class="n">04</span><span class="t">Four Agents, Five Artefacts</span></button>
+            </div>
+          </div>
+          <div>
+            <p class="row-lbl">On this page</p>
+            <div style="width:220px">
+              <h4>On this page</h4>
+              <button class="onpage-item is-active">What makes a specification a contract</button>
+              <button class="onpage-item">The shape of a locked spec</button>
+              <button class="onpage-item">Blocking questions are the point</button>
+              <button class="onpage-item">Handling drift</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo">
+          <p class="row-lbl">Pager</p>
+          <div class="pager" style="margin-top:0">
+            <button><span class="dir">← Previous</span><span class="nm">02 What an AI-Native Engineer Actually Does</span></button>
+            <button class="next"><span class="dir">Next →</span><span class="nm">04 Four Agents, Five Artefacts</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Active state</b>
+        Always <i>border-left:2px solid var(--accent)</i> plus <i>--bg-sink</i>. Never a fill, never bold alone.<hr>
+        <b>Contents rail</b>
+        264px. Grid <i>30px 1fr</i>. Number in 11px mono, title in 14px.<br>
+        <i>[data-status="plan"]</i> drops the title to <i>--ink-3</i> so unwritten chapters read as unwritten.<hr>
+        <b>On this page</b>
+        220px. 13px. Hairline left rail that turns accent when active.<hr>
+        <b>Pager</b>
+        Two equal columns split by a hairline. Next is right aligned. Collapses to one column below 900px.
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 SIGNATURE ──────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">10</span>
+    <h2>Spine gauge</h2>
+    <p class="sec-note">The signature element. A vertical read-progress rule between the contents rail and the text, ticked at section boundaries, with the percentage set vertically at the base. One per page. It is the only element permitted to be memorable.</p>
+
+    <div class="split">
+      <div class="demo" style="display:flex;gap:var(--sp-5);align-items:flex-start">
+        <div class="gauge-demo">
+          <div class="gauge">
+            <div class="gauge-track">
+              <div class="gauge-fill" style="height:46%"></div>
+              <div class="gauge-tick" style="top:25%"></div>
+              <div class="gauge-tick" style="top:50%"></div>
+              <div class="gauge-tick" style="top:75%"></div>
+              <div class="gauge-pct">46%</div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <p class="row-lbl">Top progress hairline</p>
+          <div style="position:relative;height:2px;background:var(--line-soft);margin-bottom:var(--sp-4)">
+            <div style="position:absolute;inset:0 auto auto 0;height:2px;width:46%;background:var(--accent)"></div>
+          </div>
+          <p style="font-size:var(--size-ui);color:var(--ink-3);margin:0">Both read from the same scroll value. The hairline is for glanceable position, the gauge is for structure. Never show one without the other.</p>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Gauge</b>
+        Column width <i>--gauge</i> 44px. Track 3px wide, <i>--line-soft</i>.<hr>
+        Fill 3px <i>--accent</i>, height = scroll fraction, transition <i>height .1s linear</i>.<hr>
+        Fill head: 10×2px accent bar overhanging the track by 3.5px on the left.<hr>
+        Ticks: 15×1px <i>--line</i>, one per section boundary, offset −6px.<hr>
+        Percentage: 10px mono, <i>writing-mode:vertical-rl</i> plus <i>rotate(180deg)</i>, tracking 0.14em.<hr>
+        Hidden below 900px. Hidden in print.
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 STATES ─────────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">11</span>
+    <h2>States</h2>
+    <p class="sec-note">Empty states are directional, not apologetic. Search results carry their source. Errors say what happened and what to do.</p>
+
+    <div class="split">
+      <div>
+        <div class="demo">
+          <p class="row-lbl">Empty state · the only dashed border in the system</p>
+          <div class="empty-state" style="max-width:none">
+            <h4>Outlined, not yet written</h4>
+            <p>The argument is settled and the chapter is scheduled. Published chapters land roughly every two weeks.</p>
+            <button class="btn btn--quiet">Read chapter 03 instead →</button>
+          </div>
+        </div>
+
+        <div class="demo">
+          <p class="row-lbl">Search results</p>
+          <div class="panel" style="max-height:none;width:100%">
+            <input class="field" value="specification" readonly>
+            <button class="result is-active"><span class="r-src">03 · § 3.1 What makes a specification a contract</span><span class="r-txt">…a <mark>specification</mark> is a contract when three things are true. It is committed before the work starts…</span></button>
+            <button class="result"><span class="r-src">00 · § 0.3 What the book claims</span><span class="r-txt">…that the <mark>specification</mark> is now the primary engineering artefact, and code is a derived output…</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Empty state</b>
+        <i>.empty-state</i> · dashed hairline · padding <i>--sp-6</i>.<br>
+        Heading in display face, body in <i>--ink-3</i>, one quiet action out.<hr>
+        <b>Result</b>
+        <i>.result &gt; .r-src + .r-txt</i>. Source in 10px accent mono, snippet in 14px <i>--ink-2</i>.<br>
+        <i>mark</i> is <i>--warn</i> at 30% alpha, text stays <i>--ink</i>.<hr>
+        <b>Overlay</b>
+        <i>.overlay</i> scrim <i>--scrim</i>, panel <i>min(640px,92vw)</i>, top offset 12vh.<hr>
+        <b>Copy voice</b>
+        Say what happened and what to do next. No apologies, no exclamation marks.
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 LAYOUT ─────────────────────────────────────── -->
+  <section class="sec">
+    <span class="sec-no">12</span>
+    <h2>Layout and spacing</h2>
+    <p class="sec-note">Eight pixel unit throughout. Every gap in the system is a multiple of it. Structure is expressed with hairlines rather than shadows or cards.</p>
+
+    <div class="split">
+      <div>
+        <div class="demo">
+          <p class="row-lbl">Reader shell</p>
+          <pre style="font-family:var(--font-mono);font-size:var(--size-code);color:var(--ink-3);line-height:1.7;margin:0;overflow-x:auto">┌─────────────────────────────────────────────────────────┐
+│ progress hairline · 2px · fixed                         │
+├────────────┬────┬────────────────────────┬──────────────┤
+│            │    │                        │              │
+│  contents  │ ▌  │   article              │  on this     │
+│  264px     │ 44 │   measure 68ch         │  page 220px  │
+│  sticky    │ px │   padding --sp-7       │  sticky      │
+│            │    │                        │              │
+├────────────┴────┴────────────────────────┴──────────────┤
+│  ← previous            pager             next →         │
+└─────────────────────────────────────────────────────────┘
+  1180px ─ on-this-page drops
+   900px ─ gauge drops, contents becomes a drawer</pre>
+        </div>
+        <div class="demo">
+          <p class="row-lbl">Spacing scale</p>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-1</span><span style="height:10px;width:8px;background:var(--accent)"></span><span class="t-caption">8px</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-2</span><span style="height:10px;width:16px;background:var(--accent)"></span><span class="t-caption">16px</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-3</span><span style="height:10px;width:24px;background:var(--accent)"></span><span class="t-caption">24px · paragraph bottom</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-4</span><span style="height:10px;width:32px;background:var(--accent)"></span><span class="t-caption">32px · code, callout</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-5</span><span style="height:10px;width:40px;background:var(--accent)"></span><span class="t-caption">40px · h3 top, quote</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-6</span><span style="height:10px;width:48px;background:var(--accent)"></span><span class="t-caption">48px · h2 top</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-7</span><span style="height:10px;width:56px;background:var(--accent)"></span><span class="t-caption">56px · article padding</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-10</span><span style="height:10px;width:80px;background:var(--accent)"></span><span class="t-caption">80px · pager top</span></div>
+            <div style="display:flex;align-items:center;gap:12px"><span class="t-meta" style="width:64px">sp-14</span><span style="height:10px;width:112px;background:var(--accent)"></span><span class="t-caption">112px · article bottom</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spec">
+        <b>Grid</b>
+        Cover is a 12 column grid: main 1–8, side 9–12, divided by a vertical hairline.<hr>
+        Reader is a four track shell, not a 12 column grid.<hr>
+        <b>Breakpoints</b>
+        <i>1180px</i> on-this-page rail drops<br>
+        <i>900px</i> gauge drops, contents becomes an overlay drawer, cover collapses to one column<hr>
+        <b>Elevation</b>
+        There is none. No shadows, no radii, no cards. Depth is expressed with <i>--bg-sink</i> and hairlines only.<hr>
+        <b>Motion</b>
+        <i>--dur-fast</i> 140ms hover and colour<br>
+        <i>--dur</i> 220ms drawers<br>
+        <i>--dur-slow</i> 250ms theme switch<br>
+        <i>--ease</i> cubic-bezier(.2,.7,.3,1)<br>
+        All suppressed under <i>prefers-reduced-motion</i>.
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 RULES ──────────────────────────────────────── -->
+  <section class="sec" style="border-bottom:0">
+    <span class="sec-no">13</span>
+    <h2>Rules for implementation</h2>
+    <p class="sec-note">The constraints that keep generated output on-theme. These are the statements to put in the specification, not this prose.</p>
+
+    <div class="do-dont">
+      <div class="rules yes">
+        <h5>Do</h5>
+        <ul>
+          <li>Reference semantic tokens only. A component never names a Nord value</li>
+          <li>Use the twelve type steps as given. No intermediate sizes</li>
+          <li>Express structure with hairlines and background shifts</li>
+          <li>Put every uppercase label in the mono face with tracking opened</li>
+          <li>Keep one primary button per view, and one gauge per page</li>
+          <li>Use state colour only where it encodes state</li>
+          <li>Set spacing from the scale, never from an arbitrary pixel value</li>
+        </ul>
+      </div>
+      <div class="rules no">
+        <h5>Do not</h5>
+        <ul>
+          <li>Add border radius. The system is square, everywhere, deliberately</li>
+          <li>Add shadows, gradients, glows or glass effects</li>
+          <li>Introduce a new accent colour or a fourth status</li>
+          <li>Set uppercase in the display or body face</li>
+          <li>Use a dashed border anywhere except the empty state</li>
+          <li>Put icons in callouts. The label does that job</li>
+          <li>Let a reading column exceed <code class="inline">--measure</code></li>
+          <li>Animate anything on entry. Motion responds to input only</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footnotes" style="max-width:var(--measure)">
+      <ol><li id="fn1">Footnote reference and list, shown here so the pattern is documented. Reference is mono, accent, superscript. The list rule is a full hairline above.</li></ol>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const root = document.documentElement;
+  const measures = ['normal','wide','narrow']; let mi = 0;
+  document.getElementById('t-theme').onclick = (e)=>{
+    const d = root.dataset.theme === 'dark';
+    root.dataset.theme = d ? 'light' : 'dark';
+    e.currentTarget.textContent = d ? '◑ Dark' : '◐ Light';
+  };
+  document.getElementById('t-measure').onclick = ()=>{
+    mi = (mi+1) % 3; root.dataset.measure = measures[mi];
+    document.getElementById('m-label').textContent = measures[mi];
+  };
+  document.querySelectorAll('.btn-copy').forEach(b=>{
+    b.onclick = ()=>{
+      navigator.clipboard?.writeText(b.closest('figure').querySelector('pre').innerText);
+      b.textContent='Copied'; b.classList.add('is-done');
+      setTimeout(()=>{ b.textContent='Copy'; b.classList.remove('is-done'); },1400);
+    };
+  });
+</script>
+</body>
+</html>

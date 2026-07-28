@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="dark" data-measure="normal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The AI-Native Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────
+   THE AI-NATIVE ENGINEER
+   Nord palette · Swiss International Style grid
+   ───────────────────────────────────────────────────────── */
+
+:root{
+  /* Nord — Polar Night */
+  --n0:#2E3440; --n1:#3B4252; --n2:#434C5E; --n3:#4C566A;
+  /* Nord — Snow Storm */
+  --n4:#D8DEE9; --n5:#E5E9F0; --n6:#ECEFF4;
+  /* Nord — Frost */
+  --f0:#8FBCBB; --f1:#88C0D0; --f2:#81A1C1; --f3:#5E81AC;
+  /* Nord — Aurora */
+  --a-red:#BF616A; --a-orange:#D08770; --a-yellow:#EBCB8B; --a-green:#A3BE8C; --a-purple:#B48EAD;
+
+  --display:'Archivo',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --u:8px;                 /* base grid unit */
+  --rail:264px;            /* contents rail */
+  --spine:44px;            /* progress spine */
+  --aside:220px;           /* on-this-page rail */
+  --measure:68ch;
+  --read:1.0625rem;
+
+  --hair:1px;
+  --ease:cubic-bezier(.2,.7,.3,1);
+}
+
+html[data-theme="dark"]{
+  --bg:var(--n0); --bg-raise:#333A47; --bg-sink:#292F3A;
+  --line:#3F4756; --line-soft:#373E4B;
+  --ink:var(--n6); --ink-2:var(--n4); --ink-3:#8892A4;
+  --accent:var(--f1); --accent-2:var(--f2); --accent-ink:var(--n0);
+}
+html[data-theme="light"]{
+  --bg:var(--n6); --bg-raise:#FFFFFF; --bg-sink:var(--n5);
+  --line:#CDD5E0; --line-soft:#DDE3EC;
+  --ink:var(--n0); --ink-2:#3B4252; --ink-3:#6B7688;
+  --accent:var(--f3); --accent-2:#4C6E9C; --accent-ink:var(--n6);
+}
+
+html[data-measure="wide"]{ --measure:82ch; --read:1.125rem; }
+html[data-measure="narrow"]{ --measure:56ch; --read:1rem; }
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--body); font-size:var(--read); line-height:1.72;
+  font-feature-settings:"ss01","cv05";
+  transition:background .25s var(--ease), color .25s var(--ease);
+}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:1px}
+::selection{background:var(--accent);color:var(--accent-ink)}
+
+.mono{font-family:var(--mono);font-size:.6875rem;letter-spacing:.09em;text-transform:uppercase}
+.hide{display:none !important}
+
+/* ── PROGRESS HAIRLINE ─────────────────────────────── */
+#progress{position:fixed;inset:0 auto auto 0;height:2px;width:0;background:var(--accent);z-index:120;transition:width .08s linear}
+
+/* ── TOP RAIL ──────────────────────────────────────── */
+#top{
+  position:sticky;top:0;z-index:100;
+  display:grid;grid-template-columns:var(--rail) 1fr auto;align-items:center;
+  height:52px;background:var(--bg);border-bottom:var(--hair) solid var(--line);
+}
+#top .brand{
+  display:flex;align-items:center;gap:calc(var(--u)*1.5);
+  padding-left:calc(var(--u)*3);border-right:var(--hair) solid var(--line);height:100%;
+}
+.glyph{
+  width:20px;height:20px;flex:0 0 20px;border:1.5px solid var(--accent);
+  position:relative;
+}
+.glyph::after{content:"";position:absolute;left:3px;top:3px;right:3px;bottom:9px;background:var(--accent)}
+#top .brand b{font-family:var(--display);font-weight:700;font-size:.8125rem;letter-spacing:-.01em}
+#top .locus{padding:0 calc(var(--u)*3);color:var(--ink-3);display:flex;gap:calc(var(--u)*2);align-items:center;min-width:0}
+#top .locus span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#top .tools{display:flex;height:100%}
+.tool{
+  height:100%;padding:0 calc(var(--u)*2);border-left:var(--hair) solid var(--line);
+  color:var(--ink-3);display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;
+  transition:color .15s var(--ease),background .15s var(--ease);
+}
+.tool:hover{color:var(--ink);background:var(--bg-sink)}
+.tool[aria-pressed="true"]{color:var(--accent)}
+
+/* ── COVER ─────────────────────────────────────────── */
+#cover{min-height:calc(100vh - 52px);display:grid;grid-template-columns:repeat(12,1fr);gap:0}
+.cv-main{grid-column:1 / 9;border-right:var(--hair) solid var(--line);padding:calc(var(--u)*8) calc(var(--u)*6) calc(var(--u)*6)}
+.cv-side{grid-column:9 / 13;padding:calc(var(--u)*8) calc(var(--u)*4)}
+
+.eyebrow{color:var(--ink-3);margin:0 0 calc(var(--u)*4)}
+.eyebrow b{color:var(--accent);font-weight:500}
+h1.title{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(2.75rem,7.5vw,6.25rem);line-height:.92;letter-spacing:-.035em;
+  margin:0 0 calc(var(--u)*3);max-width:14ch;
+}
+h1.title em{font-style:normal;display:block;color:var(--ink-3)}
+.deck{
+  font-size:1.1875rem;line-height:1.55;color:var(--ink-2);max-width:46ch;
+  margin:0 0 calc(var(--u)*5);
+}
+.rule{height:var(--hair);background:var(--line);margin:calc(var(--u)*5) 0}
+
+.actions{display:flex;flex-wrap:wrap;gap:calc(var(--u)*1.5);margin-bottom:calc(var(--u)*5)}
+.btn{
+  display:inline-flex;align-items:center;gap:calc(var(--u)*1.25);
+  padding:13px 20px;border:var(--hair) solid var(--line);
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
+  transition:all .16s var(--ease);text-decoration:none;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.primary:hover{filter:brightness(1.08);color:var(--accent-ink)}
+.btn small{opacity:.6;text-transform:none;letter-spacing:0}
+
+/* build metadata block — the dev-vernacular signature */
+.meta{border:var(--hair) solid var(--line);font-family:var(--mono);font-size:.75rem;background:var(--bg-sink)}
+.meta .row{display:flex;justify-content:space-between;gap:var(--u);padding:10px 14px;border-bottom:var(--hair) solid var(--line-soft)}
+.meta .row:last-child{border-bottom:0}
+.meta .k{color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;font-size:.6875rem}
+.meta .v{color:var(--ink-2)}
+.dot{width:7px;height:7px;display:inline-block;background:var(--a-green);margin-right:7px;vertical-align:1px}
+
+.cv-side h3{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 calc(var(--u)*2);font-weight:500}
+.cv-side p{font-size:.9375rem;color:var(--ink-2);margin:0 0 calc(var(--u)*3)}
+
+/* cover chapter index */
+.index{margin-top:calc(var(--u)*2)}
+.index a{
+  display:grid;grid-template-columns:38px 1fr auto;gap:calc(var(--u)*2);align-items:baseline;
+  padding:11px 0;border-bottom:var(--hair) solid var(--line-soft);text-decoration:none;
+  transition:padding-left .16s var(--ease),color .16s var(--ease);
+}
+.index a:hover{padding-left:8px;color:var(--accent)}
+.index .num{font-family:var(--mono);font-size:.75rem;color:var(--ink-3)}
+.index .nm{font-family:var(--display);font-weight:500;font-size:1rem;letter-spacing:-.01em}
+.index a:hover .num{color:var(--accent)}
+
+/* status pills */
+.st{font-family:var(--mono);font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border:var(--hair) solid var(--line);color:var(--ink-3);white-space:nowrap}
+.st.live{color:var(--a-green);border-color:color-mix(in srgb,var(--a-green) 45%,transparent)}
+.st.draft{color:var(--a-yellow);border-color:color-mix(in srgb,var(--a-yellow) 45%,transparent)}
+.st.plan{color:var(--ink-3)}
+
+/* ── READER SHELL ──────────────────────────────────── */
+#reader{display:grid;grid-template-columns:var(--rail) var(--spine) minmax(0,1fr) var(--aside);align-items:start}
+
+/* contents rail */
+#toc{
+  position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;
+  border-right:var(--hair) solid var(--line);padding:calc(var(--u)*3) 0 calc(var(--u)*6);
+}
+#toc h4{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 var(--u);padding:0 calc(var(--u)*3);font-weight:500}
+.toc-item{
+  display:grid;grid-template-columns:30px 1fr;gap:calc(var(--u)*1.5);width:100%;text-align:left;
+  padding:9px calc(var(--u)*3);border-left:2px solid transparent;
+  transition:background .14s var(--ease),border-color .14s var(--ease);
+}
+.toc-item:hover{background:var(--bg-sink)}
+.toc-item .n{font-family:var(--mono);font-size:.6875rem;color:var(--ink-3);padding-top:3px}
+.toc-item .t{font-size:.875rem;line-height:1.4;color:var(--ink-2)}
+.toc-item[aria-current="true"]{border-left-color:var(--accent);background:var(--bg-sink)}
+.toc-item[aria-current="true"] .t{color:var(--ink);font-weight:500}
+.toc-item[aria-current="true"] .n{color:var(--accent)}
+.toc-item[data-status="plan"] .t{color:var(--ink-3)}
+.toc-sub{padding:0 calc(var(--u)*3) var(--u) calc(var(--u)*3)}
+.toc-sub button{display:block;width:100%;text-align:left;padding:5px 0 5px 42px;font-size:.8125rem;color:var(--ink-3);transition:color .14s var(--ease)}
+.toc-sub button:hover{color:var(--accent)}
+
+/* SIGNATURE: the spine gauge */
+#gauge{position:sticky;top:52px;height:calc(100vh - 52px);border-right:var(--hair) solid var(--line);display:flex;justify-content:center;padding:calc(var(--u)*4) 0}
+.gauge-track{position:relative;width:3px;background:var(--line-soft);height:100%}
+.gauge-fill{position:absolute;left:0;top:0;width:3px;height:0;background:var(--accent);transition:height .1s linear}
+.gauge-fill::after{content:"";position:absolute;left:-3.5px;bottom:-1px;width:10px;height:2px;background:var(--accent)}
+.gauge-tick{position:absolute;left:-6px;width:15px;height:var(--hair);background:var(--line)}
+.gauge-pct{
+  position:absolute;left:50%;bottom:calc(var(--u)*2);transform:translateX(-50%) rotate(180deg);
+  writing-mode:vertical-rl;font-family:var(--mono);font-size:.625rem;letter-spacing:.14em;color:var(--ink-3);
+}
+
+/* article */
+#article{padding:calc(var(--u)*7) calc(var(--u)*7) calc(var(--u)*14);min-width:0}
+.ch-head{margin-bottom:calc(var(--u)*6)}
+.ch-num{font-family:var(--display);font-weight:700;font-size:4.5rem;line-height:1;letter-spacing:-.04em;color:var(--line);display:block;margin-bottom:calc(var(--u)*2)}
+h2.ch-title{font-family:var(--display);font-weight:700;font-size:clamp(1.875rem,3.6vw,2.75rem);line-height:1.05;letter-spacing:-.03em;margin:0 0 calc(var(--u)*2.5);max-width:20ch}
+.ch-meta{display:flex;gap:calc(var(--u)*2);align-items:center;color:var(--ink-3);padding-top:calc(var(--u)*2);border-top:var(--hair) solid var(--line)}
+
+.prose{max-width:var(--measure)}
+.prose h3{font-family:var(--display);font-weight:600;font-size:1.3125rem;letter-spacing:-.015em;margin:calc(var(--u)*6) 0 calc(var(--u)*2);scroll-margin-top:80px}
+.prose h3 .sec{font-family:var(--mono);font-size:.75rem;font-weight:500;letter-spacing:.06em;color:var(--accent);display:block;margin-bottom:6px}
+.prose p{margin:0 0 calc(var(--u)*3)}
+.prose strong{font-weight:600;color:var(--ink)}
+.prose em{font-style:italic;color:var(--ink-2)}
+.lead{font-size:1.1875rem;line-height:1.62;color:var(--ink-2)}
+.prose ul{margin:0 0 calc(var(--u)*3);padding-left:0;list-style:none}
+.prose li{position:relative;padding-left:calc(var(--u)*3);margin-bottom:var(--u)}
+.prose li::before{content:"";position:absolute;left:0;top:.72em;width:9px;height:var(--hair);background:var(--accent)}
+
+blockquote{
+  margin:calc(var(--u)*5) 0;padding-left:calc(var(--u)*3);border-left:2px solid var(--accent);
+  font-family:var(--display);font-weight:500;font-size:1.3125rem;line-height:1.35;letter-spacing:-.015em;color:var(--ink);
+}
+
+/* code */
+figure.code{margin:calc(var(--u)*4) 0;border:var(--hair) solid var(--line);background:var(--bg-sink)}
+figure.code figcaption{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;border-bottom:var(--hair) solid var(--line);
+  font-family:var(--mono);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+}
+figure.code pre{margin:0;padding:16px;overflow-x:auto;font-family:var(--mono);font-size:.8125rem;line-height:1.65;color:var(--n4)}
+html[data-theme="light"] figure.code pre{color:var(--n1)}
+.copy{font-family:var(--mono);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.copy:hover{color:var(--accent)}
+.copy.done{color:var(--a-green)}
+.k{color:var(--f2)} .s{color:var(--a-green)} .c{color:var(--n3)} .y{color:var(--a-yellow)} .p{color:var(--a-purple)}
+html[data-theme="light"] .c{color:#8A93A5}
+code.inline{font-family:var(--mono);font-size:.875em;background:var(--bg-sink);border:var(--hair) solid var(--line-soft);padding:1px 5px}
+
+/* callout */
+.note{
+  margin:calc(var(--u)*4) 0;border:var(--hair) solid var(--line);border-left:2px solid var(--a-yellow);
+  padding:calc(var(--u)*2.5) calc(var(--u)*3);background:var(--bg-sink);
+}
+.note .lbl{font-family:var(--mono);font-size:.625rem;letter-spacing:.12em;text-transform:uppercase;color:var(--a-yellow);display:block;margin-bottom:6px}
+.note p{margin:0;font-size:.9375rem;color:var(--ink-2)}
+
+/* empty / unwritten chapter state */
+.stub{border:var(--hair) dashed var(--line);padding:calc(var(--u)*6);text-align:left;max-width:var(--measure)}
+.stub h4{font-family:var(--display);font-size:1.125rem;margin:0 0 var(--u)}
+.stub p{color:var(--ink-3);margin:0 0 calc(var(--u)*3);font-size:.9375rem}
+
+/* chapter pager */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:var(--hair);margin-top:calc(var(--u)*10);border-top:var(--hair) solid var(--line)}
+.pager button{padding:calc(var(--u)*3) calc(var(--u)*3);text-align:left;transition:background .15s var(--ease)}
+.pager button:hover:not(:disabled){background:var(--bg-sink)}
+.pager button:disabled{opacity:.3;cursor:default}
+.pager .dir{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:6px}
+.pager .nm{font-family:var(--display);font-weight:500;font-size:1rem}
+.pager .next{text-align:right;border-left:var(--hair) solid var(--line)}
+
+/* on this page */
+#aside{position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;border-left:var(--hair) solid var(--line);padding:calc(var(--u)*7) calc(var(--u)*3)}
+#aside h4{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 calc(var(--u)*2);font-weight:500}
+#aside button{display:block;text-align:left;font-size:.8125rem;line-height:1.4;color:var(--ink-3);padding:6px 0 6px 12px;border-left:var(--hair) solid var(--line);width:100%;transition:color .14s var(--ease),border-color .14s var(--ease)}
+#aside button:hover{color:var(--ink-2)}
+#aside button.on{color:var(--accent);border-left-color:var(--accent)}
+#aside .kbd{margin-top:calc(var(--u)*5);padding-top:calc(var(--u)*3);border-top:var(--hair) solid var(--line)}
+#aside .kbd div{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6875rem;color:var(--ink-3);margin-bottom:8px}
+kbd{border:var(--hair) solid var(--line);padding:1px 6px;font-family:var(--mono);font-size:.6875rem;color:var(--ink-2)}
+
+/* ── SEARCH OVERLAY ────────────────────────────────── */
+#search{position:fixed;inset:0;z-index:200;background:color-mix(in srgb,var(--n0) 72%,transparent);display:flex;justify-content:center;padding-top:12vh}
+#search .panel{width:min(640px,92vw);background:var(--bg);border:var(--hair) solid var(--line);height:max-content;max-height:70vh;display:flex;flex-direction:column}
+#search input{
+  width:100%;padding:18px 20px;background:none;border:0;border-bottom:var(--hair) solid var(--line);
+  color:var(--ink);font-family:var(--mono);font-size:.9375rem;
+}
+#search input::placeholder{color:var(--ink-3)}
+#search input:focus{outline:0}
+#results{overflow-y:auto}
+#results button{display:block;width:100%;text-align:left;padding:13px 20px;border-bottom:var(--hair) solid var(--line-soft)}
+#results button:hover,#results button.on{background:var(--bg-sink)}
+#results .r-ch{font-family:var(--mono);font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px}
+#results .r-tx{font-size:.875rem;color:var(--ink-2);line-height:1.45}
+#results mark{background:color-mix(in srgb,var(--a-yellow) 30%,transparent);color:var(--ink)}
+#results .empty{padding:20px;color:var(--ink-3);font-size:.875rem}
+
+/* ── MOBILE ────────────────────────────────────────── */
+#scrim{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.5)}
+@media (max-width:1180px){
+  #reader{grid-template-columns:var(--rail) var(--spine) minmax(0,1fr)}
+  #aside{display:none}
+}
+@media (max-width:900px){
+  #cover{grid-template-columns:1fr}
+  .cv-main{grid-column:auto;border-right:0;border-bottom:var(--hair) solid var(--line);padding:calc(var(--u)*5) calc(var(--u)*3)}
+  .cv-side{grid-column:auto;padding:calc(var(--u)*5) calc(var(--u)*3)}
+  #top{grid-template-columns:auto 1fr auto}
+  #top .brand{border-right:0;padding-left:calc(var(--u)*2)}
+  #top .locus{padding:0 var(--u);font-size:.625rem}
+  #reader{grid-template-columns:1fr}
+  #gauge{display:none}
+  #toc{position:fixed;top:52px;left:0;width:280px;z-index:95;background:var(--bg);transform:translateX(-100%);transition:transform .22s var(--ease)}
+  #toc.open{transform:none}
+  #article{padding:calc(var(--u)*4) calc(var(--u)*3) calc(var(--u)*10)}
+  .ch-num{font-size:3rem}
+  .pager{grid-template-columns:1fr}
+  .pager .next{border-left:0;border-top:var(--hair) solid var(--line);text-align:left}
+  .tool span{display:none}
+}
+@media (min-width:901px){ #menu-btn{display:none} #scrim{display:none !important} }
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+@media print{
+  #top,#toc,#gauge,#aside,.pager,#progress,#search,#scrim{display:none !important}
+  #reader{display:block}
+  body{background:#fff;color:#000;font-size:11pt}
+  #article{padding:0}
+  .prose{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header id="top">
+  <div class="brand">
+    <button id="menu-btn" class="tool" style="border:0;padding:0 8px 0 0" aria-label="Open contents">☰</button>
+    <span class="glyph" aria-hidden="true"></span>
+    <b>The AI-Native Engineer</b>
+  </div>
+  <div class="locus mono">
+    <span id="locus-text">Front cover</span>
+  </div>
+  <div class="tools">
+    <button class="tool" id="btn-search" aria-label="Search the book">⌕ <span>Search</span></button>
+    <button class="tool" id="btn-measure" aria-label="Change text size">Aa</button>
+    <button class="tool" id="btn-theme" aria-label="Switch to light mode">◐ <span>Light</span></button>
+    <button class="tool hide" id="btn-cover">← <span>Cover</span></button>
+  </div>
+</header>
+
+<!-- ══ COVER ══════════════════════════════════════════ -->
+<main id="cover">
+  <div class="cv-main">
+    <p class="eyebrow mono">Written in the open · <b>Chapter 4 published this week</b></p>
+
+    <h1 class="title">The AI-Native <em>Engineer</em></h1>
+
+    <p class="deck">Software engineering after the typing bottleneck. How specifications, agents and provenance replace the craft assumptions that thirty years of practice were built on.</p>
+
+    <div class="actions">
+      <button class="btn primary" id="cta-read">Start reading <small>· ch. 00</small></button>
+      <a class="btn" href="#" download>↓ PDF <small>· 4.2 MB</small></a>
+      <a class="btn" href="#" download>↓ EPUB <small>· 1.1 MB</small></a>
+    </div>
+
+    <p class="mono" style="color:var(--ink-3);margin:0">Free to read online and free to download. No account, no email wall.</p>
+
+    <div class="rule"></div>
+
+    <div class="meta">
+      <div class="row"><span class="k">Edition</span><span class="v">0.4.0 · living draft</span></div>
+      <div class="row"><span class="k">Last commit</span><span class="v">28 Jul 2026 · <span class="p">a91f3c2</span></span></div>
+      <div class="row"><span class="k">Chapters</span><span class="v">4 published · 2 drafting · 7 outlined</span></div>
+      <div class="row"><span class="k">Reading time</span><span class="v">2 h 10 m published</span></div>
+      <div class="row"><span class="k">Licence</span><span class="v">CC BY-NC-SA 4.0</span></div>
+      <div class="row"><span class="k">Status</span><span class="v"><span class="dot"></span>Building in public</span></div>
+    </div>
+  </div>
+
+  <aside class="cv-side">
+    <h3>Contents</h3>
+    <p>Chapters go live as they are finished. Outlined chapters show their argument so you can see where the book is heading.</p>
+    <nav class="index" id="cover-index"></nav>
+
+    <h3 style="margin-top:calc(var(--u)*6)">The author</h3>
+    <p>Kevin Ryan has spent thirty years in enterprise engineering, from CERN to the BBC, the Financial Times and Nestlé. He now runs an AI-native consultancy in Europe.</p>
+  </aside>
+</main>
+
+<!-- ══ READER ═════════════════════════════════════════ -->
+<div id="reader" class="hide">
+  <nav id="toc" aria-label="Book contents">
+    <h4>Contents</h4>
+    <div id="toc-list"></div>
+  </nav>
+
+  <div id="gauge" aria-hidden="true">
+    <div class="gauge-track">
+      <div class="gauge-fill" id="gauge-fill"></div>
+      <div class="gauge-pct" id="gauge-pct">0%</div>
+    </div>
+  </div>
+
+  <main id="article"></main>
+
+  <aside id="aside">
+    <h4>On this page</h4>
+    <div id="onpage"></div>
+    <div class="kbd">
+      <div><span>Next chapter</span><kbd>→</kbd></div>
+      <div><span>Previous</span><kbd>←</kbd></div>
+      <div><span>Search</span><kbd>/</kbd></div>
+      <div><span>Contents</span><kbd>g</kbd></div>
+      <div><span>Theme</span><kbd>t</kbd></div>
+    </div>
+  </aside>
+</div>
+
+<div id="scrim" class="hide"></div>
+
+<!-- ══ SEARCH ═════════════════════════════════════════ -->
+<div id="search" class="hide" role="dialog" aria-label="Search the book">
+  <div class="panel">
+    <input id="q" type="text" placeholder="Search the book…" autocomplete="off" spellcheck="false">
+    <div id="results"></div>
+  </div>
+</div>
+
+<script>
+/* ── content ─────────────────────────────────────────── */
+const BOOK = [
+{n:"00", slug:"preface", title:"Preface", status:"live", mins:6, sections:[
+ {id:"why", n:"0.1", h:"Why write this in the open", body:`
+  <p class="lead">This book is being written in public because the subject will not sit still long enough for a print schedule. A model release changes what is possible in a fortnight. A regulation changes what is permitted in a quarter. Anything written to a twelve month publishing cycle is a historical document by the time it lands.</p>
+  <p>So the manuscript lives here, as HTML, with a commit hash at the top of the page. When a chapter changes you can see when it changed. When I am wrong about something you can watch me correct it. That is a weaker promise than a finished book makes, and a more honest one.</p>
+  <p>The PDF and EPUB are built from the same source on every push. They are always the current state of the argument, not a snapshot taken months ago.</p>`},
+ {id:"who", n:"0.2", h:"Who this is for", body:`
+  <p>This is written for engineers who are already good at the job, and who suspect that being good at the job is about to mean something different. Not for people looking for prompt tricks. There are enough of those.</p>
+  <ul>
+   <li>Staff and principal engineers deciding what to standardise on</li>
+   <li>Platform and DevEx teams who will own the harnesses everyone else uses</li>
+   <li>Engineering leaders being asked for a number on productivity, who know the number is not real</li>
+   <li>Architects working inside regulated European enterprises, where provenance is not optional</li>
+  </ul>
+  <p>You do not need to have used an agent harness in anger. You do need to be willing to accept that the part of the job you are proudest of might be the part that automates first.</p>`},
+ {id:"claims", n:"0.3", h:"What the book claims", body:`
+  <blockquote>Generation stopped being the constraint. Specification became the constraint. Almost everything else follows from that one move.</blockquote>
+  <p>Three claims run through every chapter. First, that the specification is now the primary engineering artefact, and code is a derived output. Second, that verification has to be independent of generation or it verifies nothing. Third, that provenance is the price of admission for any of this inside a regulated organisation.</p>
+  <p>If you disagree with the first claim, the rest of the book will read as an elaborate mistake. That is a reasonable place to stop.</p>`}
+]},
+
+{n:"01", slug:"typing-bottleneck", title:"The End of the Typing Bottleneck", status:"live", mins:14, sections:[
+ {id:"assumption", n:"1.1", h:"The assumption underneath everything", body:`
+  <p class="lead">Every practice in modern software engineering was designed around a single scarcity: writing correct code took a skilled person a long time. Code review exists because that person makes mistakes. Pair programming exists because two of them make fewer. Estimation exists because we needed to predict how long the typing would take.</p>
+  <p>Remove the scarcity and the practices do not automatically fail. They just stop being aimed at anything. A code review that reads two hundred lines carefully was proportionate when two hundred lines was a day of work. It is theatre when two hundred lines is ninety seconds of work and there are four thousand more behind it.</p>
+  <p>This is the uncomfortable part. The practices are not wrong. They are aimed at a bottleneck that moved.</p>`},
+ {id:"moved", n:"1.2", h:"Where the bottleneck moved to", body:`
+  <p>Run a serious agent workflow for a month and the failure mode becomes obvious. The generated code is rarely bad in the way people expect. It compiles. It follows the idioms. It is plausible. It is wrong because it was asked for the wrong thing, in language that permitted several readings, and it chose one.</p>
+  <p>The bottleneck is now the quality of the description. Not the quality of the typing.</p>
+  <figure class="code">
+   <figcaption><span>vague-intent.md</span><button class="copy">Copy</button></figcaption>
+   <pre><span class="c"># A request that will produce working, wrong code</span>
+
+Add rate limiting to the payments API so it does not
+get hammered during sales events.</pre>
+  </figure>
+  <p>Three unresolved decisions sit inside that sentence. Rate limited by what key. What happens on rejection. Whether the limit is shared across instances. An agent will resolve all three, silently and confidently, and you will find out in production which way it went.</p>
+  <div class="note"><span class="lbl">The pattern</span><p>Ambiguity does not stop generation. It gets absorbed into it. That is the whole difficulty, and it is why prose briefs do not survive contact with agents.</p></div>`},
+ {id:"metrics", n:"1.3", h:"Why the productivity numbers are meaningless", body:`
+  <p>Leaders keep asking for a percentage. Thirty per cent faster, forty, sixty. The number is always measured against lines produced or tickets closed, which are measures of the thing that stopped being scarce.</p>
+  <ul>
+   <li>Lines of code rose. It measures output volume, not delivered value</li>
+   <li>Cycle time improved for small changes, and barely moved for changes requiring real coordination</li>
+   <li>Defect escape rate is the interesting number, and almost nobody is instrumenting it properly</li>
+   <li>Time spent in specification went up, and every organisation I have seen reports it as a regression</li>
+  </ul>
+  <p>Time spent in specification going up is the signal that the method is working. Organisations that treat it as waste and cut it are the ones that end up shipping confident nonsense at speed.</p>`},
+ {id:"craft", n:"1.4", h:"What happens to craft", body:`
+  <p>There is a real loss here and it is worth naming rather than managing away. A lot of engineers, myself included, took genuine pleasure in the act of construction. In finding the clean expression of a thing. That pleasure is not gone but it has been displaced upwards, into a layer that fewer people find satisfying.</p>
+  <p>The engineers adapting best are not the fastest coders. They are the ones who were already good at writing things down. Who wrote decent design documents when nobody read them. Who could hold an ambiguous requirement up to the light and find the three readings.</p>
+  <blockquote>The skill that was undervalued for twenty years turned out to be the load-bearing one.</blockquote>`}
+]},
+
+{n:"02", slug:"what-they-do", title:"What an AI-Native Engineer Actually Does", status:"live", mins:16, sections:[
+ {id:"day", n:"2.1", h:"A working day, described honestly", body:`
+  <p class="lead">Descriptions of AI-native work tend to be either breathless or dismissive. Neither matches what the day actually looks like, which is mostly reading, deciding and arbitrating, punctuated by short bursts of extremely fast construction.</p>
+  <p>The shape of the day inverts. Where the old pattern was a long build with short reviews, the new pattern is a long specification with short builds. The build is no longer where time goes and it is no longer where risk lives.</p>`},
+ {id:"four", n:"2.2", h:"Four things that fill the time", body:`
+  <p>Specification, arbitration, verification design, and integration. In roughly that order of time spent.</p>
+  <ul>
+   <li><strong>Specification.</strong> Turning a want into a set of statements that cannot be read two ways</li>
+   <li><strong>Arbitration.</strong> Deciding between plausible outputs when the spec permitted more than one</li>
+   <li><strong>Verification design.</strong> Deciding how you will know it is right, before it exists</li>
+   <li><strong>Integration.</strong> The part nobody automated, because it is where the organisation lives</li>
+  </ul>
+  <p>Integration is the one that surprises people. Agents are excellent within a bounded context and poor across organisational seams, because the seams are political rather than technical. No model resolves whose team owns the schema.</p>`},
+ {id:"skills", n:"2.3", h:"The skills that transfer, and the ones that do not", body:`
+  <p>Systems thinking transfers completely. Debugging transfers, though the object of debugging changes from the code to the specification that produced it. Domain knowledge becomes more valuable, not less, because it is the thing the model does not have and cannot infer.</p>
+  <p>Speed of implementation does not transfer. Memorised API surface does not transfer. Neither does the reflex to reach for the keyboard when a problem appears, which is the hardest one to unlearn.</p>`}
+]},
+
+{n:"03", slug:"spec-as-contract", title:"The Specification as Contract", status:"live", mins:18, sections:[
+ {id:"contract", n:"3.1", h:"What makes a specification a contract", body:`
+  <p class="lead">A description becomes a contract when something downstream can be held to it. Prose descriptions cannot do this. They accommodate. You can read a paragraph of intent, build something that satisfies one reading of it, and no artefact anywhere will disagree with you.</p>
+  <p>A specification is a contract when three things are true. It is committed before the work starts. It is the sole authority when the code and the description disagree. And the tests are derived from it rather than from the implementation.</p>
+  <div class="note"><span class="lbl">The rule that does the work</span><p>Commit the specification to the repository before any builder agent runs. If the spec is not in version control before generation, you have no contract. You have a chat log.</p></div>`},
+ {id:"shape", n:"3.2", h:"The shape of a locked spec", body:`
+  <p>Specifications that work with agents share a structure. Intent stated once. Behaviour as discrete numbered statements. Explicit non-goals. Open questions marked as blocking rather than quietly resolved.</p>
+  <figure class="code">
+   <figcaption><span>specs/014-rate-limit/spec.md</span><button class="copy">Copy</button></figcaption>
+   <pre><span class="k">---</span>
+<span class="y">id</span>: <span class="s">014-rate-limit</span>
+<span class="y">status</span>: <span class="s">locked</span>
+<span class="y">authority</span>: <span class="s">this document</span>
+<span class="k">---</span>
+
+<span class="k">## Intent</span>
+Protect the payments API from a single tenant
+consuming shared capacity during peak events.
+
+<span class="k">## Behaviour</span>
+B1. Limit is applied per tenant id, not per IP.
+B2. Limit is 120 requests per rolling 60 seconds.
+B3. On rejection, return 429 with Retry-After
+    in whole seconds.
+B4. The counter is shared across all instances.
+B5. Health check paths are exempt.
+
+<span class="k">## Non-goals</span>
+N1. No per-endpoint differentiation in this spec.
+N2. No burst allowance. Deliberate.
+
+<span class="k">## Open</span>
+<span class="c">O1. BLOCKING. Behaviour when the shared counter
+    store is unavailable: fail open or fail closed?</span></pre>
+  </figure>
+  <p>Compare that with the sentence in chapter one. The three silent decisions are now B1, B3 and B4. The fourth decision, the one nobody had thought about, is sitting in the open section blocking the build. That is the specification doing its job.</p>`},
+ {id:"blocking", n:"3.3", h:"Blocking questions are the point", body:`
+  <p>Teams new to this treat the open section as friction and push to resolve everything so the build can start. That is exactly backwards. The open section is where the specification earns its cost. Every blocking question found before generation is a defect that never existed.</p>
+  <p>The failure mode is the resolved-by-default question. Someone decides fail open on a Thursday afternoon without writing down why, and eighteen months later nobody can reconstruct whether it was a decision or an accident. Which is chapter five.</p>`},
+ {id:"drift", n:"3.4", h:"Handling drift", body:`
+  <p>Code will drift from the spec. This is not a failure of discipline, it is what happens when reality arrives. The question is which one wins.</p>
+  <p>Under a contract model the specification wins by default, and the code is brought back into line or the specification is amended deliberately with a new version and a recorded reason. What must not happen is silent divergence, where the specification remains in the repository looking authoritative while describing something that no longer exists. A stale spec is more dangerous than no spec, because people trust it.</p>
+  <blockquote>An out of date specification is not documentation debt. It is a false statement about the system, sitting in version control, signed by your team.</blockquote>`}
+]},
+
+{n:"04", slug:"agents-artefacts", title:"Four Agents, Five Artefacts", status:"draft", mins:15, sections:[]},
+{n:"05", slug:"provenance", title:"Provenance and the Audit Trail", status:"draft", mins:12, sections:[]},
+{n:"06", slug:"reviewer-problem", title:"The Reviewer Problem", status:"plan", mins:11, sections:[]},
+{n:"07", slug:"harnesses", title:"Harnesses, Models and Portability", status:"plan", mins:13, sections:[]},
+{n:"08", slug:"testing", title:"Testing Without Reading the Code", status:"plan", mins:10, sections:[]},
+{n:"09", slug:"regulated", title:"Working in a Regulated Enterprise", status:"plan", mins:16, sections:[]},
+{n:"10", slug:"topologies", title:"Team Topologies for Agent Fleets", status:"plan", mins:12, sections:[]},
+{n:"11", slug:"unchanged", title:"What Does Not Change", status:"plan", mins:9, sections:[]},
+{n:"12", slug:"next-five", title:"The Next Five Years", status:"plan", mins:8, sections:[]}
+];
+
+const STUB_TEXT = {
+ draft:{h:"Drafting now",p:"This chapter is written but still being revised. It goes live once it stops changing every day. The outline below is stable."},
+ plan:{h:"Outlined, not yet written",p:"The argument is settled and the chapter is scheduled. Published chapters land roughly every two weeks."}
+};
+const STUB_POINTS = {
+ "04":["The specifier runs interactively with a person. It is the only agent that does","The builder reads the committed spec, never the conversation","The tester never reads implementation code, which is the entire point","The reviewer closes the loop against the spec rather than against taste"],
+ "05":["Provenance recorded per specification, not per commit","Which model, which version, which prompt, which harness","Why a model update is an unannounced re-certification event","What an auditor actually asks for, based on real conversations"],
+ "06":["Review at volume stops working and nobody says so out loud","Sampling strategies borrowed from manufacturing","Reviewing the spec instead of the diff","When human review is still worth its cost"],
+ "07":["Treating the harness as replaceable infrastructure","Keeping skills and workflows out of any single vendor's format","What breaks when you swap the model underneath","Open weights and the compliance argument for portability"],
+ "08":["Deriving tests from behaviour statements, not from code","Why an agent that writes both code and tests verifies nothing","Property-based testing as the natural fit","Coverage as a misleading number in generated systems"],
+ "09":["The EU AI Act obligations that apply regardless of risk tier","Data residency as an architectural constraint, not a procurement one","Getting a security team to sign off on an agent workflow","What sovereignty actually requires, tested properly"],
+ "10":["Team sizes when construction is no longer the constraint","The specification owner as a real role","Where platform teams fit and what they now own","Career ladders that no longer describe the work"],
+ "11":["Distributed systems are still hard for the same reasons","Organisational communication still shapes the architecture","Operability, on-call and the human cost of speed","Judgement does not automate"],
+ "12":["Predictions with dates attached, so they can be checked","What would have to be true for this book to be wrong","The parts of the argument I am least confident in","Where the regulation is heading in Europe"]
+};
+
+/* ── state ───────────────────────────────────────────── */
+let cur = 0, theme = 'dark', measures = ['normal','wide','narrow'], mi = 0;
+const $ = s => document.querySelector(s);
+const el = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+const pill = s => `<span class="st ${s==='live'?'live':s==='draft'?'draft':'plan'}">${s==='live'?'Published':s==='draft'?'Drafting':'Outlined'}</span>`;
+
+/* ── cover index ─────────────────────────────────────── */
+BOOK.forEach((c,i)=>{
+  const a = el('a','', `<span class="num">${c.n}</span><span class="nm">${c.title}</span>${pill(c.status)}`);
+  a.href='#'+c.slug;
+  a.onclick = e=>{e.preventDefault(); open(i);};
+  $('#cover-index').append(a);
+});
+
+/* ── contents rail ───────────────────────────────────── */
+function buildToc(){
+  const list = $('#toc-list'); list.innerHTML='';
+  BOOK.forEach((c,i)=>{
+    const b = el('button','toc-item',`<span class="n">${c.n}</span><span class="t">${c.title}</span>`);
+    b.dataset.status = c.status;
+    b.setAttribute('aria-current', i===cur);
+    b.onclick = ()=>{ open(i); closeDrawer(); };
+    list.append(b);
+    if(i===cur && c.sections.length){
+      const sub = el('div','toc-sub');
+      c.sections.forEach(s=>{
+        const sb = el('button','',`${s.n} &nbsp;${s.h}`);
+        sb.onclick = ()=>{ jump(s.id); closeDrawer(); };
+        sub.append(sb);
+      });
+      list.append(sub);
+    }
+  });
+}
+
+/* ── render a chapter ────────────────────────────────── */
+function open(i){
+  cur = i; const c = BOOK[i];
+  $('#cover').classList.add('hide');
+  $('#reader').classList.remove('hide');
+  $('#btn-cover').classList.remove('hide');
+  document.title = `${c.n} ${c.title} · The AI-Native Engineer`;
+
+  const a = $('#article'); a.innerHTML='';
+  const head = el('header','ch-head',
+    `<span class="ch-num">${c.n}</span>
+     <h2 class="ch-title">${c.title}</h2>
+     <div class="ch-meta mono">${pill(c.status)} <span>${c.mins} min read</span> <span>·</span> <span>rev ${c.status==='live'?'a91f3c2':'unbuilt'}</span></div>`);
+  a.append(head);
+
+  if(c.sections.length){
+    const p = el('div','prose');
+    c.sections.forEach(s=>{
+      p.append(el('h3','',`<span class="sec">§ ${s.n}</span>${s.h}`).also(h=>h.id=s.id));
+      p.insertAdjacentHTML('beforeend', s.body);
+    });
+    a.append(p);
+  } else {
+    const t = STUB_TEXT[c.status];
+    const pts = (STUB_POINTS[c.n]||[]).map(x=>`<li>${x}</li>`).join('');
+    a.append(el('div','stub',`<h4>${t.h}</h4><p>${t.p}</p><ul class="prose" style="margin:0">${pts}</ul>`));
+  }
+
+  const pg = el('div','pager');
+  const prev = el('button','prev', `<span class="dir">← Previous</span><span class="nm">${i>0?BOOK[i-1].n+' '+BOOK[i-1].title:'—'}</span>`);
+  const next = el('button','next', `<span class="dir">Next →</span><span class="nm">${i<BOOK.length-1?BOOK[i+1].n+' '+BOOK[i+1].title:'—'}</span>`);
+  prev.disabled = i===0; next.disabled = i===BOOK.length-1;
+  prev.onclick=()=>open(i-1); next.onclick=()=>open(i+1);
+  pg.append(prev,next); a.append(pg);
+
+  buildToc(); buildOnPage(); wireCopy(); ticks();
+  $('#locus-text').textContent = `§ ${c.n} ${c.title}`;
+  window.scrollTo(0,0); measure();
+}
+Element.prototype.also = function(f){ f(this); return this; };
+
+function buildOnPage(){
+  const box = $('#onpage'); box.innerHTML='';
+  const c = BOOK[cur];
+  if(!c.sections.length){ box.innerHTML = '<p style="color:var(--ink-3);font-size:.8125rem;margin:0">Nothing to jump to yet.</p>'; return; }
+  c.sections.forEach(s=>{
+    const b = el('button','',s.h); b.dataset.for=s.id;
+    b.onclick=()=>jump(s.id); box.append(b);
+  });
+}
+function jump(id){ const t=document.getElementById(id); if(t) window.scrollTo({top:t.offsetTop+ $('#article').offsetTop - 68, behavior:'smooth'}); }
+
+/* ── scroll: progress bar, spine gauge, active section ─ */
+function measure(){
+  const doc = document.documentElement;
+  const max = doc.scrollHeight - window.innerHeight;
+  const pct = max>0 ? Math.min(1, window.scrollY/max) : 0;
+  $('#progress').style.width = (pct*100)+'%';
+  $('#gauge-fill').style.height = (pct*100)+'%';
+  $('#gauge-pct').textContent = Math.round(pct*100)+'%';
+
+  const secs = BOOK[cur].sections;
+  if(!secs.length) return;
+  let active = secs[0].id;
+  secs.forEach(s=>{ const e=document.getElementById(s.id); if(e && e.getBoundingClientRect().top < 140) active = s.id; });
+  document.querySelectorAll('#onpage button').forEach(b=>b.classList.toggle('on', b.dataset.for===active));
+}
+window.addEventListener('scroll', measure, {passive:true});
+window.addEventListener('resize', measure);
+
+/* build gauge ticks once per chapter render */
+function ticks(){
+  document.querySelectorAll('.gauge-tick').forEach(t=>t.remove());
+  const track = document.querySelector('.gauge-track');
+  const n = Math.max(1, BOOK[cur].sections.length);
+  for(let i=1;i<n;i++){ const t=el('div','gauge-tick'); t.style.top=(i/n*100)+'%'; track.append(t); }
+}
+
+/* ── copy buttons ────────────────────────────────────── */
+function wireCopy(){
+  document.querySelectorAll('.copy').forEach(b=>{
+    b.onclick = ()=>{
+      const txt = b.closest('figure').querySelector('pre').innerText;
+      navigator.clipboard?.writeText(txt);
+      b.textContent='Copied'; b.classList.add('done');
+      setTimeout(()=>{b.textContent='Copy'; b.classList.remove('done');},1400);
+    };
+  });
+}
+
+/* ── search ──────────────────────────────────────────── */
+const flat = [];
+BOOK.forEach((c,ci)=>c.sections.forEach(s=>{
+  const txt = s.body.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  flat.push({ci, id:s.id, label:`${c.n} · § ${s.n} ${s.h}`, txt});
+}));
+
+function search(term){
+  const box = $('#results'); box.innerHTML='';
+  if(!term.trim()){ box.innerHTML='<div class="empty">Type to search across published chapters.</div>'; return; }
+  const t = term.toLowerCase();
+  const hits = flat.filter(f=>f.txt.toLowerCase().includes(t) || f.label.toLowerCase().includes(t)).slice(0,10);
+  if(!hits.length){ box.innerHTML='<div class="empty">No matches. Try a different word.</div>'; return; }
+  hits.forEach(h=>{
+    const i = h.txt.toLowerCase().indexOf(t);
+    let snip = i>=0 ? h.txt.slice(Math.max(0,i-60), i+110) : h.txt.slice(0,150);
+    snip = snip.replace(new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'ig'), m=>`<mark>${m}</mark>`);
+    const b = el('button','',`<span class="r-ch">${h.label}</span><span class="r-tx">…${snip}…</span>`);
+    b.onclick=()=>{ closeSearch(); open(h.ci); setTimeout(()=>jump(h.id),60); };
+    box.append(b);
+  });
+}
+function openSearch(){ $('#search').classList.remove('hide'); $('#q').value=''; search(''); $('#q').focus(); }
+function closeSearch(){ $('#search').classList.add('hide'); }
+$('#q').addEventListener('input', e=>search(e.target.value));
+$('#search').addEventListener('click', e=>{ if(e.target.id==='search') closeSearch(); });
+
+/* ── chrome ──────────────────────────────────────────── */
+$('#btn-search').onclick = openSearch;
+$('#btn-theme').onclick = ()=>{
+  theme = theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme = theme;
+  $('#btn-theme').innerHTML = theme==='dark' ? '◐ <span>Light</span>' : '◑ <span>Dark</span>';
+};
+$('#btn-measure').onclick = ()=>{ mi=(mi+1)%3; document.documentElement.dataset.measure = measures[mi]; measure(); };
+$('#btn-cover').onclick = ()=>{
+  $('#reader').classList.add('hide'); $('#cover').classList.remove('hide');
+  $('#btn-cover').classList.add('hide'); $('#locus-text').textContent='Front cover';
+  document.title='The AI-Native Engineer'; window.scrollTo(0,0); measure();
+};
+$('#cta-read').onclick = ()=>open(0);
+
+/* mobile drawer */
+function closeDrawer(){ $('#toc').classList.remove('open'); $('#scrim').classList.add('hide'); }
+$('#menu-btn').onclick = ()=>{
+  if($('#cover').classList.contains('hide')===false) return open(0);
+  const o = $('#toc').classList.toggle('open');
+  $('#scrim').classList.toggle('hide', !o);
+};
+$('#scrim').onclick = closeDrawer;
+
+/* keyboard */
+document.addEventListener('keydown', e=>{
+  if(e.target.tagName==='INPUT'){ if(e.key==='Escape') closeSearch(); return; }
+  if(e.key==='/'){ e.preventDefault(); openSearch(); }
+  if(e.key==='Escape') closeSearch();
+  if($('#reader').classList.contains('hide')) return;
+  if(e.key==='ArrowRight' && cur<BOOK.length-1) open(cur+1);
+  if(e.key==='ArrowLeft' && cur>0) open(cur-1);
+  if(e.key==='t') $('#btn-theme').click();
+  if(e.key==='g') $('#btn-cover').click();
+});
+
+measure();
+</script>
+</body>
+</html>
