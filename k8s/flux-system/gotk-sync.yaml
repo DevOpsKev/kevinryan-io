@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: https://github.com/DevOpsKev/kevin-ryan-platform.git
+  url: https://github.com/kevin-ryan-associates/kra-platform.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
