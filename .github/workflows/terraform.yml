@@ -53,6 +53,7 @@ jobs:
           TF_VAR_cloudflare_zone_id_specmcp: ${{ secrets.CLOUDFLARE_ZONE_ID_SPECMCP }}
           TF_VAR_cloudflare_zone_id_sddbook: ${{ secrets.CLOUDFLARE_ZONE_ID_SDDBOOK }}
           TF_VAR_cloudflare_zone_id_distributedequity: ${{ secrets.CLOUDFLARE_ZONE_ID_DISTRIBUTEDEQUITY }}
+          TF_VAR_cloudflare_zone_id_ainativeengineer: ${{ secrets.CLOUDFLARE_ZONE_ID_AINATIVEENGINEER }}
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
           TF_VAR_github_token: ${{ secrets.FLUX_GITHUB_TOKEN }}
           TF_VAR_auth0_secret: ${{ secrets.TF_VAR_AUTH0_SECRET }}
@@ -132,6 +133,7 @@ jobs:
           TF_VAR_cloudflare_zone_id_specmcp: ${{ secrets.CLOUDFLARE_ZONE_ID_SPECMCP }}
           TF_VAR_cloudflare_zone_id_sddbook: ${{ secrets.CLOUDFLARE_ZONE_ID_SDDBOOK }}
           TF_VAR_cloudflare_zone_id_distributedequity: ${{ secrets.CLOUDFLARE_ZONE_ID_DISTRIBUTEDEQUITY }}
+          TF_VAR_cloudflare_zone_id_ainativeengineer: ${{ secrets.CLOUDFLARE_ZONE_ID_AINATIVEENGINEER }}
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
           TF_VAR_github_token: ${{ secrets.FLUX_GITHUB_TOKEN }}
           TF_VAR_auth0_secret: ${{ secrets.TF_VAR_AUTH0_SECRET }}
