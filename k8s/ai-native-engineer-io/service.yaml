@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-native-engineer-io
+  namespace: ai-native-engineer-io
+spec:
+  selector:
+    app: ai-native-engineer-io
+  ports:
+    - port: 80
+      targetPort: 8080

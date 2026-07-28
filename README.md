@@ -1,6 +1,6 @@
 # kevin-ryan-platform
 
-Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant). Hosts seven sites across five domains, deployed to a K3s Kubernetes cluster on Azure via Flux CD GitOps. Full documentation at [docs.kevinryan.io](https://docs.kevinryan.io).
+Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant). Hosts eight sites across six domains, deployed to a K3s Kubernetes cluster on Azure via Flux CD GitOps. Full documentation at [docs.kevinryan.io](https://docs.kevinryan.io).
 
 ## Sites
 
@@ -13,6 +13,7 @@ Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant).
 | SpecMCP | [specmcp.ai](https://specmcp.ai) | Static HTML |
 | SDD Book | [sddbook.com](https://sddbook.com) | Static HTML |
 | Distributed Equity | [distributedequity.org](https://distributedequity.org) | Static HTML |
+| AI-Native Engineer | [ai-native-engineer.io](https://ai-native-engineer.io) | Static HTML |
 
 ## Tech Stack
 
@@ -32,7 +33,7 @@ Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant).
 ## Architecture
 
 ```text
-Cloudflare (DNS + CDN + TLS) — 5 domain zones
+Cloudflare (DNS + CDN + TLS) — 6 domain zones
      │
      │  HTTPS (Full SSL mode)
      ▼
@@ -41,7 +42,7 @@ Azure Public IP (North Europe)
 │   ├── Traefik Ingress (host-based routing)
 │   ├── Flux CD (source, kustomize, helm controllers)
 │   ├── External Secrets Operator
-│   └── Site Deployments ×7 (nginx containers)
+│   └── Site Deployments ×8 (nginx containers)
 │
 ├── K3s Agent (node2 — Standard_B2s)
 │   ├── Grafana (monitoring.kevinryan.io)
@@ -128,7 +129,8 @@ kevin-ryan-platform/
 │   ├── aiimmigrants-com/      # Static HTML
 │   ├── specmcp-ai/            # Static HTML
 │   ├── sddbook-com/           # Static HTML
-│   └── distributedequity-org/ # Static HTML
+│   ├── distributedequity-org/ # Static HTML
+│   └── ai-native-engineer-io/ # Static HTML
 ├── pnpm-workspace.yaml
 ├── AGENTS.md                  # Agent rules and conventions
 ├── CLAUDE.md                  # Claude Code instructions
@@ -172,7 +174,7 @@ All infrastructure is defined in Terraform and deployed to Azure:
 | **Container Registry** | Azure Container Registry (ACR) + GHCR |
 | **Secrets** | Azure Key Vault, synced via External Secrets Operator |
 | **Database** | Azure PostgreSQL Flexible Server (Umami + Grafana) |
-| **DNS** | Cloudflare (5 zones, proxied with CDN caching + serve stale) |
+| **DNS** | Cloudflare (6 zones, proxied with CDN caching + serve stale) |
 | **CI/CD Auth** | GitHub Actions → Azure via OIDC (no stored secrets) |
 
 ### Bootstrap
@@ -272,7 +274,7 @@ az vm user update -g rg-kevinryan-io -n vm-kevinryan-node2 -u azureuser --ssh-ke
 
 | Service | URL | Purpose |
 |---------|-----|---------|
-| Umami | [analytics.kevinryan.io](https://analytics.kevinryan.io) | Privacy-focused web analytics (all 7 sites) |
+| Umami | [analytics.kevinryan.io](https://analytics.kevinryan.io) | Privacy-focused web analytics (all 8 sites) |
 | Grafana | [monitoring.kevinryan.io](https://monitoring.kevinryan.io) | Dashboards (Loki logs + VictoriaMetrics metrics) |
 
 ## Development Guidelines

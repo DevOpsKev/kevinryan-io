@@ -371,6 +371,13 @@ module "cloudflare_distributedequity" {
   domain       = "distributedequity.org"
 }
 
+module "cloudflare_ainativeengineer" {
+  source       = "./modules/cloudflare"
+  zone_id      = var.cloudflare_zone_id_ainativeengineer
+  vm_public_ip = module.network.public_ip_address
+  domain       = "ai-native-engineer.io"
+}
+
 module "github_oidc" {
   source                     = "./modules/github-oidc"
   github_repo_owner          = var.github_repo_owner

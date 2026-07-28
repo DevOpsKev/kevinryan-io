@@ -75,6 +75,11 @@ variable "cloudflare_zone_id_distributedequity" {
   type        = string
 }
 
+variable "cloudflare_zone_id_ainativeengineer" {
+  description = "Cloudflare zone ID for ai-native-engineer.io"
+  type        = string
+}
+
 variable "keyvault_name" {
   description = "Globally unique name for the Azure Key Vault (3-24 chars, alphanumeric + hyphens)"
   type        = string

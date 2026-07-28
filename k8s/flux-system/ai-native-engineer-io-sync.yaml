@@ -1,0 +1,12 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ai-native-engineer-io
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./k8s/ai-native-engineer-io
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system

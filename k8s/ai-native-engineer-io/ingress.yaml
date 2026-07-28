@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ai-native-engineer-io
+  namespace: ai-native-engineer-io
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ai-native-engineer.io`) || Host(`www.ai-native-engineer.io`)
+      kind: Rule
+      services:
+        - name: ai-native-engineer-io
+          port: 80
+  tls: {}
