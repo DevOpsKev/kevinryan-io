@@ -196,7 +196,7 @@ Create a `production` environment in GitHub repo settings (Settings → Environm
 
 ## Cluster Access
 
-Operators reach the two-node K3s cluster over SSH and run `kubectl`/`k9s` from a laptop via an SSH tunnel to the API. Port 6443 is **not** exposed in the NSG; traffic is source-restricted to a single admin IP tracked in the repo as `local.admin_ip` in [`infra/admin-allowlist.tf`](infra/admin-allowlist.tf). Full runbook: [`docs/node-access.md`](docs/node-access.md).
+Operators reach the two-node K3s cluster over SSH and run `kubectl`/`k9s` from a laptop via an SSH tunnel to the API. Port 6443 is **not** exposed in the NSG; traffic is source-restricted to a single admin IP tracked in the repo as `local.admin_ip` in [`infra/admin-allowlist.tf`](infra/admin-allowlist.tf) — currently `149.174.206.241/32` (edit it there, not here). Full runbook: [`docs/node-access.md`](docs/node-access.md).
 
 ### SSH into nodes
 
