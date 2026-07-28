@@ -4,7 +4,9 @@ FROM node:22.22.0-alpine3.23 AS build
 ARG COMMIT_SHA=dev
 ENV PUBLIC_COMMIT_SHA=${COMMIT_SHA}
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Pin pnpm 10.x: pnpm 11 turns ignored build scripts (esbuild/sharp) into a hard
+# ERR_PNPM_IGNORED_BUILDS error, which breaks this pruned workspace install.
+RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
 
 WORKDIR /app
 
