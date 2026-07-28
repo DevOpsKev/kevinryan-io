@@ -196,7 +196,7 @@ Create a `production` environment in GitHub repo settings (Settings → Environm
 
 ## Cluster Access
 
-Operators reach the two-node K3s cluster over SSH and run `kubectl`/`k9s` from a laptop via an SSH tunnel to the API. Port 6443 is **not** exposed in the NSG; traffic is source-restricted to a single admin IP (`admin_ip` in `infra/terraform.tfvars`). Full runbook: [`docs/node-access.md`](docs/node-access.md).
+Operators reach the two-node K3s cluster over SSH and run `kubectl`/`k9s` from a laptop via an SSH tunnel to the API. Port 6443 is **not** exposed in the NSG; traffic is source-restricted to a single admin IP tracked in the repo as `local.admin_ip` in [`infra/admin-allowlist.tf`](infra/admin-allowlist.tf). Full runbook: [`docs/node-access.md`](docs/node-access.md).
 
 ### SSH into nodes
 
@@ -240,10 +240,19 @@ The kubeconfig at `~/.kube/kr-k3s.yaml` is the K3s admin credential (copied from
 
 ### When your public IP changes
 
-Uploads to `ssh` mean your IP rotated. Update the `AllowSSH` NSG rule (Azure CLI) or `admin_ip` in `infra/terraform.tfvars` + `terraform apply`:
+Uploads to `ssh` mean your IP rotated. The admin allowlist IP is the `local.admin_ip` CIDR in [`infra/admin-allowlist.tf`](infra/admin-allowlist.tf) — update it, commit, and push to `main`. The **Terraform Plan and Apply** workflow (`.github/workflows/terraform.yml`) plans the change automatically and applies it in the `production` environment after a one-click reviewer approval. The plan should show a single change: NSG `AllowSSH` `source_address_prefix`.
 
 ```bash
-# CLI shortcut (touches only the NSG rule, no VM impact)
+# 1. Edit infra/admin-allowlist.tf → local.admin_ip = "<your new IP>/32"
+# 2. Commit and push to main
+git add infra/admin-allowlist.tf
+git commit -m "Update admin SSH allowlist IP to new dedicated IP"
+git push origin main
+```
+
+Emergency (non-IaC) shortcut — touches only the NSG rule, no VM impact. Reconcile Terraform afterwards by making the same edit in `infra/admin-allowlist.tf` so state stays in sync:
+
+```bash
 az network nsg rule update \
   -g rg-kevinryan-io --nsg-name nsg-kevinryan-io -n AllowSSH \
   --source-address-prefixes $(curl -s https://ifconfig.me)/32

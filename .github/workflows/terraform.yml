@@ -48,7 +48,6 @@ jobs:
           ARM_USE_OIDC: "true"
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_admin_ssh_public_key: ${{ secrets.ADMIN_SSH_PUBLIC_KEY }}
-          TF_VAR_admin_ip: ${{ secrets.ADMIN_IP }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_cloudflare_zone_id_aiimmigrants: ${{ secrets.CLOUDFLARE_ZONE_ID_AIIMMIGRANTS }}
           TF_VAR_cloudflare_zone_id_specmcp: ${{ secrets.CLOUDFLARE_ZONE_ID_SPECMCP }}
@@ -128,7 +127,6 @@ jobs:
           ARM_USE_OIDC: "true"
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_admin_ssh_public_key: ${{ secrets.ADMIN_SSH_PUBLIC_KEY }}
-          TF_VAR_admin_ip: ${{ secrets.ADMIN_IP }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_cloudflare_zone_id_aiimmigrants: ${{ secrets.CLOUDFLARE_ZONE_ID_AIIMMIGRANTS }}
           TF_VAR_cloudflare_zone_id_specmcp: ${{ secrets.CLOUDFLARE_ZONE_ID_SPECMCP }}

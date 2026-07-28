@@ -55,7 +55,7 @@ data "azurerm_storage_account" "tfstate" {
 module "network" {
   source   = "./modules/network"
   location = var.location
-  admin_ip = var.admin_ip
+  admin_ip = local.admin_ip
 }
 
 module "node1" {

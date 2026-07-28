@@ -21,11 +21,6 @@ variable "admin_ssh_public_key" {
   type        = string
 }
 
-variable "admin_ip" {
-  description = "Admin IP address for SSH access (CIDR notation, e.g. 1.2.3.4/32)"
-  type        = string
-}
-
 variable "cloudflare_api_token" {
   description = "Cloudflare API token"
   type        = string
