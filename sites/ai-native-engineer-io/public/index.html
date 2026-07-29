@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-GB" data-theme="dark" data-measure="normal">
+<html lang="en-GB" data-measure="normal">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,19 +37,12 @@
 
   --hair:1px;
   --ease:cubic-bezier(.2,.7,.3,1);
-}
 
-html[data-theme="dark"]{
+  /* Dark ground only — no light theme. */
   --bg:var(--n0); --bg-raise:#333A47; --bg-sink:#292F3A;
   --line:#3F4756; --line-soft:#373E4B;
   --ink:var(--n6); --ink-2:var(--n4); --ink-3:#8892A4;
   --accent:var(--f1); --accent-2:var(--f2); --accent-ink:var(--n0);
-}
-html[data-theme="light"]{
-  --bg:var(--n6); --bg-raise:#FFFFFF; --bg-sink:var(--n5);
-  --line:#CDD5E0; --line-soft:#DDE3EC;
-  --ink:var(--n0); --ink-2:#3B4252; --ink-3:#6B7688;
-  --accent:var(--f3); --accent-2:#4C6E9C; --accent-ink:var(--n6);
 }
 
 html[data-measure="wide"]{ --measure:82ch; --read:1.125rem; }
@@ -229,12 +222,10 @@ figure.code figcaption{
   font-family:var(--mono);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
 }
 figure.code pre{margin:0;padding:16px;overflow-x:auto;font-family:var(--mono);font-size:.8125rem;line-height:1.65;color:var(--n4)}
-html[data-theme="light"] figure.code pre{color:var(--n1)}
 .copy{font-family:var(--mono);font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .copy:hover{color:var(--accent)}
 .copy.done{color:var(--a-green)}
 .k{color:var(--f2)} .s{color:var(--a-green)} .c{color:var(--n3)} .y{color:var(--a-yellow)} .p{color:var(--a-purple)}
-html[data-theme="light"] .c{color:#8A93A5}
 code.inline{font-family:var(--mono);font-size:.875em;background:var(--bg-sink);border:var(--hair) solid var(--line-soft);padding:1px 5px}
 
 /* callout */
@@ -339,7 +330,7 @@ kbd{border:var(--hair) solid var(--line);padding:1px 6px;font-family:var(--mono)
   <div class="tools">
     <button class="tool" id="btn-search" aria-label="Search the book">⌕ <span>Search</span></button>
     <button class="tool" id="btn-measure" aria-label="Change text size">Aa</button>
-    <button class="tool" id="btn-theme" aria-label="Switch to light mode">◐ <span>Light</span></button>
+    
     <button class="tool hide" id="btn-cover">← <span>Cover</span></button>
   </div>
 </header>
@@ -723,11 +714,6 @@ $('#search').addEventListener('click', e=>{ if(e.target.id==='search') closeSear
 
 /* ── chrome ──────────────────────────────────────────── */
 $('#btn-search').onclick = openSearch;
-$('#btn-theme').onclick = ()=>{
-  theme = theme==='dark'?'light':'dark';
-  document.documentElement.dataset.theme = theme;
-  $('#btn-theme').innerHTML = theme==='dark' ? '◐ <span>Light</span>' : '◑ <span>Dark</span>';
-};
 $('#btn-measure').onclick = ()=>{ mi=(mi+1)%3; document.documentElement.dataset.measure = measures[mi]; measure(); };
 $('#btn-cover').onclick = ()=>{
   $('#reader').classList.add('hide'); $('#cover').classList.remove('hide');
@@ -753,7 +739,6 @@ document.addEventListener('keydown', e=>{
   if($('#reader').classList.contains('hide')) return;
   if(e.key==='ArrowRight' && cur<BOOK.length-1) open(cur+1);
   if(e.key==='ArrowLeft' && cur>0) open(cur-1);
-  if(e.key==='t') $('#btn-theme').click();
   if(e.key==='g') $('#btn-cover').click();
 });
 
