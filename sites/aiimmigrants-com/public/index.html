@@ -71,6 +71,7 @@ header.bar{position:sticky;top:0;z-index:80;background:var(--bg);border-bottom:v
 .bar-in{display:flex;align-items:center;justify-content:space-between;height:52px;gap:var(--sp-2)}
 .mark{display:flex;align-items:center;min-width:0}
 .mark b{font-family:var(--sub);font-weight:700;font-size:1.0625rem;letter-spacing:-.01em;white-space:nowrap;text-transform:uppercase}
+.mark b .im{color:var(--accent)}
 .bar nav{display:flex;align-items:center;height:100%}
 .bar nav a{
   height:52px;padding:0 var(--sp-2);display:flex;align-items:center;gap:6px;
@@ -221,7 +222,7 @@ footer{border-top:var(--hair) solid var(--line);padding-top:30px;padding-bottom:
 
 <header class="bar">
   <div class="bar-in wrap">
-    <a class="mark" href="#top"><b>AI Immigrants</b></a>
+    <a class="mark" href="#top"><b><span class="ai">AI</span> <span class="im">Immigrants</span></b></a>
     <nav>
       <a href="#premise" class="opt">Premise</a>
       <a href="#chapters">Chapters</a>
