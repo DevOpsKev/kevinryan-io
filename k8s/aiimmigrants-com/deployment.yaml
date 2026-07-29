@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: aiimmigrants-com
-          image: kevinryanacr.azurecr.io/aiimmigrants-com:21bbf81
+          image: kevinryanacr.azurecr.io/aiimmigrants-com:599f0ec
           ports:
             - containerPort: 8080
           livenessProbe:
