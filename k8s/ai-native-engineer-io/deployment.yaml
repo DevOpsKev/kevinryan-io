@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ai-native-engineer-io
-          image: kevinryanacr.azurecr.io/ai-native-engineer-io:5bf3e5d
+          image: kevinryanacr.azurecr.io/ai-native-engineer-io:090a1c3
           ports:
             - containerPort: 8080
           livenessProbe:
