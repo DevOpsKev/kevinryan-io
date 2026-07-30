@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import SiteFooter from '@/components/SiteFooter'
 import AssessmentContactForm from '@/components/AssessmentContactForm'
 
 export const metadata: Metadata = {
@@ -851,7 +850,6 @@ export default function AssessmentPage() {
           </div>
         </section>
       </div>
-      <SiteFooter />
     </>
   )
 }

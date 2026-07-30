@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body>
         <SiteHeader />
         {children}
+        <SiteFooter />
         <Script
           src="https://analytics.kevinryan.io/script.js"
           data-website-id="155819eb-1dde-475a-95ed-9bc0b1b161b6"

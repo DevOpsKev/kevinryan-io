@@ -12,7 +12,6 @@ import TimelineSection from "@/components/sections/TimelineSection"
 import WritingSection from "@/components/sections/WritingSection"
 import CertificationsSection from "@/components/sections/CertificationsSection"
 import ContactSection from "@/components/sections/ContactSection"
-import SiteFooter from "@/components/SiteFooter"
 
 export default function Page() {
   useRevealOnScroll()
@@ -30,7 +29,6 @@ export default function Page() {
       <WritingSection />
       <CertificationsSection />
       <ContactSection />
-      <SiteFooter />
     </main>
   )
 }
