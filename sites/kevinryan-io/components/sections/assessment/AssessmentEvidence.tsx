@@ -14,7 +14,7 @@ export default function AssessmentEvidence() {
         <div className="section-number">06</div>
         <div className="section-label">Evidence Base</div>
         <h2>RESEARCH-BACKED. NOT OPINION-BASED.</h2>
-        <p className="subtitle" style={{ marginBottom: '1rem' }}>
+        <p className="subtitle mb-4">
           This assessment is grounded in the 2025 DORA AI Capabilities Model — the most comprehensive study of AI in software development to date. Every capability, every outcome measure, every team archetype is validated through rigorous research.
         </p>
         <div className="evidence-grid">

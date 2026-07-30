@@ -12,9 +12,8 @@ The portfolio site at <a href="https://kevinryan.io" target="_blank" rel="noopen
 | Next.js | 16.1.4 | React framework (App Router, static export) |
 | React | 19.2.3 | UI library |
 | TypeScript | ^5 | Type safety (strict mode) |
-| Tailwind CSS | ^4 | Utility-first styling |
-| DaisyUI | ^5.5.14 | Tailwind component library |
-| PostCSS | ^8.5.6 | CSS processing |
+| Tailwind CSS | ^4 | Utility-first styling (@theme token source) |
+| PostCSS | ^8.5.6 | CSS processing via @tailwindcss/postcss |
 | Fitty | ^2.4.2 | Responsive text fitting |
 | ESLint | ^9 | Linting (with eslint-config-next) |
 
@@ -30,18 +29,17 @@ graph TD
     subgraph components["Components"]
         header["SiteHeader"]
         footer["SiteFooter"]
-        sections["Section components ×11"]
+        sections["Section components ×20"]
     end
 
     subgraph styling["Styling"]
-        tw["Tailwind CSS 4"]
-        daisy["DaisyUI"]
-        globals["globals.css<br/>(CSS variables)"]
+        tw["Tailwind CSS 4 (@theme tokens)"]
+        globals["globals.css<br/>(tokens + component classes)"]
     end
 
     layout --> header & footer
     home --> sections
-    sections --> tw & daisy
+    sections --> tw & globals
 ```
 
 ## Configuration
@@ -68,12 +66,18 @@ graph TD
 ```text
 sites/kevinryan-io/
 ├── app/
-│   ├── layout.tsx              # Root layout (fonts, analytics, header)
+│   ├── layout.tsx              # Root layout (fonts, analytics, header, footer)
 │   ├── page.tsx                # Home page (section composition)
-│   └── globals.css             # Tailwind imports + CSS variables
+│   ├── ai-native-readiness-assessment/
+│   │   └── page.tsx            # Assessment page (9 section components)
+│   └── globals.css             # @theme tokens + component classes (.section, .case, #assessment-root scoping)
 ├── components/
-│   ├── SiteHeader.tsx          # Fixed navigation with mobile menu
-│   ├── SiteFooter.tsx          # Footer with commit SHA
+│   ├── SiteHeader.tsx          # Fixed navigation (next/link) with mobile menu
+│   ├── SiteFooter.tsx          # Footer with commit SHA (rendered by root layout)
+│   ├── Container.tsx           # Max-width 1400px wrapper (replaces old CONTAINER constant)
+│   ├── SectionHeader.tsx       # Reusable section number/subtitle/title header
+│   ├── Reveal.tsx              # Scroll-reveal wrapper (.reveal class)
+│   ├── AssessmentContactForm.tsx
 │   └── sections/
 │       ├── HeroSection.tsx
 │       ├── TickerBar.tsx
@@ -85,11 +89,19 @@ sites/kevinryan-io/
 │       ├── TimelineSection.tsx
 │       ├── WritingSection.tsx
 │       ├── CertificationsSection.tsx
-│       └── ContactSection.tsx
+│       ├── ContactSection.tsx
+│       └── assessment/         # Assessment page sections
+│           ├── AssessmentHero.tsx
+│           ├── AssessmentProblem.tsx
+│           ├── AssessmentCapabilities.tsx
+│           ├── AssessmentEngagement.tsx
+│           ├── AssessmentDeliverables.tsx
+│           ├── AssessmentAudience.tsx
+│           ├── AssessmentEvidence.tsx
+│           ├── AssessmentCredibility.tsx
+│           └── AssessmentCta.tsx
 ├── hooks/
 │   └── useRevealOnScroll.ts    # IntersectionObserver for scroll animations
-├── lib/
-│   └── constants.ts            # Layout constants (container config)
 ├── public/                     # Static assets (images, favicons)
 ├── Dockerfile
 ├── nginx.conf
@@ -118,17 +130,38 @@ The home page is a composition of section components rendered in sequence. Each 
 1. **CertificationsSection** — professional certifications
 1. **ContactSection** — contact details
 
+The root layout (`app/layout.tsx`) renders `SiteHeader` and `SiteFooter` once for every route, so individual pages only compose their own section content.
+
+### Assessment Page
+
+`/ai-native-readiness-assessment` composes 9 section components from `components/sections/assessment/` (Hero, Problem, Capabilities, Engagement, Deliverables, Audience, Evidence, Credibility, Cta) inside a single `#assessment-root` wrapper. The page file is ~30 lines; all content lives in the components.
+
 ## Styling
 
-### Tailwind CSS 4
+### Tailwind CSS 4 (`@theme`)
 
-Tailwind is imported via the new v4 CSS-first configuration:
+Tailwind v4 is configured CSS-first. The entire brand palette and typography scale live in a single `@theme` block in `globals.css`, which generates real Tailwind utilities (`bg-accent`, `text-grey-400`, `font-display`, …):
 
 ```css
 @import "tailwindcss";
+@theme {
+  --color-accent: #A8E10C;
+  --color-accent-dim: #92C40A;
+  --color-black: #0A0A0A;
+  /* …grey/dark/white/pure-white… */
+  --font-sans: 'Archivo', …;
+  --font-display: 'Bebas Neue', …;
+}
 ```
 
-PostCSS processes Tailwind via `@tailwindcss/postcss`. Custom CSS variables define the brand colour palette and typography scale in `globals.css`.
+Components use Tailwind utility classes for layout and one-off styling. A small set of
+reusable composite classes (`.section`, `.section--dark`, `.case`, `.timeline__*`,
+`.reveal`, `.nav-link`) live in `globals.css` for repeated patterns that would
+otherwise blow up component files or require `::after`/`@keyframes` (not expressible
+as utilities). Assessment-page-specific classes are scoped under `#assessment-root`
+so they never leak to the home page. No inline `style={{}}` objects are used (one
+justified exception: the HeroSection dual-gradient grid texture). DaisyUI was
+removed (it was a phantom dependency, never activated).
 
 ### Fonts
 
@@ -142,15 +175,11 @@ Five Google Fonts are loaded in the root layout:
 | DM Sans | 300–700 | Secondary body text |
 | JetBrains Mono | 400–700 | Code and monospace |
 
-### DaisyUI
-
-DaisyUI provides pre-built Tailwind components (buttons, cards, navigation). It is installed as a dev dependency and integrated via the Tailwind plugin system.
-
 ## Client-Side Patterns
 
 ### Scroll Reveal
 
-The `useRevealOnScroll` hook uses the `IntersectionObserver` API to add a `.revealed` class to elements with the `.reveal` class when they enter the viewport. This drives CSS-based entrance animations without a third-party animation library.
+The `useRevealOnScroll` hook uses the `IntersectionObserver` API to add a `.visible` class to elements with the `.reveal` class when they enter the viewport. This drives CSS-based entrance animations without a third-party animation library.
 
 ### Responsive Text (Fitty)
 

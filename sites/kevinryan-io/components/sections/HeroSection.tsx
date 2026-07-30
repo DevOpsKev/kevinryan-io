@@ -50,10 +50,12 @@ export default function HeroSection() {
               </div>
 
               <h1 className="mb-2">
-                {/* eslint-disable-next-line @next/next/no-img-element -- SVG logo; Phase 5 candidate */}
-                <img
+                <Image
                   src="/kevin-ryan-logo-outlined.svg"
                   alt="Kevin Ryan & Associates"
+                  width={540}
+                  height={480}
+                  priority
                   className="w-[clamp(280px,45vw,540px)] h-auto"
                 />
               </h1>

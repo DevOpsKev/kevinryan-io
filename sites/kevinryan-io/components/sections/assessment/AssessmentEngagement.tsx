@@ -14,7 +14,7 @@ export default function AssessmentEngagement() {
         <div className="section-number">03</div>
         <div className="section-label">The Engagement</div>
         <h2>HOW IT WORKS.</h2>
-        <p className="subtitle" style={{ marginBottom: '1rem' }}>
+        <p className="subtitle mb-4">
           Four phases. Discrete deliverables at each stage. A clear narrative arc from diagnosis to action.
         </p>
         <div className="phase-grid">

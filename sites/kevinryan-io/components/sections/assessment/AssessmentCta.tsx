@@ -14,7 +14,7 @@ export default function AssessmentCta() {
               We&rsquo;ll talk through the fit, the scope, and what works for your context.
               No pitch deck. Just a conversation.
             </p>
-            <p className="subtitle" style={{ marginTop: '1.5rem' }}>
+            <p className="subtitle mt-6">
               You can also reach me directly at{' '}
               <a href="mailto:kevin@kevinryan.io">kevin@kevinryan.io</a> or connect on{' '}
               <a href="https://linkedin.com/in/devopskev">LinkedIn</a>.
