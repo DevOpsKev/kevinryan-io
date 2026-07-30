@@ -2,11 +2,25 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+
+/* Self-hosted fonts. No third party request on page load.
+   Display: Space Grotesk. Body: IBM Plex Sans. Structure: IBM Plex Mono. */
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/600.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-sans/400-italic.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kevin Ryan | DevOps Engineer · Platform Engineer · AI-Native · Author",
-  description: "Senior DevOps and Platform Engineering contractor with 30 years embedding with enterprise clients and making complex technology work in production. CI/CD, Kubernetes, Terraform, AI governance. CERN, Nestlé, NatWest, BBC Worldwide, Financial Times, Dematic.",
+  title: "Kevin Ryan & Associates | AI-Native Engineering · Platform Engineering",
+  description:
+    "Thirty years embedding with enterprise clients and making complex technology work in production. AI-native engineering, platform engineering, delivery management and AI governance. CERN, Nestlé, NatWest, BBC Worldwide, Financial Times, Dematic.",
 };
 
 export default function RootLayout({
@@ -15,12 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bebas+Neue&family=Work+Sans:wght@300;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en-GB">
       <body>
         <SiteHeader />
         {children}

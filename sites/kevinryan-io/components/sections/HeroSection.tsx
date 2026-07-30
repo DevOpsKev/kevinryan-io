@@ -1,123 +1,109 @@
-'use client'
-
 import Image from "next/image"
 import Container from "@/components/Container"
 
-const TAGS = ['AI-Native', 'DevEx', 'Platform', 'Author']
+const INDEX = [
+  { n: '01', href: '#about', t: 'About', x: 'Systems' },
+  { n: '02', href: '#capabilities', t: 'Capabilities', x: '6' },
+  { n: '03', href: '#delivery', t: 'Enterprise delivery', x: '6' },
+  { n: '04', href: '#clients', t: 'Notable clients', x: '20' },
+  { n: '05', href: '#timeline', t: 'Career arc', x: '1995 →' },
+  { n: '06', href: '#projects', t: 'Published work', x: '3' },
+  { n: '07', href: '#certs', t: 'Certifications', x: '14' },
+  { n: '08', href: '#contact', t: 'Contact', x: '↓' },
+]
+
+const META = [
+  { k: 'Practice', v: 'AI-Native Engineering · Platform Engineering' },
+  { k: 'Entity', v: 'Kevin Ryan & Associates' },
+  { k: 'Experience', v: '30 years · 40+ enterprise clients' },
+  { k: 'Certified', v: 'GitLab ×6 · GitHub ×4 · LaunchDarkly ×4' },
+]
 
 export default function HeroSection() {
   return (
-    <>
-      <section className="hero-section flex flex-col justify-end pt-28 min-h-screen relative overflow-hidden">
-        {/* Grid texture background */}
-        {/* justify: dual cross-hatch grid texture — two stacked linear-gradients, not expressible as a single Tailwind utility */}
-        <div
-          className="absolute inset-0 z-0 opacity-25 pointer-events-none"
-          style={{
-            backgroundImage:
-              'linear-gradient(var(--color-grey-200) 1px, transparent 1px), linear-gradient(90deg, var(--color-grey-200) 1px, transparent 1px)',
-            backgroundSize: '80px 80px',
-          }}
-        />
+    <section className="section cover" id="top">
+      <Container>
+        <div className="cover__grid">
+          <div className="cover__main">
+            <p className="avail">
+              <span><span className="dot" />Available for contract</span>
+              <span className="avail__sep">/</span>
+              <span>Remote first</span>
+              <span className="avail__sep">/</span>
+              <span>Budapest · Dublin · London</span>
+            </p>
 
-        <Container className="relative z-10">
-          {/* Top bar: section number + availability */}
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-[clamp(2rem,4vw,4rem)]">
-            <span className="font-display text-[clamp(3rem,5vw,5rem)] text-accent leading-none">
-              00
-            </span>
-            <div className="flex items-center gap-[0.7rem]">
-              <span className="hero-dot inline-block h-[9px] w-[9px] rounded-full bg-accent" />
-              <span className="font-bold text-[0.7rem] tracking-[0.18em] uppercase text-grey-600">
-                Available for contract
-              </span>
-            </div>
-          </div>
+            <h1 className="t-display">Kevin <em>Ryan</em></h1>
 
-          {/* Main two-column grid */}
-          <div className="hero-grid grid items-center pb-16 grid-cols-[1.1fr_0.9fr] gap-[clamp(2rem,4vw,5rem)]">
-            {/* Text column */}
-            <div>
-              <div className="flex flex-wrap text-[0.7rem] font-bold tracking-[0.18em] uppercase text-accent-dim mb-6 gap-6">
-                {TAGS.map((item, i, arr) => (
-                  <span key={item}>
-                    {item}
-                    {i < arr.length - 1 && (
-                      <span className="ml-6 text-accent font-black">·</span>
-                    )}
-                  </span>
-                ))}
-              </div>
+            <p className="t-lead" style={{ maxWidth: '52ch', marginBottom: 'var(--sp-3)' }}>
+              I used to direct teams of software engineers. Now I coordinate AI agents.
+            </p>
 
-              <h1 className="font-display leading-[0.86] tracking-[0.02em] uppercase text-black text-[clamp(3rem,8vw,6rem)] mb-2">
-                Kevin <span className="text-accent">Ryan</span>
-              </h1>
+            <hr className="rule--accent" />
 
-              {/* Lime rule */}
-              <div className="w-[100px] h-1 bg-accent my-7" />
-
-              {/* Description */}
-              <p className="text-[1.05rem] leading-[1.7] text-grey-600 max-w-[500px] mb-9">
-                I used to direct teams of software engineers. Now I coordinate AI agents. A career building software and shipping products taught me the job was never about the tools &mdash; it&rsquo;s specification, role clarity, and amplifying human ingenuity. The tools change. The reality is, it still takes great teams of people to build great products. Agents just mean we do it faster.
+            <div className="prose" style={{ maxWidth: '54ch' }}>
+              <p>
+                A career building software and shipping products taught me the job was never
+                about the tools. It is specification, role clarity and amplifying human
+                ingenuity. The tools change. It still takes great teams of people to build
+                great products. Agents just mean we do it faster.
               </p>
-
-              {/* CTAs */}
-              <div className="flex items-center gap-4">
-                <a
-                  href="#contact"
-                  className="inline-flex items-center text-[0.72rem] font-extrabold tracking-[0.14em] uppercase px-[1.1rem] py-4 bg-black border-2 border-black text-white transition-all duration-200 hover:bg-accent hover:border-accent hover:text-black"
-                >
-                  Get in touch
-                </a>
-                <a
-                  href="#delivery"
-                  className="inline-flex items-center text-[0.72rem] font-extrabold tracking-[0.14em] uppercase px-[1.1rem] py-4 bg-transparent border-2 border-grey-200 text-black transition-all duration-200 hover:border-black"
-                >
-                  Case studies
-                </a>
-              </div>
             </div>
 
-            {/* Photo column */}
-            <div className="hero-image-col">
-              <div className="hero-image-frame relative aspect-[3/4] overflow-hidden bg-black">
-                <Image
-                  src="/kevin.jpg"
-                  alt="Kevin Ryan"
-                  fill
-                  className="object-cover grayscale opacity-90"
-                  priority
-                />
-                {/* Lime stripe */}
-                <div className="absolute bottom-0 left-0 right-0 h-[5px] bg-accent" />
-                {/* Badge top-left */}
-                <div className="absolute top-6 left-6 bg-black/85 backdrop-blur-[8px] px-5 py-3 font-bold text-[0.65rem] tracking-[0.14em] uppercase text-white">
-                  Remote First
+            <div className="actions">
+              <a className="btn btn--primary" href="#contact">Get in touch</a>
+              <a className="btn" href="#delivery">Case studies <small>· 6</small></a>
+              <a className="btn" href="https://docs.kevinryan.io" target="_blank" rel="noopener noreferrer">
+                Documentation ↗
+              </a>
+            </div>
+
+            <div className="meta-panel" style={{ marginTop: 'var(--sp-4)', maxWidth: 520 }}>
+              {META.map((r) => (
+                <div className="row" key={r.k}>
+                  <span className="k">{r.k}</span>
+                  <span className="v">{r.v}</span>
                 </div>
-                {/* Location bottom-left */}
-                <div className="absolute bottom-6 left-6 font-bold text-[0.65rem] tracking-[0.14em] uppercase text-white">
-                  Budapest <span className="text-accent">·</span> Dublin
-                </div>
+              ))}
+              <div className="row">
+                <span className="k">Platform</span>
+                <span className="v">
+                  <a href="https://docs.kevinryan.io" target="_blank" rel="noopener noreferrer">
+                    docs.kevinryan.io
+                  </a>
+                </span>
+              </div>
+              <div className="row">
+                <span className="k">Status</span>
+                <span className="v"><span className="dot" />Building in public</span>
               </div>
             </div>
           </div>
-        </Container>
-      </section>
 
-      <style jsx>{`
-        .hero-dot {
-          animation: heroPulse 2s ease-in-out infinite;
-        }
-        @keyframes heroPulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(168,225,12,0.4); }
-          50% { box-shadow: 0 0 0 7px rgba(168,225,12,0); }
-        }
-        @media (max-width: 768px) {
-          .hero-image-col { order: -1; }
-          .hero-image-frame { aspect-ratio: 1 / 1 !important; }
-          .hero-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-    </>
+          <aside className="cover__side">
+            <figure className="portrait" style={{ margin: '0 0 var(--sp-5)' }}>
+              <div className="portrait__frame">
+                <Image src="/kevin.jpg" alt="Kevin Ryan" fill priority sizes="(max-width: 900px) 100vw, 420px" />
+              </div>
+              <figcaption className="portrait__caption">
+                <span>Kevin Ryan</span>
+                <span>Budapest · Dublin</span>
+              </figcaption>
+            </figure>
+
+            <p className="label" style={{ marginBottom: 'var(--sp-2)' }}>On this page</p>
+            <nav>
+              {INDEX.map((i) => (
+                <a className="index-row" href={i.href} key={i.n}>
+                  <span className="n">{i.n}</span>
+                  <span className="t">{i.t}</span>
+                  <span className="x">{i.x}</span>
+                </a>
+              ))}
+            </nav>
+          </aside>
+        </div>
+      </Container>
+    </section>
   )
 }

@@ -1,6 +1,3 @@
-'use client'
-
-import { useRevealOnScroll } from "@/hooks/useRevealOnScroll"
 import HeroSection from "@/components/sections/HeroSection"
 import TickerBar from "@/components/sections/TickerBar"
 import DocsBanner from "@/components/sections/DocsBanner"
@@ -14,8 +11,6 @@ import CertificationsSection from "@/components/sections/CertificationsSection"
 import ContactSection from "@/components/sections/ContactSection"
 
 export default function Page() {
-  useRevealOnScroll()
-
   return (
     <main>
       <HeroSection />

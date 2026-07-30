@@ -1,39 +1,35 @@
+import { Fragment } from 'react'
 import Container from '@/components/Container'
 import SectionHeader from '@/components/SectionHeader'
-import Reveal from '@/components/Reveal'
 
 const TIMELINE = [
   { date: "Mid-1990s", title: "Software Engineer", desc: "Writing code. Foundation layer." },
-  { date: "Late 1990s", title: "XP, TDD, BDD, CI/CD", desc: "Super early adopter. These practices were fringe — most teams hadn't heard of them." },
+  { date: "Late 1990s", title: "XP, TDD, BDD, CI/CD", desc: "Super early adopter. These practices were fringe. Most teams had not heard of them." },
   { date: "2000s", title: "Agile & Scrum", desc: "Adopted agile methodologies before they became the industry default." },
-  { date: "2007–2016", title: "Agile Transformation", desc: "Barclays, Heathrow, Pearson, Financial Times, BBC Worldwide, EY, McKinsey. UK Agile Award 2014." },
-  { date: "2010s", title: "Cloud & Containerisation", desc: "Cloud-native development and Infrastructure as Code before it was mainstream." },
-  { date: "2012–2018", title: "DevOps & DORA Metrics", desc: "Nicole Forsgren's Accelerate as a personal touchstone. DORA four key metrics as the governance framework." },
-  { date: "2014–2020", title: "Platform Engineering", desc: "Nestlé, Dematic, CERN. DevEx and developer productivity before it had its own conference circuit." },
-  { date: "2020 →", title: "AI-Native Engineering", desc: "GitHub Copilot beta. Writing Spec Driven Development. The next level of abstraction — and I'm early again." },
+  { date: "2007 – 2016", title: "Agile Transformation", desc: "Barclays, Heathrow, Pearson, Financial Times, BBC Worldwide, EY, McKinsey. UK Agile Award 2014." },
+  { date: "2010s", title: "Cloud & Containerisation", desc: "Cloud-native development and infrastructure as code before it was mainstream." },
+  { date: "2012 – 2018", title: "DevOps & DORA Metrics", desc: "Nicole Forsgren's Accelerate as a personal touchstone. DORA four key metrics as the governance framework." },
+  { date: "2014 – 2020", title: "Platform Engineering", desc: "Nestlé, Dematic, CERN. DevEx and developer productivity before it had its own conference circuit." },
+  { date: "2020 →", title: "AI-Native Engineering", desc: "GitHub Copilot beta. Writing The AI-Native Engineer. The next level of abstraction, and I am early again." },
 ]
 
 export default function TimelineSection() {
   return (
-    <section className="section section--dark" id="timeline">
+    <section className="section section--sink" id="timeline">
       <Container>
-        <SectionHeader number="05" subtitle="Career Arc" title={<>Early to<br />Every Wave</>} />
-        <Reveal>
+        <SectionHeader subtitle="Career arc" title="Early to every wave" />
+        <div className="tl">
           {TIMELINE.map((t) => (
-            <div key={t.date} className="timeline__item">
-              <div className="timeline__date">
-                <div className="timeline__date-text">{t.date}</div>
+            <Fragment key={t.date}>
+              <div className="tl__when"><span>{t.date}</span></div>
+              <div className="tl__spine"><span className="tl__mark" /></div>
+              <div className="tl__what">
+                <h3>{t.title}</h3>
+                <p>{t.desc}</p>
               </div>
-              <div className="timeline__line">
-                <div className="timeline__dot" />
-              </div>
-              <div className="timeline__content">
-                <h4 className="timeline__title">{t.title}</h4>
-                <p className="timeline__desc">{t.desc}</p>
-              </div>
-            </div>
+            </Fragment>
           ))}
-        </Reveal>
+        </div>
       </Container>
     </section>
   )

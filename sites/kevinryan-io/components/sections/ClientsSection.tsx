@@ -1,6 +1,5 @@
 import Container from '@/components/Container'
 import SectionHeader from '@/components/SectionHeader'
-import Reveal from '@/components/Reveal'
 
 const CLIENTS = [
   { name: "Accenture", url: "https://www.accenture.com" },
@@ -27,14 +26,16 @@ const CLIENTS = [
 
 export default function ClientsSection() {
   return (
-    <section className="section">
+    <section className="section" id="clients">
       <Container>
-        <SectionHeader number="04" subtitle="Notable Clients" title={<>Who I&rsquo;ve<br />Worked With</>} />
-        <Reveal className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <SectionHeader subtitle="Notable clients" title="Who I have worked with" />
+        <div className="clients">
           {CLIENTS.map((c) => (
-            <a key={c.name} href={c.url} target="_blank" rel="noopener noreferrer" className="client">{c.name}</a>
+            <a className="client" key={c.name} href={c.url} target="_blank" rel="noopener noreferrer">
+              {c.name}
+            </a>
           ))}
-        </Reveal>
+        </div>
       </Container>
     </section>
   )

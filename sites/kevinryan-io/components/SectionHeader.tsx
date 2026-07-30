@@ -1,23 +1,22 @@
 import type { ReactNode } from 'react'
 
+/**
+ * Section head. Mono eyebrow above a large title.
+ * No numeral, no section marker glyph. See design-spec/theme-spec.md B14.
+ */
 export default function SectionHeader({
-  number,
   subtitle,
   title,
   className = '',
 }: {
-  number: string
   subtitle: string
   title: ReactNode
   className?: string
 }) {
   return (
-    <div className={`section__header reveal${className ? ' ' + className : ''}`}>
-      <div className="section__number">{number}</div>
-      <div>
-        <div className="section__subtitle">{subtitle}</div>
-        <h2 className="display-lg">{title}</h2>
-      </div>
+    <div className={`sec-head${className ? ' ' + className : ''}`}>
+      <span className="sec-mark">{subtitle}</span>
+      <h1 className="t-h1">{title}</h1>
     </div>
   )
 }
