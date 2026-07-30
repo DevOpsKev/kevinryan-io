@@ -6,7 +6,6 @@ import AssessmentEngagement from '@/components/sections/assessment/AssessmentEng
 import AssessmentDeliverables from '@/components/sections/assessment/AssessmentDeliverables'
 import AssessmentAudience from '@/components/sections/assessment/AssessmentAudience'
 import AssessmentEvidence from '@/components/sections/assessment/AssessmentEvidence'
-import AssessmentCredibility from '@/components/sections/assessment/AssessmentCredibility'
 import AssessmentCta from '@/components/sections/assessment/AssessmentCta'
 
 export const metadata: Metadata = {
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function AssessmentPage() {
   return (
-    <div id="assessment-root">
+    <main>
       <AssessmentHero />
       <AssessmentProblem />
       <AssessmentCapabilities />
@@ -25,8 +24,7 @@ export default function AssessmentPage() {
       <AssessmentDeliverables />
       <AssessmentAudience />
       <AssessmentEvidence />
-      <AssessmentCredibility />
       <AssessmentCta />
-    </div>
+    </main>
   )
 }

@@ -9,21 +9,24 @@ const PHASES = [
 
 export default function AssessmentEngagement() {
   return (
-    <section className="section section--grey">
+    <section className="section section--sink" id="engagement">
       <Container>
-        <div className="section-number">03</div>
-        <div className="section-label">The Engagement</div>
-        <h2>HOW IT WORKS.</h2>
-        <p className="subtitle mb-4">
-          Four phases. Discrete deliverables at each stage. A clear narrative arc from diagnosis to action.
-        </p>
-        <div className="phase-grid">
+        <div className="sec-head">
+          <span className="sec-mark">03 · The Engagement</span>
+          <h1 className="t-h1">HOW IT WORKS.</h1>
+          <p className="t-lead" style={{ maxWidth: '78ch', margin: 'var(--sp-3) 0 0' }}>
+            Four phases. Discrete deliverables at each stage. A clear narrative arc from diagnosis to action.
+          </p>
+        </div>
+
+        <div className="cells cells--4">
           {PHASES.map((p) => (
-            <div key={p.number} className="phase-card">
-              <div className="phase-number">{p.number}</div>
-              <div className="phase-title">{p.title}</div>
-              <p className="phase-desc">{p.desc}</p>
-              <div className="phase-output">{p.output}</div>
+            <div className="cell cell--phase" key={p.number}>
+              <span className="cell__n">{p.number}</span>
+              <h3>{p.title}</h3>
+              <p>{p.desc}</p>
+              <span className="cell__grow" />
+              <div className="cell__foot">{p.output}</div>
             </div>
           ))}
         </div>

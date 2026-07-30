@@ -58,22 +58,6 @@
   /* ── Spacing. 8px unit. ── */
   --spacing: 8px;
 
-  /* ── Legacy aliases. The assessment page still uses Tailwind
-        utilities named for the previous light brand (bg-white,
-        text-black, text-grey-600 and so on). These map those names
-        onto the new ground so the utilities keep generating.
-        Remove when that page is rebuilt. See theme-spec.md O1. ── */
-  --color-black:      #EBEEF0;
-  --color-white:      #2A3033;
-  --color-pure-white: #EBEEF0;
-  --color-dark:       #212729;
-  --color-dark-mid:   #32383C;
-  --color-grey-100:   #212729;
-  --color-grey-200:   #3C4448;
-  --color-grey-400:   #90999D;
-  --color-grey-600:   #D5DBDE;
-  --color-grey-800:   #212729;
-  --color-accent-dim: #98C57D;
 }
 
 :root {
@@ -380,6 +364,59 @@ blockquote cite {
 .cell__out .arr { display: inline-block; transition: transform var(--dur-fast) var(--ease); }
 .cell:hover .cell__out .arr { transform: translateX(4px); }
 
+/* Four-up. Used by the assessment page. */
+.cells--4 { grid-template-columns: repeat(4, 1fr); }
+
+/* A cell that carries the differentiator. Accent edge, sunken face. */
+.cell--feature { background: var(--bg-sink); border-left: var(--border-emphasis) solid var(--accent); }
+.section--sink .cell--feature { background: var(--bg); }
+.cell--feature .cell__n,
+.cell--feature .cell__foot { color: var(--accent); }
+
+/* A cell in a numbered sequence. The numeral is the entry point. */
+.cell--phase .cell__n {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--text-h2);
+  letter-spacing: var(--track-title); color: var(--accent); margin-bottom: var(--sp-2);
+}
+
+/* Footer rule inside a cell. Aligns across a row because .cell__grow pushes it down. */
+.cell__foot {
+  margin-top: var(--sp-3); padding-top: var(--sp-2); border-top: var(--hair) solid var(--line-soft);
+  font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--track-mono);
+  text-transform: uppercase; color: var(--ink-3); line-height: 1.5;
+}
+
+/* A figure and its caption inside a cell. */
+.cell__stat {
+  display: block; font-family: var(--font-display); font-weight: 700; font-size: var(--text-h1);
+  line-height: 1; letter-spacing: var(--track-title); color: var(--ink); margin-bottom: var(--sp-2);
+}
+.cell--feature .cell__stat { color: var(--accent); }
+.cell__cap {
+  font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--track-mono-wide);
+  text-transform: uppercase; color: var(--ink-3); line-height: 1.5;
+}
+
+/* ═══ SPLIT LAYOUTS ══════════════════════════════════════════ */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: var(--sp-8); align-items: end; }
+.split--start { align-items: start; }
+.two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--sp-8); }
+
+/* Attribution line inside a callout. */
+.callout .src {
+  display: block; margin-top: var(--sp-2); font-family: var(--font-mono); font-size: var(--text-label);
+  letter-spacing: var(--track-mono); text-transform: uppercase; color: var(--ink-3);
+}
+
+/* Select shares the field treatment. Native arrow is replaced with a hairline chevron. */
+select.field {
+  appearance: none; cursor: pointer; padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2390999D' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+select.field:focus { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B7DCA0' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); }
+select.field option { background: var(--bg); color: var(--ink); }
+
 /* ═══ STATUS PILLS. Exactly three. ═══════════════════════════ */
 .pill {
   display: inline-block; font-family: var(--font-mono); font-size: var(--text-micro);
@@ -457,15 +494,17 @@ a.reach__v:hover { color: var(--accent); }
 
 /* ═══ RESPONSIVE ═════════════════════════════════════════════ */
 @media (max-width: 1180px) {
-  .cells--3 { grid-template-columns: repeat(2, 1fr); }
+  .cells--3, .cells--4 { grid-template-columns: repeat(2, 1fr); }
   .clients { grid-template-columns: repeat(4, 1fr); }
+  .split { grid-template-columns: minmax(0, 1fr) 300px; }
 }
 @media (max-width: 900px) {
   .section { padding: var(--sp-8) 0; }
   .sec-head { margin-bottom: var(--sp-6); }
   .topbar__locus { display: none; }
   .topbar__brand { padding: 0 var(--sp-2); }
-  .cells--3, .cells--2 { grid-template-columns: 1fr; }
+  .cells--2, .cells--3, .cells--4 { grid-template-columns: 1fr; }
+  .split { grid-template-columns: 1fr; gap: var(--sp-5); align-items: start; }
   .clients { grid-template-columns: repeat(2, 1fr); }
   .tl { grid-template-columns: 1fr; }
   .tl__when { text-align: left; padding: var(--sp-3) 0 0; }
@@ -486,165 +525,4 @@ a.reach__v:hover { color: var(--accent); }
   .section { padding: 16pt 0; }
   .prose { max-width: none; }
   h1, h2, h3 { break-after: avoid; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   ASSESSMENT PAGE — COMPATIBILITY LAYER
-   /ai-native-readiness-assessment still carries the previous
-   light-brand markup. This block keeps it coherent with the new
-   ground: it restores the layout rules that page depends on and
-   retargets its colour onto the new tokens. It has NOT had a
-   design pass. Tracked in design-spec/theme-spec.md under O1.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* Section backgrounds the assessment markup still asks for. */
-.section--dark     { background: var(--bg-sink); }
-.section--charcoal { background: var(--bg-sink); }
-.section--black    { background: var(--bg); }
-.section--grey     { background: var(--bg-sink); }
-
-#assessment-root {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--ink-2);
-  font-size: var(--text-read);
-  line-height: var(--lh-body);
-}
-
-/* ── type ── */
-#assessment-root h1,
-#assessment-root h2,
-#assessment-root h3 {
-  font-family: var(--font-display); color: var(--ink);
-  line-height: var(--lh-title); letter-spacing: var(--track-title);
-}
-#assessment-root h1 { font-size: var(--fluid-display); margin-bottom: var(--sp-3); max-width: 14ch; }
-#assessment-root h2 { font-size: var(--fluid-h1); margin-bottom: var(--sp-2); }
-#assessment-root h3 { font-size: var(--text-h3); margin-bottom: var(--sp-1); }
-#assessment-root .subtitle {
-  font-size: var(--text-lead); line-height: var(--lh-lead);
-  color: var(--ink-2); max-width: var(--measure);
-}
-#assessment-root .section-label,
-#assessment-root .stat-label,
-#assessment-root .cap-outcome,
-#assessment-root .phase-output,
-#assessment-root .hero-meta-label,
-#assessment-root .evidence-source {
-  font-family: var(--font-mono); font-weight: 500; font-size: var(--text-label);
-  letter-spacing: var(--track-mono-xwide); text-transform: uppercase;
-  color: var(--ink-3); font-style: normal;
-}
-#assessment-root .section-number,
-#assessment-root .stat-number,
-#assessment-root .evidence-number,
-#assessment-root .phase-number {
-  font-family: var(--font-display); font-weight: 700; color: var(--accent);
-  line-height: 1; letter-spacing: var(--track-title); margin-bottom: var(--sp-1);
-}
-#assessment-root .section-number { font-size: var(--fluid-h1); }
-#assessment-root .stat-number    { font-size: var(--text-h1); }
-#assessment-root .evidence-number{ font-size: var(--text-h1); }
-#assessment-root .phase-number   { font-size: var(--text-h2); }
-#assessment-root .phase-title {
-  font-family: var(--font-display); font-weight: 600; font-size: var(--text-h3);
-  color: var(--ink); letter-spacing: var(--track-tight); margin-bottom: var(--sp-1);
-}
-#assessment-root .hero-meta-value { font-family: var(--font-mono); font-size: var(--text-ui); color: var(--ink); }
-#assessment-root .evidence-desc   { font-size: var(--text-ui); line-height: 1.6; color: var(--ink-2); margin-top: var(--sp-1); }
-#assessment-root .phase-desc,
-#assessment-root .cap-card p,
-#assessment-root .deliverable-item p,
-#assessment-root .audience-card p { font-size: var(--text-ui); line-height: 1.6; color: var(--ink-2); }
-
-/* ── hero ── */
-#assessment-root .hero { padding-top: var(--sp-10) !important; min-height: 100vh; display: flex; align-items: center; }
-#assessment-root .hero h1 { font-size: var(--fluid-display); max-width: 12ch; }
-#assessment-root .hero .subtitle { max-width: 56ch; margin-bottom: var(--sp-5); }
-#assessment-root .hero-meta { margin-top: var(--sp-6); display: flex; gap: var(--sp-6); flex-wrap: wrap; }
-#assessment-root .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
-#assessment-root .hero-cta {
-  display: inline-block; font-family: var(--font-mono); font-weight: 600;
-  font-size: var(--text-caption); letter-spacing: var(--track-mono-wide); text-transform: uppercase;
-  color: var(--accent-ink); background: var(--accent); padding: 14px 28px;
-  border: var(--hair) solid var(--accent); border-radius: var(--radius);
-  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
-}
-#assessment-root .hero-cta:hover { background: transparent; color: var(--accent); }
-
-/* ── thesis callout ── */
-#assessment-root .thesis-block {
-  border-left: var(--border-emphasis) solid var(--accent); background: var(--bg-sink);
-  padding: var(--sp-3) var(--sp-4); margin: var(--sp-4) 0; max-width: 800px;
-}
-#assessment-root .thesis-block p { font-size: var(--text-ui); line-height: 1.6; color: var(--ink-2); font-style: normal; margin: 0; }
-#assessment-root .thesis-block .source {
-  display: block; margin-top: var(--sp-2); font-family: var(--font-mono); font-size: var(--text-label);
-  letter-spacing: var(--track-mono); text-transform: uppercase; color: var(--ink-3); font-style: normal;
-}
-#assessment-root .thesis-block--dark { background: var(--bg-raise); }
-
-/* ── grids ── */
-#assessment-root .stat-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--sp-3); margin: var(--sp-6) 0;
-}
-#assessment-root .stat-card { padding: var(--sp-2) 0; border-top: var(--hair) solid var(--line); }
-
-#assessment-root .cap-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  border-top: var(--hair) solid var(--line); border-left: var(--hair) solid var(--line);
-  margin: var(--sp-5) 0;
-}
-#assessment-root .cap-card {
-  background: transparent; padding: var(--sp-4);
-  border-right: var(--hair) solid var(--line); border-bottom: var(--hair) solid var(--line);
-  transition: background var(--dur-fast) var(--ease);
-}
-#assessment-root .cap-card:hover { background: var(--bg-sink); }
-#assessment-root .cap-card:hover h3,
-#assessment-root .cap-card:hover p { color: inherit; }
-#assessment-root .cap-card:hover .cap-outcome { color: var(--accent); }
-#assessment-root .cap-card--feature { display: flex; align-items: center; justify-content: center; }
-#assessment-root .cap-card--feature h3 { color: var(--accent); }
-
-#assessment-root .phase-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  border-top: var(--hair) solid var(--line); border-left: var(--hair) solid var(--line);
-  margin: var(--sp-6) 0;
-}
-#assessment-root .phase-card {
-  padding: var(--sp-4); border-right: var(--hair) solid var(--line); border-bottom: var(--hair) solid var(--line);
-}
-#assessment-root .phase-output { padding-top: var(--sp-2); border-top: var(--hair) solid var(--line-soft); margin-top: var(--sp-2); }
-
-#assessment-root .deliverables-grid,
-#assessment-root .audience-grid,
-#assessment-root .evidence-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--sp-4); margin: var(--sp-5) 0;
-}
-#assessment-root .deliverable-item {
-  padding: var(--sp-3); border: var(--hair) solid var(--line); background: var(--bg-sink);
-}
-#assessment-root .evidence-item { border-top: var(--hair) solid var(--line); padding-top: var(--sp-2); }
-
-/* ── client strip ── */
-#assessment-root .client-strip { display: flex; gap: var(--sp-4); flex-wrap: wrap; align-items: center; margin: var(--sp-3) 0; }
-#assessment-root .client-name {
-  font-family: var(--font-mono); font-size: var(--text-code); letter-spacing: var(--track-mono);
-  text-transform: uppercase; color: var(--ink-3);
-  transition: color var(--dur-fast) var(--ease);
-}
-#assessment-root .client-name:hover { color: var(--accent); }
-
-/* ── cta ── */
-#assessment-root .cta-section { text-align: left; }
-#assessment-root .cta-section h2 { margin-bottom: var(--sp-2); }
-#assessment-root .cta-section .subtitle { margin-bottom: var(--sp-4); }
-
-@media (max-width: 900px) {
-  #assessment-root .phase-grid { grid-template-columns: 1fr; }
-  #assessment-root .hero { min-height: 0; padding-top: var(--sp-8) !important; }
-  #assessment-root .hero-meta { gap: var(--sp-3); }
 }

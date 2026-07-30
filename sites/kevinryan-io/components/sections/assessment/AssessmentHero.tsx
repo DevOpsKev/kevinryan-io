@@ -9,21 +9,26 @@ const META = [
 
 export default function AssessmentHero() {
   return (
-    <section className="section hero">
+    <section className="section" style={{ borderTop: 0, padding: 'var(--sp-10) 0 var(--sp-8)' }}>
       <Container>
-        <div className="section-label">Kevin Ryan &amp; Associates</div>
-        <h1>AI-NATIVE READINESS ASSESSMENT</h1>
-        <p className="subtitle">
-          A structured diagnostic that evaluates your organisation&rsquo;s capacity to realise measurable value from AI-assisted software development. Based on the DORA AI Capabilities Model. Enhanced with Spec-Driven Development methodology.
-        </p>
-        <a href="#contact" className="hero-cta">Book a Discovery Call</a>
-        <div className="hero-meta">
-          {META.map((m) => (
-            <div key={m.label} className="hero-meta-item">
-              <span className="hero-meta-label">{m.label}</span>
-              <span className="hero-meta-value">{m.value}</span>
-            </div>
-          ))}
+        <div className="split">
+          <div>
+            <span className="sec-mark">Kevin Ryan &amp; Associates</span>
+            <h1 className="t-h1" style={{ maxWidth: '16ch' }}>AI-NATIVE READINESS ASSESSMENT</h1>
+            <p className="t-lead" style={{ maxWidth: '62ch', margin: 'var(--sp-3) 0 var(--sp-5)' }}>
+              A structured diagnostic that evaluates your organisation&rsquo;s capacity to realise measurable value from AI-assisted software development. Based on the DORA AI Capabilities Model. Enhanced with Spec-Driven Development methodology.
+            </p>
+            <a href="#contact" className="btn btn--primary">Book a Discovery Call</a>
+          </div>
+
+          <div className="meta-panel">
+            {META.map((m) => (
+              <div className="row" key={m.label}>
+                <span className="k">{m.label}</span>
+                <span className="v">{m.value}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
     </section>
