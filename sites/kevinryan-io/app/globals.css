@@ -57,6 +57,23 @@
 
   /* ── Spacing. 8px unit. ── */
   --spacing: 8px;
+
+  /* ── Legacy aliases. The assessment page still uses Tailwind
+        utilities named for the previous light brand (bg-white,
+        text-black, text-grey-600 and so on). These map those names
+        onto the new ground so the utilities keep generating.
+        Remove when that page is rebuilt. See theme-spec.md O1. ── */
+  --color-black:      #EBEEF0;
+  --color-white:      #2A3033;
+  --color-pure-white: #EBEEF0;
+  --color-dark:       #212729;
+  --color-dark-mid:   #32383C;
+  --color-grey-100:   #212729;
+  --color-grey-200:   #3C4448;
+  --color-grey-400:   #90999D;
+  --color-grey-600:   #D5DBDE;
+  --color-grey-800:   #212729;
+  --color-accent-dim: #98C57D;
 }
 
 :root {
@@ -473,75 +490,161 @@ a.reach__v:hover { color: var(--accent); }
 
 /* ═══════════════════════════════════════════════════════════════
    ASSESSMENT PAGE — COMPATIBILITY LAYER
-   The /ai-native-readiness-assessment page still carries the
-   previous light-brand markup. These aliases map its old token
-   names onto the new ground so it stays coherent with the home
-   page. It has NOT had a proper design pass. Tracked in
-   design-spec/theme-spec.md under Open.
+   /ai-native-readiness-assessment still carries the previous
+   light-brand markup. This block keeps it coherent with the new
+   ground: it restores the layout rules that page depends on and
+   retargets its colour onto the new tokens. It has NOT had a
+   design pass. Tracked in design-spec/theme-spec.md under O1.
    ═══════════════════════════════════════════════════════════════ */
-#assessment-root {
-  --color-white: var(--bg);
-  --color-black: var(--ink);
-  --color-pure-white: var(--ink);
-  --color-dark: var(--bg-sink);
-  --color-dark-mid: var(--bg-raise);
-  --color-grey-100: var(--bg-sink);
-  --color-grey-200: var(--line);
-  --color-grey-400: var(--ink-3);
-  --color-grey-600: var(--ink-2);
-  --color-grey-800: var(--bg-sink);
-  --color-accent: var(--accent);
-  --color-accent-dim: var(--accent-2);
 
+/* Section backgrounds the assessment markup still asks for. */
+.section--dark     { background: var(--bg-sink); }
+.section--charcoal { background: var(--bg-sink); }
+.section--black    { background: var(--bg); }
+.section--grey     { background: var(--bg-sink); }
+
+#assessment-root {
   font-family: var(--font-body);
   background: var(--bg);
   color: var(--ink-2);
   font-size: var(--text-read);
   line-height: var(--lh-body);
 }
-#assessment-root h1, #assessment-root h2, #assessment-root h3 {
+
+/* ── type ── */
+#assessment-root h1,
+#assessment-root h2,
+#assessment-root h3 {
   font-family: var(--font-display); color: var(--ink);
   line-height: var(--lh-title); letter-spacing: var(--track-title);
 }
 #assessment-root h1 { font-size: var(--fluid-display); margin-bottom: var(--sp-3); max-width: 14ch; }
 #assessment-root h2 { font-size: var(--fluid-h1); margin-bottom: var(--sp-2); }
 #assessment-root h3 { font-size: var(--text-h3); margin-bottom: var(--sp-1); }
+#assessment-root .subtitle {
+  font-size: var(--text-lead); line-height: var(--lh-lead);
+  color: var(--ink-2); max-width: var(--measure);
+}
 #assessment-root .section-label,
 #assessment-root .stat-label,
 #assessment-root .cap-outcome,
 #assessment-root .phase-output,
-#assessment-root .hero-meta-label {
+#assessment-root .hero-meta-label,
+#assessment-root .evidence-source {
   font-family: var(--font-mono); font-weight: 500; font-size: var(--text-label);
-  letter-spacing: var(--track-mono-xwide); text-transform: uppercase; color: var(--ink-3);
+  letter-spacing: var(--track-mono-xwide); text-transform: uppercase;
+  color: var(--ink-3); font-style: normal;
 }
 #assessment-root .section-number,
 #assessment-root .stat-number,
 #assessment-root .evidence-number,
 #assessment-root .phase-number {
   font-family: var(--font-display); font-weight: 700; color: var(--accent);
-  letter-spacing: var(--track-title);
+  line-height: 1; letter-spacing: var(--track-title); margin-bottom: var(--sp-1);
 }
-#assessment-root .subtitle { font-size: var(--text-lead); line-height: var(--lh-lead); color: var(--ink-2); max-width: var(--measure); }
+#assessment-root .section-number { font-size: var(--fluid-h1); }
+#assessment-root .stat-number    { font-size: var(--text-h1); }
+#assessment-root .evidence-number{ font-size: var(--text-h1); }
+#assessment-root .phase-number   { font-size: var(--text-h2); }
+#assessment-root .phase-title {
+  font-family: var(--font-display); font-weight: 600; font-size: var(--text-h3);
+  color: var(--ink); letter-spacing: var(--track-tight); margin-bottom: var(--sp-1);
+}
+#assessment-root .hero-meta-value { font-family: var(--font-mono); font-size: var(--text-ui); color: var(--ink); }
+#assessment-root .evidence-desc   { font-size: var(--text-ui); line-height: 1.6; color: var(--ink-2); margin-top: var(--sp-1); }
+#assessment-root .phase-desc,
+#assessment-root .cap-card p,
+#assessment-root .deliverable-item p,
+#assessment-root .audience-card p { font-size: var(--text-ui); line-height: 1.6; color: var(--ink-2); }
+
+/* ── hero ── */
+#assessment-root .hero { padding-top: var(--sp-10) !important; min-height: 100vh; display: flex; align-items: center; }
+#assessment-root .hero h1 { font-size: var(--fluid-display); max-width: 12ch; }
+#assessment-root .hero .subtitle { max-width: 56ch; margin-bottom: var(--sp-5); }
+#assessment-root .hero-meta { margin-top: var(--sp-6); display: flex; gap: var(--sp-6); flex-wrap: wrap; }
+#assessment-root .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
 #assessment-root .hero-cta {
   display: inline-block; font-family: var(--font-mono); font-weight: 600;
   font-size: var(--text-caption); letter-spacing: var(--track-mono-wide); text-transform: uppercase;
   color: var(--accent-ink); background: var(--accent); padding: 14px 28px;
   border: var(--hair) solid var(--accent); border-radius: var(--radius);
-  transition: filter var(--dur-fast) var(--ease);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
-#assessment-root .hero-cta:hover { filter: brightness(1.06); }
+#assessment-root .hero-cta:hover { background: transparent; color: var(--accent); }
+
+/* ── thesis callout ── */
 #assessment-root .thesis-block {
   border-left: var(--border-emphasis) solid var(--accent); background: var(--bg-sink);
   padding: var(--sp-3) var(--sp-4); margin: var(--sp-4) 0; max-width: 800px;
 }
-#assessment-root .cap-card,
-#assessment-root .deliverable-item,
-#assessment-root .phase-card { background: var(--bg); border-color: var(--line); }
+#assessment-root .thesis-block p { font-size: var(--text-ui); line-height: 1.6; color: var(--ink-2); font-style: normal; margin: 0; }
+#assessment-root .thesis-block .source {
+  display: block; margin-top: var(--sp-2); font-family: var(--font-mono); font-size: var(--text-label);
+  letter-spacing: var(--track-mono); text-transform: uppercase; color: var(--ink-3); font-style: normal;
+}
+#assessment-root .thesis-block--dark { background: var(--bg-raise); }
+
+/* ── grids ── */
+#assessment-root .stat-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-3); margin: var(--sp-6) 0;
+}
+#assessment-root .stat-card { padding: var(--sp-2) 0; border-top: var(--hair) solid var(--line); }
+
+#assessment-root .cap-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  border-top: var(--hair) solid var(--line); border-left: var(--hair) solid var(--line);
+  margin: var(--sp-5) 0;
+}
+#assessment-root .cap-card {
+  background: transparent; padding: var(--sp-4);
+  border-right: var(--hair) solid var(--line); border-bottom: var(--hair) solid var(--line);
+  transition: background var(--dur-fast) var(--ease);
+}
 #assessment-root .cap-card:hover { background: var(--bg-sink); }
 #assessment-root .cap-card:hover h3,
-#assessment-root .cap-card:hover p,
-#assessment-root .cap-card:hover .cap-outcome { color: inherit; }
-#assessment-root .cap-grid,
-#assessment-root .phase-grid { background: var(--line); border-color: var(--line); }
-#assessment-root .client-name { font-family: var(--font-mono); font-size: var(--text-code); letter-spacing: var(--track-mono); text-transform: uppercase; color: var(--ink-3); }
+#assessment-root .cap-card:hover p { color: inherit; }
+#assessment-root .cap-card:hover .cap-outcome { color: var(--accent); }
+#assessment-root .cap-card--feature { display: flex; align-items: center; justify-content: center; }
+#assessment-root .cap-card--feature h3 { color: var(--accent); }
+
+#assessment-root .phase-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: var(--hair) solid var(--line); border-left: var(--hair) solid var(--line);
+  margin: var(--sp-6) 0;
+}
+#assessment-root .phase-card {
+  padding: var(--sp-4); border-right: var(--hair) solid var(--line); border-bottom: var(--hair) solid var(--line);
+}
+#assessment-root .phase-output { padding-top: var(--sp-2); border-top: var(--hair) solid var(--line-soft); margin-top: var(--sp-2); }
+
+#assessment-root .deliverables-grid,
+#assessment-root .audience-grid,
+#assessment-root .evidence-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-4); margin: var(--sp-5) 0;
+}
+#assessment-root .deliverable-item {
+  padding: var(--sp-3); border: var(--hair) solid var(--line); background: var(--bg-sink);
+}
+#assessment-root .evidence-item { border-top: var(--hair) solid var(--line); padding-top: var(--sp-2); }
+
+/* ── client strip ── */
+#assessment-root .client-strip { display: flex; gap: var(--sp-4); flex-wrap: wrap; align-items: center; margin: var(--sp-3) 0; }
+#assessment-root .client-name {
+  font-family: var(--font-mono); font-size: var(--text-code); letter-spacing: var(--track-mono);
+  text-transform: uppercase; color: var(--ink-3);
+  transition: color var(--dur-fast) var(--ease);
+}
 #assessment-root .client-name:hover { color: var(--accent); }
+
+/* ── cta ── */
+#assessment-root .cta-section { text-align: left; }
+#assessment-root .cta-section h2 { margin-bottom: var(--sp-2); }
+#assessment-root .cta-section .subtitle { margin-bottom: var(--sp-4); }
+
+@media (max-width: 900px) {
+  #assessment-root .phase-grid { grid-template-columns: 1fr; }
+  #assessment-root .hero { min-height: 0; padding-top: var(--sp-8) !important; }
+  #assessment-root .hero-meta { gap: var(--sp-3); }
+}
