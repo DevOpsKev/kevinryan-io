@@ -25,7 +25,6 @@ graph TD
     subgraph app["Next.js App Router"]
         layout["app/layout.tsx<br/>(root layout)"]
         home["app/page.tsx<br/>(home)"]
-        speaking["app/speaking/<br/>(talk pages + decks)"]
     end
 
     subgraph components["Components"]
@@ -71,16 +70,7 @@ sites/kevinryan-io/
 ├── app/
 │   ├── layout.tsx              # Root layout (fonts, analytics, header)
 │   ├── page.tsx                # Home page (section composition)
-│   ├── globals.css             # Tailwind imports + CSS variables
-│   └── speaking/
-│       ├── layout.tsx          # Speaking section metadata
-│       ├── page.tsx            # Speaking index
-│       ├── spec-driven-development/
-│       │   ├── page.tsx        # Talk detail page
-│       │   └── deck/page.tsx   # Slide deck
-│       └── dark-factory/
-│           ├── page.tsx        # Talk detail page
-│           └── deck/page.tsx   # Slide deck
+│   └── globals.css             # Tailwind imports + CSS variables
 ├── components/
 │   ├── SiteHeader.tsx          # Fixed navigation with mobile menu
 │   ├── SiteFooter.tsx          # Footer with commit SHA
@@ -128,10 +118,6 @@ The home page is a composition of section components rendered in sequence. Each 
 1. **WritingSection** — published works
 1. **CertificationsSection** — professional certifications
 1. **ContactSection** — contact details
-
-### Speaking Pages
-
-The `/speaking` route contains talk detail pages and slide decks. Each talk has its own directory with a detail page and a `/deck` sub-route for the presentation slides.
 
 ## Styling
 
