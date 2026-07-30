@@ -1,4 +1,6 @@
-import { CONTAINER } from "@/lib/constants"
+import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
+import Reveal from '@/components/Reveal'
 
 const CASES = [
   { tag: "Global Platform", client: "Nestlé", url: "https://www.nestle.com", desc: "Built a global DevOps platform from zero. Distributed team across India, Spain, and the UK serving thousands of developers. Migrated Jenkins into AKS, Terraform IaC governance. Transferred capability for long-term sustainability." },
@@ -12,17 +14,11 @@ const CASES = [
 export default function DeliverySection() {
   return (
     <section className="section section--dark" id="delivery">
-      <div style={CONTAINER}>
-        <div className="section__header reveal">
-          <div className="section__number">03</div>
-          <div>
-            <div className="section__subtitle">Enterprise Delivery</div>
-            <h2 className="display-lg">Embed. Build.<br />Transfer.</h2>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 reveal" style={{ gap: 0 }}>
+      <Container>
+        <SectionHeader number="03" subtitle="Enterprise Delivery" title={<>Embed. Build.<br />Transfer.</>} />
+        <Reveal className="grid grid-cols-1 md:grid-cols-2">
           {CASES.map((c) => (
-            <a key={c.client} href={c.url} target="_blank" rel="noopener noreferrer" className="case" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <a key={c.client} href={c.url} target="_blank" rel="noopener noreferrer" className="case no-underline text-inherit">
               <div className="case__tag">{c.tag}</div>
               <h3 className="case__client">{c.client}</h3>
               <p className="case__desc">{c.desc}</p>
@@ -30,8 +26,8 @@ export default function DeliverySection() {
               {c.statLabel && <div className="case__stat-label">{c.statLabel}</div>}
             </a>
           ))}
-        </div>
-      </div>
+        </Reveal>
+      </Container>
     </section>
   )
 }

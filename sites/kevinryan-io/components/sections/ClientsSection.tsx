@@ -1,4 +1,6 @@
-import { CONTAINER } from "@/lib/constants"
+import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
+import Reveal from '@/components/Reveal'
 
 const CLIENTS = [
   { name: "Accenture", url: "https://www.accenture.com" },
@@ -26,20 +28,14 @@ const CLIENTS = [
 export default function ClientsSection() {
   return (
     <section className="section">
-      <div style={CONTAINER}>
-        <div className="section__header reveal">
-          <div className="section__number">04</div>
-          <div>
-            <div className="section__subtitle">Notable Clients</div>
-            <h2 className="display-lg">Who I&rsquo;ve<br />Worked With</h2>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 reveal" style={{ gap: 0 }}>
+      <Container>
+        <SectionHeader number="04" subtitle="Notable Clients" title={<>Who I&rsquo;ve<br />Worked With</>} />
+        <Reveal className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {CLIENTS.map((c) => (
             <a key={c.name} href={c.url} target="_blank" rel="noopener noreferrer" className="client">{c.name}</a>
           ))}
-        </div>
-      </div>
+        </Reveal>
+      </Container>
     </section>
   )
 }

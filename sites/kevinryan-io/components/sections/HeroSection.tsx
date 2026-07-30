@@ -1,140 +1,82 @@
 'use client'
 
 import Image from "next/image"
-import { CONTAINER } from "@/lib/constants"
+import Container from "@/components/Container"
+
+const TAGS = ['AI-Native', 'DevEx', 'Platform', 'Author']
 
 export default function HeroSection() {
   return (
     <>
-      <section
-        className="hero-section flex flex-col justify-end"
-        style={{ paddingTop: '7rem', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}
-      >
+      <section className="hero-section flex flex-col justify-end pt-28 min-h-screen relative overflow-hidden">
         {/* Grid texture background */}
+        {/* justify: dual cross-hatch grid texture — two stacked linear-gradients, not expressible as a single Tailwind utility */}
         <div
+          className="absolute inset-0 z-0 opacity-25 pointer-events-none"
           style={{
-            position: 'absolute', inset: 0, zIndex: 0, opacity: 0.25, pointerEvents: 'none',
             backgroundImage:
-              'linear-gradient(var(--grey-200) 1px, transparent 1px), linear-gradient(90deg, var(--grey-200) 1px, transparent 1px)',
+              'linear-gradient(var(--color-grey-200) 1px, transparent 1px), linear-gradient(90deg, var(--color-grey-200) 1px, transparent 1px)',
             backgroundSize: '80px 80px',
           }}
         />
 
-        <div style={{ ...CONTAINER, position: 'relative', zIndex: 1 }}>
+        <Container className="relative z-10">
           {/* Top bar: section number + availability */}
-          <div
-            className="flex items-center justify-between flex-wrap"
-            style={{ gap: '1rem', marginBottom: 'clamp(2rem, 4vw, 4rem)' }}
-          >
-            <span style={{
-              fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 5rem)',
-              color: 'var(--accent)', lineHeight: 1,
-            }}>
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-[clamp(2rem,4vw,4rem)]">
+            <span className="font-display text-[clamp(3rem,5vw,5rem)] text-accent leading-none">
               00
             </span>
-            <div className="flex items-center" style={{ gap: '0.7rem' }}>
-              <span
-                className="hero-dot"
-                style={{
-                  width: 9, height: 9, background: 'var(--accent)',
-                  borderRadius: '50%', display: 'inline-block',
-                }}
-              />
-              <span style={{
-                fontWeight: 700, fontSize: '0.7rem', letterSpacing: '0.18em',
-                textTransform: 'uppercase', color: 'var(--grey-600)',
-              }}>
+            <div className="flex items-center gap-[0.7rem]">
+              <span className="hero-dot inline-block h-[9px] w-[9px] rounded-full bg-accent" />
+              <span className="font-bold text-[0.7rem] tracking-[0.18em] uppercase text-grey-600">
                 Available for contract
               </span>
             </div>
           </div>
 
           {/* Main two-column grid */}
-          <div
-            className="hero-grid grid items-center"
-            style={{
-              gridTemplateColumns: '1.1fr 0.9fr',
-              gap: 'clamp(2rem, 4vw, 5rem)',
-              paddingBottom: '4rem',
-            }}
-          >
+          <div className="hero-grid grid items-center pb-16 grid-cols-[1.1fr_0.9fr] gap-[clamp(2rem,4vw,5rem)]">
             {/* Text column */}
             <div>
-              <div
-                className="flex flex-wrap"
-                style={{
-                  fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.18em',
-                  textTransform: 'uppercase', color: 'var(--accent-dim, var(--accent))',
-                  marginBottom: '1.5rem', gap: '1.5rem',
-                }}
-              >
-                {['AI-Native', 'DevEx', 'Platform', 'Author'].map((item, i, arr) => (
+              <div className="flex flex-wrap text-[0.7rem] font-bold tracking-[0.18em] uppercase text-accent-dim mb-6 gap-6">
+                {TAGS.map((item, i, arr) => (
                   <span key={item}>
                     {item}
                     {i < arr.length - 1 && (
-                      <span style={{ marginLeft: '1.5rem', color: 'var(--accent)', fontWeight: 900 }}>·</span>
+                      <span className="ml-6 text-accent font-black">·</span>
                     )}
                   </span>
                 ))}
               </div>
 
-              <h1 style={{ marginBottom: '0.5rem' }}>
+              <h1 className="mb-2">
+                {/* eslint-disable-next-line @next/next/no-img-element -- SVG logo; Phase 5 candidate */}
                 <img
-                  src="./kevin-ryan-logo-outlined.svg"
+                  src="/kevin-ryan-logo-outlined.svg"
                   alt="Kevin Ryan & Associates"
-                  style={{ width: 'clamp(280px, 45vw, 540px)', height: 'auto' }}
+                  className="w-[clamp(280px,45vw,540px)] h-auto"
                 />
               </h1>
 
               {/* Lime rule */}
-              <div style={{
-                width: 100, height: 4, background: 'var(--accent)',
-                margin: '1.8rem 0',
-              }} />
+              <div className="w-[100px] h-1 bg-accent my-7" />
 
               {/* Description */}
-              <p style={{
-                fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--grey-600)',
-                maxWidth: 500, marginBottom: '2.2rem',
-              }}>
+              <p className="text-[1.05rem] leading-[1.7] text-grey-600 max-w-[500px] mb-9">
                 I used to direct teams of software engineers. Now I coordinate AI agents. A career building software and shipping products taught me the job was never about the tools &mdash; it&rsquo;s specification, role clarity, and amplifying human ingenuity. The tools change. The reality is, it still takes great teams of people to build great products. Agents just mean we do it faster.
               </p>
 
               {/* CTAs */}
-              <div className="flex items-center" style={{ gap: '1rem' }}>
+              <div className="flex items-center gap-4">
                 <a
                   href="#contact"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', fontSize: '0.72rem',
-                    fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase',
-                    padding: '1rem 2.2rem', background: 'var(--black)',
-                    border: '2px solid var(--black)', color: 'var(--white)',
-                    transition: 'all 0.25s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'var(--accent)'
-                    e.currentTarget.style.borderColor = 'var(--accent)'
-                    e.currentTarget.style.color = 'var(--black)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'var(--black)'
-                    e.currentTarget.style.borderColor = 'var(--black)'
-                    e.currentTarget.style.color = 'var(--white)'
-                  }}
+                  className="inline-flex items-center text-[0.72rem] font-extrabold tracking-[0.14em] uppercase px-[1.1rem] py-4 bg-black border-2 border-black text-white transition-all duration-200 hover:bg-accent hover:border-accent hover:text-black"
                 >
                   Get in touch
                 </a>
                 <a
                   href="#delivery"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', fontSize: '0.72rem',
-                    fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase',
-                    padding: '1rem 2.2rem', background: 'transparent',
-                    border: '2px solid var(--grey-200)', color: 'var(--black)',
-                    transition: 'all 0.25s ease',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--black)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--grey-200)' }}
+                  className="inline-flex items-center text-[0.72rem] font-extrabold tracking-[0.14em] uppercase px-[1.1rem] py-4 bg-transparent border-2 border-grey-200 text-black transition-all duration-200 hover:border-black"
                 >
                   Case studies
                 </a>
@@ -143,49 +85,28 @@ export default function HeroSection() {
 
             {/* Photo column */}
             <div className="hero-image-col">
-              <div
-                className="hero-image-frame"
-                style={{
-                  position: 'relative', aspectRatio: '3 / 4',
-                  overflow: 'hidden', background: 'var(--black)',
-                }}
-              >
+              <div className="hero-image-frame relative aspect-[3/4] overflow-hidden bg-black">
                 <Image
                   src="/kevin.jpg"
                   alt="Kevin Ryan"
                   fill
-                  className="object-cover"
-                  style={{ filter: 'grayscale(100%)', opacity: 0.9 }}
+                  className="object-cover grayscale opacity-90"
                   priority
                 />
                 {/* Lime stripe */}
-                <div style={{
-                  position: 'absolute', bottom: 0, left: 0, right: 0,
-                  height: 5, background: 'var(--accent)',
-                }} />
+                <div className="absolute bottom-0 left-0 right-0 h-[5px] bg-accent" />
                 {/* Badge top-left */}
-                <div style={{
-                  position: 'absolute', top: '1.5rem', left: '1.5rem',
-                  background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(8px)',
-                  padding: '0.7rem 1.2rem',
-                  fontWeight: 700, fontSize: '0.65rem', letterSpacing: '0.14em',
-                  textTransform: 'uppercase', color: 'var(--white)',
-                }}>
+                <div className="absolute top-6 left-6 bg-black/85 backdrop-blur-[8px] px-5 py-3 font-bold text-[0.65rem] tracking-[0.14em] uppercase text-white">
                   Remote First
                 </div>
                 {/* Location bottom-left */}
-                <div style={{
-                  position: 'absolute', bottom: '1.5rem', left: '1.5rem',
-                  fontWeight: 700, fontSize: '0.65rem', letterSpacing: '0.14em',
-                  textTransform: 'uppercase', color: 'var(--white)',
-                }}>
-                  Budapest <span style={{ color: 'var(--accent)' }}>·</span> Dublin
+                <div className="absolute bottom-6 left-6 font-bold text-[0.65rem] tracking-[0.14em] uppercase text-white">
+                  Budapest <span className="text-accent">·</span> Dublin
                 </div>
               </div>
             </div>
           </div>
-
-        </div>
+        </Container>
       </section>
 
       <style jsx>{`

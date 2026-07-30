@@ -4,44 +4,10 @@ import { FormEvent, useState } from 'react'
 
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/meerpkog'
 
-const labelStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontWeight: 700,
-  fontSize: '0.7rem',
-  letterSpacing: '0.12em',
-  textTransform: 'uppercase',
-  color: 'var(--grey-400)',
-}
-
-const inputStyle: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  fontSize: '0.95rem',
-  padding: '0.85rem 1rem',
-  background: 'var(--dark-mid)',
-  border: '1px solid var(--grey-800)',
-  color: '#FFFFFF',
-  outline: 'none',
-  transition: 'border-color 0.2s',
-  borderRadius: 0,
-  width: '100%',
-}
-
-const selectStyle: React.CSSProperties = {
-  ...inputStyle,
-  appearance: 'none' as const,
-  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A7772' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'right 1rem center',
-  paddingRight: '2.5rem',
-  cursor: 'pointer',
-}
-
-function focusBorder(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-  e.currentTarget.style.borderColor = 'var(--lime)'
-}
-function blurBorder(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-  e.currentTarget.style.borderColor = 'var(--grey-800)'
-}
+const labelClass = 'font-sans font-bold text-[0.7rem] tracking-[0.12em] uppercase text-grey-400'
+const inputClass =
+  'font-sans text-[0.95rem] py-[0.85rem] px-4 bg-dark-mid border border-grey-800 text-white outline-none transition-colors duration-200 focus:border-accent w-full'
+const selectClass = `${inputClass} appearance-none bg-no-repeat bg-[right_1rem_center] pr-10 cursor-pointer bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='8'%3E%3Cpath%20d='M1%201l5%205%205-5'%20stroke='%237A7772'%20stroke-width='1.5'%20fill='none'/%3E%3C/svg%3E")]`
 
 export default function AssessmentContactForm(): React.JSX.Element {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
@@ -71,25 +37,11 @@ export default function AssessmentContactForm(): React.JSX.Element {
 
   if (status === 'success') {
     return (
-      <div style={{
-        borderLeft: '4px solid var(--lime)',
-        background: 'rgba(168, 225, 12, 0.06)',
-        padding: '1.5rem 1.25rem',
-      }}>
-        <div style={{
-          ...labelStyle,
-          color: 'var(--lime)',
-          fontSize: '0.72rem',
-          marginBottom: '0.75rem',
-        }}>
+      <div className="border-l-4 border-accent bg-[rgba(168,225,12,0.06)] p-6">
+        <div className="text-accent text-[0.72rem] font-bold tracking-[0.12em] uppercase mb-3">
           &#10003; Enquiry Sent
         </div>
-        <p style={{
-          fontSize: '0.9rem',
-          lineHeight: 1.6,
-          color: 'var(--grey-200)',
-          margin: 0,
-        }}>
+        <p className="text-[0.9rem] leading-[1.6] text-grey-200 m-0">
           Thanks for reaching out. I&rsquo;ll be in touch shortly to arrange a conversation.
         </p>
       </div>
@@ -97,33 +49,17 @@ export default function AssessmentContactForm(): React.JSX.Element {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <input type="hidden" name="_subject" value="AI-Native Readiness Assessment Enquiry" />
 
       {status === 'error' && (
-        <div style={{
-          borderLeft: '4px solid #CC3333',
-          background: 'rgba(204, 51, 51, 0.08)',
-          padding: '1rem 1.25rem',
-        }}>
-          <div style={{
-            ...labelStyle,
-            color: '#CC3333',
-            marginBottom: '0.4rem',
-          }}>
+        <div className="border-l-4 border-[#CC3333] bg-[rgba(204,51,51,0.08)] p-4">
+          <div className="text-[#CC3333] text-[0.7rem] font-bold tracking-[0.12em] uppercase mb-2">
             Something went wrong
           </div>
-          <p style={{
-            fontSize: '0.85rem',
-            lineHeight: 1.5,
-            color: 'var(--grey-400)',
-            margin: 0,
-          }}>
+          <p className="text-[0.85rem] leading-[1.5] text-grey-400 m-0">
             Please try again, or email{' '}
-            <a href="mailto:kevin@kevinryan.io" style={{ color: '#FFFFFF', textDecoration: 'underline' }}>
+            <a href="mailto:kevin@kevinryan.io" className="text-white underline">
               kevin@kevinryan.io
             </a>{' '}
             directly.
@@ -131,60 +67,25 @@ export default function AssessmentContactForm(): React.JSX.Element {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <label style={labelStyle} htmlFor="ar-name">Name</label>
-          <input
-            type="text"
-            id="ar-name"
-            name="name"
-            placeholder="Your name"
-            required
-            style={inputStyle}
-            onFocus={focusBorder}
-            onBlur={blurBorder}
-          />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass} htmlFor="ar-name">Name</label>
+          <input type="text" id="ar-name" name="name" placeholder="Your name" required className={inputClass} />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <label style={labelStyle} htmlFor="ar-email">Email</label>
-          <input
-            type="email"
-            id="ar-email"
-            name="email"
-            placeholder="you@company.com"
-            required
-            style={inputStyle}
-            onFocus={focusBorder}
-            onBlur={blurBorder}
-          />
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass} htmlFor="ar-email">Email</label>
+          <input type="email" id="ar-email" name="email" placeholder="you@company.com" required className={inputClass} />
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <label style={labelStyle} htmlFor="ar-company">Company</label>
-          <input
-            type="text"
-            id="ar-company"
-            name="company"
-            placeholder="Your organisation"
-            required
-            style={inputStyle}
-            onFocus={focusBorder}
-            onBlur={blurBorder}
-          />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass} htmlFor="ar-company">Company</label>
+          <input type="text" id="ar-company" name="company" placeholder="Your organisation" required className={inputClass} />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <label style={labelStyle} htmlFor="ar-role">Role</label>
-          <select
-            id="ar-role"
-            name="role"
-            required
-            defaultValue=""
-            style={selectStyle}
-            onFocus={focusBorder}
-            onBlur={blurBorder}
-          >
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass} htmlFor="ar-role">Role</label>
+          <select id="ar-role" name="role" required defaultValue="" className={selectClass}>
             <option value="" disabled>Select your role</option>
             <option value="CTO / VP Engineering">CTO / VP Engineering</option>
             <option value="Head of Platform / DevOps">Head of Platform / DevOps</option>
@@ -195,17 +96,9 @@ export default function AssessmentContactForm(): React.JSX.Element {
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-        <label style={labelStyle} htmlFor="ar-eng-size">Engineering Team Size</label>
-        <select
-          id="ar-eng-size"
-          name="engineering_team_size"
-          required
-          defaultValue=""
-          style={selectStyle}
-          onFocus={focusBorder}
-          onBlur={blurBorder}
-        >
+      <div className="flex flex-col gap-1.5">
+        <label className={labelClass} htmlFor="ar-eng-size">Engineering Team Size</label>
+        <select id="ar-eng-size" name="engineering_team_size" required defaultValue="" className={selectClass}>
           <option value="" disabled>Approximate number of engineers</option>
           <option value="< 50">Fewer than 50</option>
           <option value="50-200">50–200</option>
@@ -214,57 +107,29 @@ export default function AssessmentContactForm(): React.JSX.Element {
         </select>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-        <label style={labelStyle} htmlFor="ar-message">
+      <div className="flex flex-col gap-1.5">
+        <label className={labelClass} htmlFor="ar-message">
           What&rsquo;s prompting this?{' '}
-          <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: '0.7rem' }}>(Optional)</span>
+          <span className="font-normal normal-case tracking-normal text-[0.7rem]">(Optional)</span>
         </label>
         <textarea
           id="ar-message"
           name="message"
           placeholder="Tell me briefly about your situation — AI tools in use, what's working, what isn't."
           rows={4}
-          style={{ ...inputStyle, resize: 'vertical' as const, minHeight: '100px' }}
-          onFocus={focusBorder}
-          onBlur={blurBorder}
+          className={`${inputClass} resize-y min-h-[100px]`}
         />
       </div>
 
       <button
         type="submit"
         disabled={status === 'submitting'}
-        style={{
-          fontFamily: 'var(--font-sans)',
-          fontWeight: 800,
-          fontSize: '0.78rem',
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color: status === 'submitting' ? 'var(--grey-600)' : 'var(--black)',
-          background: status === 'submitting' ? 'var(--grey-800)' : 'var(--lime)',
-          padding: '1.1rem 3rem',
-          border: `2px solid ${status === 'submitting' ? 'var(--grey-800)' : 'var(--lime)'}`,
-          cursor: status === 'submitting' ? 'wait' : 'pointer',
-          transition: 'all 0.25s',
-          alignSelf: 'flex-start',
-          borderRadius: 0,
-        }}
-        onMouseEnter={(e) => {
-          if (status !== 'submitting') {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.color = 'var(--lime)'
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (status !== 'submitting') {
-            e.currentTarget.style.background = 'var(--lime)'
-            e.currentTarget.style.color = 'var(--black)'
-          }
-        }}
+        className="font-sans font-extrabold text-[0.78rem] tracking-[0.12em] uppercase px-12 py-4 border-2 self-start transition-all duration-200 disabled:cursor-wait disabled:text-grey-600 disabled:bg-grey-800 disabled:border-grey-800 enabled:text-black enabled:bg-accent enabled:border-accent enabled:hover:bg-transparent enabled:hover:text-accent"
       >
-        {status === 'submitting' ? 'Sending\u2026' : 'Book a Discovery Call'}
+        {status === 'submitting' ? 'Sending…' : 'Book a Discovery Call'}
       </button>
 
-      <p style={{ fontSize: '0.75rem', color: 'var(--grey-600)', lineHeight: 1.5 }}>
+      <p className="text-[0.75rem] text-grey-600 leading-[1.5]">
         No commitment. No pitch deck. A 30-minute conversation about your context.
       </p>
     </form>

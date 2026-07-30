@@ -1,4 +1,6 @@
-import { CONTAINER } from "@/lib/constants"
+import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
+import Reveal from '@/components/Reveal'
 
 const CAPABILITIES = [
   {
@@ -36,15 +38,9 @@ const CAPABILITIES = [
 export default function CapabilitiesSection() {
   return (
     <section className="section" id="capabilities">
-      <div style={CONTAINER}>
-        <div className="section__header reveal">
-          <div className="section__number">02</div>
-          <div>
-            <div className="section__subtitle">Capabilities</div>
-            <h2 className="display-lg">Where I<br />Operate</h2>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 reveal" style={{ gap: 0 }}>
+      <Container>
+        <SectionHeader number="02" subtitle="Capabilities" title={<>Where I<br />Operate</>} />
+        <Reveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {CAPABILITIES.map((cap) => (
             <div key={cap.number} className="capability">
               <div className="capability__number">{cap.number}</div>
@@ -52,8 +48,8 @@ export default function CapabilitiesSection() {
               <p className="capability__text">{cap.text}</p>
             </div>
           ))}
-        </div>
-      </div>
+        </Reveal>
+      </Container>
     </section>
   )
 }

@@ -1,178 +1,66 @@
 'use client'
 
-import React, { useState } from 'react'
+import Link from "next/link"
+import { useState } from "react"
 
-interface NavItem {
-  label: string
-  href: string
-  external?: boolean
-  page?: boolean
-}
+const NAV_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Assessment", href: "/ai-native-readiness-assessment" },
+] as const
 
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Home', href: '/', page: true },
-  { label: 'Assessment', href: '/ai-native-readiness-assessment', page: true },
-]
-
-const linkStyle = {
-  fontSize: '0.72rem',
-  fontWeight: 700,
-  letterSpacing: '0.14em',
-  textTransform: 'uppercase' as const,
-}
-
-const navLinkStyle = {
-  ...linkStyle,
-  position: 'relative' as const,
-  paddingBottom: '2px',
-}
+const linkClass =
+  "text-[0.72rem] font-bold tracking-[0.14em] uppercase relative pb-[2px]"
+const mobileLinkClass =
+  "text-[0.72rem] font-bold tracking-[0.14em] uppercase"
 
 export default function SiteHeader(): React.JSX.Element {
   const [open, setOpen] = useState(false)
 
-  const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    const hash = href.includes('#') ? href.substring(href.indexOf('#')) : href
-    const target = document.querySelector(hash)
-    if (target) {
-      e.preventDefault()
-      const navHeight = 80
-      const top = target.getBoundingClientRect().top + window.scrollY - navHeight
-      window.scrollTo({ top, behavior: 'smooth' })
-      setOpen(false)
-    }
-  }
-
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{ background: 'var(--white)', borderBottom: '2px solid var(--black)' }}
-    >
-      <div
-        className="flex justify-between items-center mx-auto"
-        style={{ maxWidth: '1400px', padding: '1rem clamp(1.5rem, 5vw, 6rem)' }}
-      >
-        <a
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-black">
+      <div className="flex justify-between items-center mx-auto max-w-[1400px] px-[clamp(1.5rem,5vw,6rem)] py-4">
+        <Link
           href="/"
-          style={{
-            fontFamily: "'Work Sans', sans-serif",
-            fontWeight: 900,
-            fontSize: '1.8rem',
-            lineHeight: 1,
-            textTransform: 'uppercase',
-          }}
+          className="font-['Work_Sans'] font-black text-[1.8rem] leading-none uppercase"
         >
-          Kevin<span style={{ color: 'var(--accent-dim)', marginLeft: '0.15em' }}>Ryan</span>
-        </a>
+          Kevin<span className="text-accent-dim ml-[0.15em]">Ryan</span>
+        </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex items-center" style={{ gap: '2.5rem', listStyle: 'none' }}>
+        <ul className="hidden md:flex items-center gap-10 list-none">
           {NAV_ITEMS.map((item) => (
             <li key={item.label}>
-              {item.external ? (
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="nav-link"
-                  style={navLinkStyle}
-                >
-                  {item.label}
-                </a>
-              ) : item.page ? (
-                <a
-                  href={item.href}
-                  className="nav-link"
-                  style={navLinkStyle}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <a
-                  href={item.href}
-                  onClick={(e) => scrollTo(e, item.href)}
-                  className="nav-link"
-                  style={navLinkStyle}
-                >
-                  {item.label}
-                </a>
-              )}
+              <Link href={item.href} className={`nav-link ${linkClass}`}>
+                {item.label}
+              </Link>
             </li>
           ))}
         </ul>
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden"
+          className="md:hidden bg-transparent border-none cursor-pointer p-2"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem' }}
         >
-          <span style={{ display: 'block', width: '26px', height: '2px', background: 'var(--black)', margin: '6px 0' }} />
-          <span style={{ display: 'block', width: '26px', height: '2px', background: 'var(--black)', margin: '6px 0' }} />
-          <span style={{ display: 'block', width: '26px', height: '2px', background: 'var(--black)', margin: '6px 0' }} />
+          <span className="block w-[26px] h-[2px] bg-black my-[6px]" />
+          <span className="block w-[26px] h-[2px] bg-black my-[6px]" />
+          <span className="block w-[26px] h-[2px] bg-black my-[6px]" />
         </button>
       </div>
 
       {/* Mobile menu */}
       {open && (
-        <ul
-          className="md:hidden flex flex-col"
-          style={{
-            background: 'var(--white)',
-            borderBottom: '2px solid var(--black)',
-            padding: '2rem clamp(1.5rem, 5vw, 6rem)',
-            gap: '1.25rem',
-            listStyle: 'none',
-          }}
-        >
+        <ul className="md:hidden flex flex-col bg-white border-b-2 border-black px-[clamp(1.5rem,5vw,6rem)] py-8 gap-5 list-none">
           {NAV_ITEMS.map((item) => (
             <li key={item.label}>
-              {item.external ? (
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={linkStyle}
-                >
-                  {item.label}
-                </a>
-              ) : item.page ? (
-                <a
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  style={linkStyle}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <a
-                  href={item.href}
-                  onClick={(e) => scrollTo(e, item.href)}
-                  style={linkStyle}
-                >
-                  {item.label}
-                </a>
-              )}
+              <Link href={item.href} onClick={() => setOpen(false)} className={mobileLinkClass}>
+                {item.label}
+              </Link>
             </li>
           ))}
         </ul>
       )}
-
-      <style jsx>{`
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background: var(--accent);
-          transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-          width: 100%;
-        }
-      `}</style>
     </nav>
   )
 }

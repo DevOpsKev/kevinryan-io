@@ -1,4 +1,6 @@
-import { CONTAINER } from "@/lib/constants"
+import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
+import Reveal from '@/components/Reveal'
 
 const TIMELINE = [
   { date: "Mid-1990s", title: "Software Engineer", desc: "Writing code. Foundation layer." },
@@ -14,15 +16,9 @@ const TIMELINE = [
 export default function TimelineSection() {
   return (
     <section className="section section--dark" id="timeline">
-      <div style={CONTAINER}>
-        <div className="section__header reveal">
-          <div className="section__number">05</div>
-          <div>
-            <div className="section__subtitle">Career Arc</div>
-            <h2 className="display-lg">Early to<br />Every Wave</h2>
-          </div>
-        </div>
-        <div className="reveal">
+      <Container>
+        <SectionHeader number="05" subtitle="Career Arc" title={<>Early to<br />Every Wave</>} />
+        <Reveal>
           {TIMELINE.map((t) => (
             <div key={t.date} className="timeline__item">
               <div className="timeline__date">
@@ -37,8 +33,8 @@ export default function TimelineSection() {
               </div>
             </div>
           ))}
-        </div>
-      </div>
+        </Reveal>
+      </Container>
     </section>
   )
 }
