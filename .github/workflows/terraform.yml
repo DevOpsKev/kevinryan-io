@@ -50,8 +50,6 @@ jobs:
           TF_VAR_admin_ssh_public_key: ${{ secrets.ADMIN_SSH_PUBLIC_KEY }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_cloudflare_zone_id_aiimmigrants: ${{ secrets.CLOUDFLARE_ZONE_ID_AIIMMIGRANTS }}
-          TF_VAR_cloudflare_zone_id_specmcp: ${{ secrets.CLOUDFLARE_ZONE_ID_SPECMCP }}
-          TF_VAR_cloudflare_zone_id_sddbook: ${{ secrets.CLOUDFLARE_ZONE_ID_SDDBOOK }}
           TF_VAR_cloudflare_zone_id_distributedequity: ${{ secrets.CLOUDFLARE_ZONE_ID_DISTRIBUTEDEQUITY }}
           TF_VAR_cloudflare_zone_id_ainativeengineer: ${{ secrets.CLOUDFLARE_ZONE_ID_AINATIVEENGINEER }}
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}
@@ -130,8 +128,6 @@ jobs:
           TF_VAR_admin_ssh_public_key: ${{ secrets.ADMIN_SSH_PUBLIC_KEY }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_cloudflare_zone_id_aiimmigrants: ${{ secrets.CLOUDFLARE_ZONE_ID_AIIMMIGRANTS }}
-          TF_VAR_cloudflare_zone_id_specmcp: ${{ secrets.CLOUDFLARE_ZONE_ID_SPECMCP }}
-          TF_VAR_cloudflare_zone_id_sddbook: ${{ secrets.CLOUDFLARE_ZONE_ID_SDDBOOK }}
           TF_VAR_cloudflare_zone_id_distributedequity: ${{ secrets.CLOUDFLARE_ZONE_ID_DISTRIBUTEDEQUITY }}
           TF_VAR_cloudflare_zone_id_ainativeengineer: ${{ secrets.CLOUDFLARE_ZONE_ID_AINATIVEENGINEER }}
           TF_VAR_acr_name: ${{ secrets.ACR_NAME }}

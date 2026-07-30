@@ -15,8 +15,6 @@ on:
           - docs-kevinryan-io
           - hq-kevinryan-io
           - kevinryan-io
-          - sddbook-com
-          - specmcp-ai
   push:
     branches: ["main"]
     paths:

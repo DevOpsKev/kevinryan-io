@@ -350,20 +350,6 @@ module "cloudflare_aiimmigrants" {
   domain       = "aiimmigrants.com"
 }
 
-module "cloudflare_specmcp" {
-  source       = "./modules/cloudflare"
-  zone_id      = var.cloudflare_zone_id_specmcp
-  vm_public_ip = module.network.public_ip_address
-  domain       = "specmcp.ai"
-}
-
-module "cloudflare_sddbook" {
-  source       = "./modules/cloudflare"
-  zone_id      = var.cloudflare_zone_id_sddbook
-  vm_public_ip = module.network.public_ip_address
-  domain       = "sddbook.com"
-}
-
 module "cloudflare_distributedequity" {
   source       = "./modules/cloudflare"
   zone_id      = var.cloudflare_zone_id_distributedequity

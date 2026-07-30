@@ -77,7 +77,7 @@ All sites are deployed by a single workflow:
 
 | Workflow | File | Trigger Path | Sites |
 |----------|------|--------------|-------|
-| Build and Deploy Site | `deploy.yml` | `sites/**` and `docs/**` | aiimmigrants.com, brand.kevinryan.io, distributedequity.org, docs.kevinryan.io, hq.kevinryan.io, kevinryan.io, sddbook.com, specmcp.ai |
+| Build and Deploy Site | `deploy.yml` | `sites/**` and `docs/**` | aiimmigrants.com, brand.kevinryan.io, distributedequity.org, docs.kevinryan.io, hq.kevinryan.io, kevinryan.io |
 
 The `detect` job maps changed paths to sites: files under `sites/<site>/…` map to that site, and files under `docs/…` map to the `docs-kevinryan-io` site, since the docs site symlinks content from the `docs/` directory. Increasing the SHA range (or choosing `all` in `workflow_dispatch`) gives rebuilds for multiple sites in a single run via the matrix.
 

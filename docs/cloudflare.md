@@ -9,7 +9,7 @@ All public traffic to this platform flows through <a href="https://www.cloudflar
 
 | Capability | How It's Used |
 |------------|---------------|
-| **DNS** | Authoritative nameserver for all five domain zones |
+| **DNS** | Authoritative nameserver for all three domain zones |
 | **CDN caching** | Static assets cached at 300+ edge locations worldwide |
 | **DDoS protection** | Always-on L3/L4/L7 mitigation on the free plan |
 | **TLS at the edge** | Cloudflare-issued certificates presented to end users |
@@ -41,14 +41,12 @@ graph LR
 
 ## Domain Zones
 
-Five separate Cloudflare zones are managed, each with its own zone ID:
+Three separate Cloudflare zones are managed, each with its own zone ID:
 
 | Zone | Domain | Subdomains | Terraform Reference |
 |------|--------|------------|-------------------|
 | kevinryan.io | `kevinryan.io` | `www`, `brand`, `docs`, `analytics`, `monitoring` | `module.cloudflare` + root records |
 | aiimmigrants.com | `aiimmigrants.com` | `www` | `module.cloudflare_aiimmigrants` |
-| specmcp.ai | `specmcp.ai` | `www` | `module.cloudflare_specmcp` |
-| sddbook.com | `sddbook.com` | `www` | `module.cloudflare_sddbook` |
 | distributedequity.org | `distributedequity.org` | `www` | `module.cloudflare_distributedequity` |
 
 ## DNS Records
@@ -121,14 +119,10 @@ Every hostname in the platform and what it resolves to:
 | `monitoring.kevinryan.io` | Grafana |
 | `aiimmigrants.com` | AI Immigrants |
 | `www.aiimmigrants.com` | AI Immigrants |
-| `specmcp.ai` | SpecMCP |
-| `www.specmcp.ai` | SpecMCP |
-| `sddbook.com` | SDD Book |
-| `www.sddbook.com` | SDD Book |
 | `distributedequity.org` | Distributed Equity |
 | `www.distributedequity.org` | Distributed Equity |
 
-All 14 hostnames resolve to Cloudflare's edge, which proxies to the same origin (node1's public IP). Traefik handles host-based routing at the cluster level.
+All 10 hostnames resolve to Cloudflare's edge, which proxies to the same origin (node1's public IP). Traefik handles host-based routing at the cluster level.
 
 ## TLS Configuration
 

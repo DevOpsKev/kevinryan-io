@@ -39,3 +39,4 @@ An ADR is a short document that captures a significant architectural decision. E
 | [019](./adr-019-victoria-metrics-lightweight-metrics) | Lightweight Metrics with Victoria Metrics | Accepted |
 | [020](./adr-020-email-capture-formspree-static-landing-pages) | Email Capture via Formspree for Static Landing Pages | Accepted |
 | [021](./adr-021-auth0-authentication-hq) | Auth0 for HQ Authentication | Accepted |
+| [022](./adr-022-retire-sddbook-specmcp-sites) | Retire sddbook.com and specmcp.ai Sites | Accepted |

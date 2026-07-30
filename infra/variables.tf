@@ -60,16 +60,6 @@ variable "cloudflare_zone_id_aiimmigrants" {
   type        = string
 }
 
-variable "cloudflare_zone_id_specmcp" {
-  description = "Cloudflare zone ID for specmcp.ai"
-  type        = string
-}
-
-variable "cloudflare_zone_id_sddbook" {
-  description = "Cloudflare zone ID for sddbook.com"
-  type        = string
-}
-
 variable "cloudflare_zone_id_distributedequity" {
   description = "Cloudflare zone ID for distributedequity.org"
   type        = string

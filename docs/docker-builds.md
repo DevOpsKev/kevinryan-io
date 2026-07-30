@@ -10,7 +10,7 @@ Every site in the platform is containerised and served by nginx. The Dockerfile 
 | Strategy | Sites | Base Images |
 |----------|-------|-------------|
 | Multi-stage | kevinryan.io, docs.kevinryan.io | `node:22.22.0-alpine3.23` → `nginx:1.28.2-alpine` |
-| Single-stage | brand, aiimmigrants, specmcp, sddbook, distributedequity | `nginx:1.28.2-alpine` |
+| Single-stage | brand, aiimmigrants, distributedequity | `nginx:1.28.2-alpine` |
 
 ## Multi-Stage Builds
 

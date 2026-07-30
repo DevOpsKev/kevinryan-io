@@ -1,6 +1,6 @@
 # kevin-ryan-platform
 
-Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant). Hosts eight sites across six domains, deployed to a K3s Kubernetes cluster on Azure via Flux CD GitOps. Full documentation at [docs.kevinryan.io](https://docs.kevinryan.io).
+Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant). Hosts six sites across four domains, deployed to a K3s Kubernetes cluster on Azure via Flux CD GitOps. Full documentation at [docs.kevinryan.io](https://docs.kevinryan.io).
 
 ## Sites
 
@@ -10,8 +10,6 @@ Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant).
 | Brand Guidelines | [brand.kevinryan.io](https://brand.kevinryan.io) | Static HTML |
 | Docs | [docs.kevinryan.io](https://docs.kevinryan.io) | Astro Starlight |
 | AI Immigrants | [aiimmigrants.com](https://aiimmigrants.com) | Static HTML |
-| SpecMCP | [specmcp.ai](https://specmcp.ai) | Static HTML |
-| SDD Book | [sddbook.com](https://sddbook.com) | Static HTML |
 | Distributed Equity | [distributedequity.org](https://distributedequity.org) | Static HTML |
 | AI-Native Engineer | [ai-native-engineer.io](https://ai-native-engineer.io) | Static HTML |
 
@@ -33,7 +31,7 @@ Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant).
 ## Architecture
 
 ```text
-Cloudflare (DNS + CDN + TLS) — 6 domain zones
+Cloudflare (DNS + CDN + TLS) — 4 domain zones
      │
      │  HTTPS (Full SSL mode)
      ▼
@@ -42,7 +40,7 @@ Azure Public IP (North Europe)
 │   ├── Traefik Ingress (host-based routing)
 │   ├── Flux CD (source, kustomize, helm controllers)
 │   ├── External Secrets Operator
-│   └── Site Deployments ×8 (nginx containers)
+│   └── Site Deployments ×6 (nginx containers)
 │
 ├── K3s Agent (node2 — Standard_B2s)
 │   ├── Grafana (monitoring.kevinryan.io)
@@ -127,8 +125,6 @@ kevin-ryan-platform/
 │   ├── brand-kevinryan-io/    # Static HTML
 │   ├── docs-kevinryan-io/     # Astro Starlight
 │   ├── aiimmigrants-com/      # Static HTML
-│   ├── specmcp-ai/            # Static HTML
-│   ├── sddbook-com/           # Static HTML
 │   ├── distributedequity-org/ # Static HTML
 │   └── ai-native-engineer-io/ # Static HTML
 ├── pnpm-workspace.yaml
@@ -174,7 +170,7 @@ All infrastructure is defined in Terraform and deployed to Azure:
 | **Container Registry** | Azure Container Registry (ACR) + GHCR |
 | **Secrets** | Azure Key Vault, synced via External Secrets Operator |
 | **Database** | Azure PostgreSQL Flexible Server (Umami + Grafana) |
-| **DNS** | Cloudflare (6 zones, proxied with CDN caching + serve stale) |
+| **DNS** | Cloudflare (4 zones, proxied with CDN caching + serve stale) |
 | **CI/CD Auth** | GitHub Actions → Azure via OIDC (no stored secrets) |
 
 ### Bootstrap
@@ -274,7 +270,7 @@ az vm user update -g rg-kevinryan-io -n vm-kevinryan-node2 -u azureuser --ssh-ke
 
 | Service | URL | Purpose |
 |---------|-----|---------|
-| Umami | [analytics.kevinryan.io](https://analytics.kevinryan.io) | Privacy-focused web analytics (all 8 sites) |
+| Umami | [analytics.kevinryan.io](https://analytics.kevinryan.io) | Privacy-focused web analytics (all 6 sites) |
 | Grafana | [monitoring.kevinryan.io](https://monitoring.kevinryan.io) | Dashboards (Loki logs + VictoriaMetrics metrics) |
 
 ## Development Guidelines

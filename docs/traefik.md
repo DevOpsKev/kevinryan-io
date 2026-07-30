@@ -31,8 +31,6 @@ graph TD
             brand["brand-kevinryan-io:80"]
             docs["docs-kevinryan-io:80"]
             ai["aiimmigrants-com:80"]
-            spec["specmcp-ai:80"]
-            sdd["sddbook-com:80"]
             de["distributedequity-org:80"]
         end
 
@@ -87,7 +85,7 @@ spec:
 
 ### Route Inventory
 
-All nine IngressRoutes in the cluster:
+All seven IngressRoutes in the cluster:
 
 | IngressRoute | Namespace | Host Match | Service |
 |-------------|-----------|------------|---------|
@@ -95,8 +93,6 @@ All nine IngressRoutes in the cluster:
 | `brand-kevinryan-io` | `brand-kevinryan-io` | `brand.kevinryan.io` | `brand-kevinryan-io:80` |
 | `docs-kevinryan-io` | `docs-kevinryan-io` | `docs.kevinryan.io` | `docs-kevinryan-io:80` |
 | `aiimmigrants-com` | `aiimmigrants-com` | `aiimmigrants.com` \|\| `www.aiimmigrants.com` | `aiimmigrants-com:80` |
-| `specmcp-ai` | `specmcp-ai` | `specmcp.ai` \|\| `www.specmcp.ai` | `specmcp-ai:80` |
-| `sddbook-com` | `sddbook-com` | `sddbook.com` \|\| `www.sddbook.com` | `sddbook-com:80` |
 | `distributedequity-org` | `distributedequity-org` | `distributedequity.org` \|\| `www.distributedequity.org` | `distributedequity-org:80` |
 | `umami` | `umami` | `analytics.kevinryan.io` | `umami:80` |
 | `grafana` | `observability` | `monitoring.kevinryan.io` | `grafana:80` |

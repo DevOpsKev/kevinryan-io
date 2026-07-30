@@ -27,8 +27,6 @@ Every site in the platform includes the Umami tracking script. Each site has a u
 | Brand Guidelines | brand.kevinryan.io | `c41e7b1b-81ea-422d-ba9b-9ac2e73f2192` |
 | Docs | docs.kevinryan.io | `7982fbc0-012b-4c04-8ec3-a9de42462351` |
 | AI Immigrants | aiimmigrants.com | `c9c48aa2-f7c6-495f-bbed-5837392834ba` |
-| SpecMCP | specmcp.ai | `372ebc20-e8e7-4cc4-8aed-5a692eed1491` |
-| SDD Book | sddbook.com | `304d17ee-7587-4017-8060-2f8969646322` |
 | Distributed Equity | distributedequity.org | `0b17c94d-4711-4454-9c5b-ea437abaaf87` |
 
 ### Script Snippet

@@ -71,8 +71,6 @@ export default defineConfig({
             { label: 'docs.kevinryan.io', link: '/sites/docs-kevinryan-io/' },
             { label: 'brand.kevinryan.io', link: '/sites/brand-kevinryan-io/' },
             { label: 'aiimmigrants.com', link: '/sites/aiimmigrants-com/' },
-            { label: 'specmcp.ai', link: '/sites/specmcp-ai/' },
-            { label: 'sddbook.com', link: '/sites/sddbook-com/' },
             { label: 'distributedequity.org', link: '/sites/distributedequity-org/' },
           ],
         },

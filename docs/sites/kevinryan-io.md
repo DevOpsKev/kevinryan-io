@@ -31,7 +31,7 @@ graph TD
     subgraph components["Components"]
         header["SiteHeader"]
         footer["SiteFooter"]
-        sections["Section components ×12"]
+        sections["Section components ×11"]
     end
 
     subgraph styling["Styling"]
@@ -94,7 +94,6 @@ sites/kevinryan-io/
 │       ├── DeliverySection.tsx
 │       ├── ClientsSection.tsx
 │       ├── TimelineSection.tsx
-│       ├── SpecMcpSection.tsx
 │       ├── WritingSection.tsx
 │       ├── CertificationsSection.tsx
 │       └── ContactSection.tsx
@@ -126,7 +125,6 @@ The home page is a composition of section components rendered in sequence. Each 
 1. **DeliverySection** — delivery methodology
 1. **ClientsSection** — client logos and names
 1. **TimelineSection** — career timeline
-1. **SpecMcpSection** — SpecMCP project highlight
 1. **WritingSection** — published works
 1. **CertificationsSection** — professional certifications
 1. **ContactSection** — contact details

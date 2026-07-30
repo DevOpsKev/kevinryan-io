@@ -9,7 +9,6 @@ import CapabilitiesSection from "@/components/sections/CapabilitiesSection"
 import DeliverySection from "@/components/sections/DeliverySection"
 import ClientsSection from "@/components/sections/ClientsSection"
 import TimelineSection from "@/components/sections/TimelineSection"
-import SpecMcpSection from "@/components/sections/SpecMcpSection"
 import WritingSection from "@/components/sections/WritingSection"
 import CertificationsSection from "@/components/sections/CertificationsSection"
 import ContactSection from "@/components/sections/ContactSection"
@@ -30,7 +29,6 @@ export default function Page() {
       <TimelineSection />
       <WritingSection />
       <CertificationsSection />
-      <SpecMcpSection />
       <ContactSection />
       <SiteFooter />
     </main>

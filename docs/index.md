@@ -26,8 +26,6 @@ The tradeoff is a larger repository, but path-filtered CI/CD workflows ensure th
 | Brand Guidelines | [brand.kevinryan.io](https://brand.kevinryan.io) | Static HTML | None |
 | Docs | [docs.kevinryan.io](https://docs.kevinryan.io) | Astro Starlight | `astro build` |
 | AI Immigrants | [aiimmigrants.com](https://aiimmigrants.com) | Static HTML | None |
-| SpecMCP | [specmcp.ai](https://specmcp.ai) | Static HTML | None |
-| SDD Book | [sddbook.com](https://sddbook.com) | Static HTML | None |
 | Distributed Equity | [distributedequity.org](https://distributedequity.org) | Static HTML | None |
 
 Sites with no build step serve static HTML directly via nginx. All sites are containerised and deployed identically regardless of their build toolchain.
@@ -50,8 +48,6 @@ kevin-ryan-platform/
 │   ├── brand-kevinryan-io/    # Static HTML
 │   ├── docs-kevinryan-io/     # Astro Starlight
 │   ├── aiimmigrants-com/      # Static HTML
-│   ├── specmcp-ai/            # Static HTML
-│   ├── sddbook-com/           # Static HTML
 │   └── distributedequity-org/ # Static HTML
 ├── docs/                      # Documentation content (symlinked into docs site)
 └── pnpm-workspace.yaml
@@ -63,7 +59,7 @@ kevin-ryan-platform/
 graph TD
     subgraph repo["Monorepo — kevin-ryan-platform"]
         direction LR
-        sites["Sites ×7"]
+        sites["Sites ×5"]
         k8smanifests["K8s Manifests"]
         tf["Terraform"]
     end
@@ -82,7 +78,7 @@ graph TD
             flux["Flux CD"]
             traefik["Traefik"]
             subgraph workloads["Workloads"]
-                sd["Site Deployments ×7"]
+                sd["Site Deployments ×5"]
                 umami["Umami Analytics"]
                 obs["Grafana · Loki · VictoriaMetrics"]
             end
@@ -140,7 +136,7 @@ Flux CD watches the `k8s/` directory and reconciles cluster state every 10 minut
 
 ## Shared Services
 
-Beyond the seven sites, the cluster runs shared platform services:
+Beyond the five sites, the cluster runs shared platform services:
 
 - **Umami:** <a href="https://analytics.kevinryan.io" target="_blank" rel="noopener noreferrer">analytics.kevinryan.io</a> — Privacy-focused web analytics (PostgreSQL-backed)
 - **Grafana:** <a href="https://monitoring.kevinryan.io" target="_blank" rel="noopener noreferrer">monitoring.kevinryan.io</a> — Dashboards, with Loki for log aggregation, Promtail for log collection, and VictoriaMetrics for metrics

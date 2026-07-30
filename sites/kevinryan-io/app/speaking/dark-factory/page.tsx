@@ -621,7 +621,7 @@ const html = `
       <div>
         <p class="presenter-role">Kevin Ryan &amp; Associates — AI-Native · Platform Engineering · Author</p>
         <p class="presenter-quote">"I used to direct teams of software engineers. Now I coordinate AI agents."</p>
-        <p class="presenter-bio">30 years in enterprise technology. 14 professional certifications including GitLab ×9 and GitHub ×4. 40+ enterprise clients and £20m+ in programme budgets delivered. Currently writing <em>Spec Driven Development</em> (sddbook.com) — a book directly addressing the spec quality bottleneck this talk describes. Published author of <em>AI Immigrants</em>. Remote-first. Budapest · Dublin · London.</p>
+        <p class="presenter-bio">30 years in enterprise technology. 14 professional certifications including GitLab ×9 and GitHub ×4. 40+ enterprise clients and £20m+ in programme budgets delivered. Currently writing <em>Spec Driven Development</em> — a book directly addressing the spec quality bottleneck this talk describes. Published author of <em>AI Immigrants</em>. Remote-first. Budapest · Dublin · London.</p>
         <div class="client-tags">
           <span class="client-tag">CERN</span>
           <span class="client-tag">NESTLÉ</span>

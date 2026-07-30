@@ -284,8 +284,6 @@ Manages DNS records and cache rules for each domain. The module is called once p
 |--------|---------------|------------|
 | `kevinryan.io` | `cloudflare_zone_id` | `brand`, `docs` |
 | `aiimmigrants.com` | `cloudflare_zone_id_aiimmigrants` | — |
-| `specmcp.ai` | `cloudflare_zone_id_specmcp` | — |
-| `sddbook.com` | `cloudflare_zone_id_sddbook` | — |
 | `distributedequity.org` | `cloudflare_zone_id_distributedequity` | — |
 
 Additionally, `analytics` and `monitoring` A records are created directly in the root module for `analytics.kevinryan.io` and `monitoring.kevinryan.io`.

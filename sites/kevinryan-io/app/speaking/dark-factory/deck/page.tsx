@@ -708,7 +708,6 @@ const slidesHtml = `
   <div style="position:absolute;left:0;bottom:0;width:1280px;height:58px;background:#111111;border-top:2px solid #1A1A1A;display:flex;align-items:center;padding:0 64px;gap:40px;">
     <div style="font-family:'Archivo',sans-serif;font-size:13px;color:#7A7772;">Kevin Ryan &amp; Associates</div>
     <div style="font-family:'Archivo',sans-serif;font-size:13px;color:#55524E;">kevinryan.io</div>
-    <div style="font-family:'Archivo',sans-serif;font-size:13px;color:#55524E;">sddbook.com</div>
     <div style="flex:1;"></div>
     <div style="font-family:'Archivo',sans-serif;font-size:13px;font-weight:700;"><span style="color:#fff;">KEVIN </span><span style="color:#A8E10C;">RYAN</span></div>
   </div>

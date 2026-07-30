@@ -4,7 +4,7 @@ const CAPABILITIES = [
   {
     number: "01",
     title: "AI-Native Engineering",
-    text: "The bottleneck has moved from implementation speed to specification quality and execution. We work at that bottleneck — enterprise AI adoption strategy, agent workflow architecture, and specification-driven development. Author of Spec Driven Development (sddbook.com). The dark factory doesn't happen by accident.",
+    text: "The bottleneck has moved from implementation speed to specification quality and execution. We work at that bottleneck — enterprise AI adoption strategy, agent workflow architecture, and specification-driven development. Author of Spec Driven Development. The dark factory doesn't happen by accident.",
   },
   {
     number: "02",

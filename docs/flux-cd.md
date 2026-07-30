@@ -78,8 +78,6 @@ resources:
   - kevinryan-io-sync.yaml
   - brand-kevinryan-io-sync.yaml
   - aiimmigrants-com-sync.yaml
-  - specmcp-ai-sync.yaml
-  - sddbook-com-sync.yaml
   - distributedequity-org-sync.yaml
   - docs-kevinryan-io-sync.yaml
   - external-secrets-sync.yaml
@@ -98,8 +96,6 @@ graph TD
     root --> brand["brand-kevinryan-io"]
     root --> docs["docs-kevinryan-io"]
     root --> ai["aiimmigrants-com"]
-    root --> spec["specmcp-ai"]
-    root --> sdd["sddbook-com"]
     root --> de["distributedequity-org"]
     root --> es["external-secrets"]
     root --> ess["external-secrets-store"]
