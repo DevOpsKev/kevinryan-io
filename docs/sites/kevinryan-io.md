@@ -74,7 +74,6 @@ sites/kevinryan-io/
 ├── components/
 │   ├── SiteHeader.tsx          # Fixed navigation with mobile menu
 │   ├── SiteFooter.tsx          # Footer with commit SHA
-│   ├── BookCover.tsx           # Book cover component
 │   └── sections/
 │       ├── HeroSection.tsx
 │       ├── TickerBar.tsx
