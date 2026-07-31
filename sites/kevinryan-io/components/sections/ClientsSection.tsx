@@ -26,7 +26,7 @@ const CLIENTS = [
 
 export default function ClientsSection() {
   return (
-    <section className="section" id="clients">
+    <section className="section" id="clients" data-accent="blue1">
       <Container>
         <SectionHeader subtitle="Notable clients" title="Who I have worked with" />
         <div className="clients">

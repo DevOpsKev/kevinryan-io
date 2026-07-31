@@ -36,7 +36,7 @@ const CAPABILITIES = [
 
 export default function CapabilitiesSection() {
   return (
-    <section className="section" id="capabilities">
+    <section className="section" id="capabilities" data-accent="teal">
       <Container>
         <SectionHeader subtitle="Capabilities" title="Where I operate" />
         <div className="cells cells--3">

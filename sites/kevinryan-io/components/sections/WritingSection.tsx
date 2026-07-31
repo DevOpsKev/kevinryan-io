@@ -21,7 +21,7 @@ const PROJECTS = [
 
 export default function WritingSection() {
   return (
-    <section className="section" id="projects">
+    <section className="section" id="projects" data-accent="yellow">
       <Container>
         <SectionHeader subtitle="Writing & projects" title="Published work" />
         <div className="cells cells--3">

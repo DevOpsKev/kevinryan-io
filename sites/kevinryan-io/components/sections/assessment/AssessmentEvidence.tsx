@@ -9,7 +9,7 @@ const EVIDENCE = [
 
 export default function AssessmentEvidence() {
   return (
-    <section className="section" id="evidence">
+    <section className="section" id="evidence" data-accent="yellow">
       <Container>
         <div className="sec-head">
           <span className="sec-mark">06 · Evidence Base</span>

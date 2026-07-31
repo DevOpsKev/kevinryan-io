@@ -15,7 +15,7 @@ const TIMELINE = [
 
 export default function TimelineSection() {
   return (
-    <section className="section section--sink" id="timeline">
+    <section className="section section--sink" id="timeline" data-accent="magenta">
       <Container>
         <SectionHeader subtitle="Career arc" title="Early to every wave" />
         <div className="tl">

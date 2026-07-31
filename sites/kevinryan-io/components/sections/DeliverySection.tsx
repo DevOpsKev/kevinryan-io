@@ -31,7 +31,7 @@ const CASES = [
 
 export default function DeliverySection() {
   return (
-    <section className="section section--sink" id="delivery">
+    <section className="section section--sink" id="delivery" data-accent="orange">
       <Container>
         <SectionHeader subtitle="Enterprise delivery" title="Embed. Build. Transfer." />
         <div className="cells cells--2">

@@ -21,7 +21,7 @@ const META = [
 
 export default function HeroSection() {
   return (
-    <section className="section cover" id="top">
+    <section className="section cover" id="top" data-accent="blue">
       <Container>
         <div className="cover__grid">
           <div className="cover__main">

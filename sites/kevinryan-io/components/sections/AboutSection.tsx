@@ -10,7 +10,7 @@ const STATS = [
 
 export default function AboutSection() {
   return (
-    <section className="section section--sink" id="about">
+    <section className="section section--sink" id="about" data-accent="cyan">
       <Container>
         <SectionHeader subtitle="About" title="When AI writes the code" />
 

@@ -3,7 +3,7 @@ import AssessmentContactForm from '@/components/AssessmentContactForm'
 
 export default function AssessmentCta() {
   return (
-    <section className="section section--sink" id="contact">
+    <section className="section section--sink" id="contact" data-accent="blue">
       <Container>
         <div className="sec-head">
           <span className="sec-mark">Interested?</span>

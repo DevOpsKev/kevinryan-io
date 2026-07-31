@@ -9,7 +9,7 @@ const STATS = [
 
 export default function AssessmentProblem() {
   return (
-    <section className="section section--sink" id="problem">
+    <section className="section section--sink" id="problem" data-accent="red">
       <Container>
         <div className="sec-head">
           <span className="sec-mark">01 · The Problem</span>

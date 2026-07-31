@@ -39,7 +39,7 @@ export default function ContactSection() {
   }
 
   return (
-    <section className="section" id="contact">
+    <section className="section" id="contact" data-accent="blue">
       <Container>
         <SectionHeader subtitle="Contact" title="Let us work together" />
 

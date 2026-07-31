@@ -28,7 +28,7 @@ const ROWS: Row[] = [
 
 export default function CertificationsSection() {
   return (
-    <section className="section section--sink" id="certs">
+    <section className="section section--sink" id="certs" data-accent="green">
       <Container>
         <SectionHeader subtitle="Certifications" title="Verified expertise" />
 

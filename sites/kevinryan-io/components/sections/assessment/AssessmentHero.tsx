@@ -9,7 +9,7 @@ const META = [
 
 export default function AssessmentHero() {
   return (
-    <section className="section" style={{ borderTop: 0, padding: 'var(--sp-10) 0 var(--sp-8)' }}>
+    <section className="section" data-accent="blue" style={{ borderTop: 0, padding: 'var(--sp-10) 0 var(--sp-8)' }}>
       <Container>
         <div className="split">
           <div>

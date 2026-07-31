@@ -13,7 +13,7 @@ const DELIVERABLES = [
 
 export default function AssessmentDeliverables() {
   return (
-    <section className="section" id="deliverables">
+    <section className="section" id="deliverables" data-accent="green">
       <Container>
         <div className="sec-head">
           <span className="sec-mark">04 · Deliverables</span>

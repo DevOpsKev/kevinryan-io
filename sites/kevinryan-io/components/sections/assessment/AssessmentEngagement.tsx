@@ -9,7 +9,7 @@ const PHASES = [
 
 export default function AssessmentEngagement() {
   return (
-    <section className="section section--sink" id="engagement">
+    <section className="section section--sink" id="engagement" data-accent="cyan">
       <Container>
         <div className="sec-head">
           <span className="sec-mark">03 · The Engagement</span>

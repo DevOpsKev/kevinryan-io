@@ -12,7 +12,7 @@ const CAPS = [
 
 export default function AssessmentCapabilities() {
   return (
-    <section className="section" id="capabilities">
+    <section className="section" id="capabilities" data-accent="teal">
       <Container>
         <div className="sec-head">
           <span className="sec-mark">02 · The Seven Capabilities</span>

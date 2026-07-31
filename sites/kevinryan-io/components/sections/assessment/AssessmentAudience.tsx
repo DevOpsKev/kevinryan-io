@@ -8,7 +8,7 @@ const AUDIENCES = [
 
 export default function AssessmentAudience() {
   return (
-    <section className="section section--sink" id="audience">
+    <section className="section section--sink" id="audience" data-accent="magenta">
       <Container>
         <div className="sec-head">
           <span className="sec-mark">05 · Audience</span>

@@ -2,7 +2,7 @@ import Container from '@/components/Container'
 
 export default function DocsBanner() {
   return (
-    <section className="section" style={{ padding: 'var(--sp-8) 0', borderTop: 0 }}>
+    <section className="section" data-accent="cyan1" style={{ padding: 'var(--sp-8) 0', borderTop: 0 }}>
       <Container>
         <div className="callout">
           <span className="callout__label">See it in production</span>
