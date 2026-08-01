@@ -1,52 +1,473 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap');
+/* ═══════════════════════════════════════════════════════════════
+   docs.kevinryan.io — Tokyo Night Moon
+   Aligned to kevinryan-io/design-spec/theme-spec.md v3.0.0.
 
-/* Force dark mode only */
-:root {
+   Starlight is themed through --sl-* variables. This file maps the
+   Tokyo Night Moon palette onto them, then corrects the places where
+   Starlight's defaults diverge from the spec: radius, shadows, the
+   type scale, table rules, aside construction and the mono register.
+
+   Organising idea, carried from the main site: each documentation
+   area owns one accent from the ramp, exposed as --sec. Moving
+   between areas walks the palette. The map lives in astro.config.mjs.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Self-hosted fonts. No third party request. Spec B9. ── */
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-sans/400-italic.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/* ═══ PALETTE ════════════════════════════════════════════════
+   Lifted verbatim from theme.tokyo_night_moon. Nothing invented.
+   ═══════════════════════════════════════════════════════════ */
+:root,
+::backdrop {
+  /* Surfaces */
+  --bg: #222436;
+  --bg-sink: #1a1b26;
+  --bg-panel: #1f2335;
+  --bg-raise: #2f334d;
+  --line: #3b4261;
+  --line-strong: #444a73;
+  --selection: #2d3f76;
+
+  /* Foregrounds */
+  --ink: #c8d3f5;     /* 10.3:1 */
+  --ink-2: #a9b1d6;   /*  7.2:1 */
+  --ink-3: #828bb8;   /*  4.6:1, muted floor */
+  --ink-4: #737aa2;   /*  3.7:1, decorative only */
+
+  /* Accents */
+  --blue: #82aaff;  --blue1: #7aa2f7; --blue0: #3d59a1;
+  --cyan: #86e1fc;  --cyan1: #7dcfff;
+  --teal: #4fd6be;  --green: #c3e88d;
+  --yellow: #ffc777; --orange: #ff966c;
+  --red: #ff757f;   --magenta: #c099ff;
+
+  --sec: var(--blue);
+}
+
+/* ═══ AREA ACCENTS ═══════════════════════════════════════════
+   Set on <html> by the head script in astro.config.mjs.
+   ═══════════════════════════════════════════════════════════ */
+html[data-accent='blue']    { --sec: var(--blue); }
+html[data-accent='cyan']    { --sec: var(--cyan); }
+html[data-accent='teal']    { --sec: var(--teal); }
+html[data-accent='green']   { --sec: var(--green); }
+html[data-accent='yellow']  { --sec: var(--yellow); }
+html[data-accent='orange']  { --sec: var(--orange); }
+html[data-accent='magenta'] { --sec: var(--magenta); }
+
+/* ═══ STARLIGHT TOKEN MAP ════════════════════════════════════ */
+:root,
+::backdrop,
+:root[data-theme='light'],
+[data-theme='light'] ::backdrop {
   color-scheme: dark;
+
+  --sl-color-black: var(--bg);
+  --sl-color-gray-6: var(--bg-panel);
+  --sl-color-gray-5: var(--line);
+  --sl-color-gray-4: var(--ink-4);
+  --sl-color-gray-3: var(--ink-3);
+  --sl-color-gray-2: var(--ink-2);
+  --sl-color-gray-1: var(--ink);
+  --sl-color-white: var(--ink);
+
+  --sl-color-text: var(--ink-2);
+  --sl-color-bg: var(--bg);
+  --sl-color-bg-nav: var(--bg-panel);
+  --sl-color-bg-sidebar: var(--bg-panel);
+  --sl-color-bg-inline-code: var(--bg-panel);
+  --sl-color-bg-accent: var(--sec);
+  --sl-color-hairline: var(--line);
+  --sl-color-hairline-light: var(--line);
+  --sl-color-hairline-shade: var(--line);
+  --sl-color-backdrop-overlay: rgba(26, 27, 38, 0.72);
+
+  /* Interaction follows the area accent. */
+  --sl-color-accent: var(--sec);
+  --sl-color-accent-low: color-mix(in srgb, var(--sec) 22%, var(--bg));
+  --sl-color-accent-high: var(--sec);
+  --sl-color-text-accent: var(--sec);
+  --sl-color-text-invert: var(--bg-sink);
+
+  /* Aside semantics. These encode state and stay fixed across areas. */
+  --sl-color-blue:   var(--blue);   --sl-color-blue-high: var(--cyan1);
+  --sl-color-blue-low: color-mix(in srgb, var(--blue) 18%, var(--bg));
+  --sl-color-green:  var(--green);  --sl-color-green-high: var(--green);
+  --sl-color-green-low: color-mix(in srgb, var(--green) 18%, var(--bg));
+  --sl-color-orange: var(--orange); --sl-color-orange-high: var(--orange);
+  --sl-color-orange-low: color-mix(in srgb, var(--orange) 18%, var(--bg));
+  --sl-color-red:    var(--red);    --sl-color-red-high: var(--red);
+  --sl-color-red-low: color-mix(in srgb, var(--red) 18%, var(--bg));
+  --sl-color-purple: var(--magenta); --sl-color-purple-high: var(--magenta);
+  --sl-color-purple-low: color-mix(in srgb, var(--magenta) 18%, var(--bg));
+
+  /* No shadows anywhere. Spec B18. */
+  --sl-shadow-sm: none; --sl-shadow-md: none; --sl-shadow-lg: none;
+
+  /* Families. Spec B8. */
+  --sl-font: 'IBM Plex Sans', var(--sl-font-system);
+  --sl-font-mono: 'IBM Plex Mono', var(--sl-font-system-mono);
+
+  /* ── Type scale. Every step is one of the eleven, or the h1 clamp. ── */
+  --sl-text-2xs: 0.625rem;      /* micro 10 */
+  --sl-text-xs: 0.6875rem;      /* label 11 */
+  --sl-text-sm: 0.75rem;        /* caption 12 */
+  --sl-text-base: 1.0625rem;    /* read 17 */
+  --sl-text-lg: 1.1875rem;      /* lead 19 */
+  --sl-text-xl: 1.3125rem;      /* h3 21 */
+  --sl-text-2xl: 1.5rem;        /* h2 24 */
+  --sl-text-3xl: 1.875rem;      /* h1 clamp floor */
+  --sl-text-4xl: 2.25rem;
+  --sl-text-5xl: 2.75rem;       /* h1 44 */
+  --sl-text-6xl: 2.75rem;
+
+  --sl-text-code: 0.8125rem;    /* code 13 */
+  --sl-text-code-sm: 0.75rem;
+
+  --sl-text-h1: clamp(1.875rem, 3.2vw, 2.75rem);
+  --sl-text-h2: 1.5rem;
+  --sl-text-h3: 1.3125rem;
+  --sl-text-h4: 1.1875rem;
+  --sl-text-h5: 1.0625rem;
+
+  --sl-line-height: 1.72;
+  --sl-line-height-headings: 1.2;
+
+  --sl-content-width: 48rem;
+  --sl-sidebar-width: 18.5rem;
+  --sl-nav-height: 3.75rem;
 }
 
-starlight-theme-select {
-  display: none;
+/* Theme toggle is hidden; the site is dark only. Spec B3. */
+starlight-theme-select { display: none; }
+
+/* ═══ BASE ═══════════════════════════════════════════════════ */
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+::selection { background: var(--selection); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--sec); outline-offset: 3px; }
+
+/* Zero radius everywhere. Spec B17. */
+*, *::before, *::after { border-radius: 0 !important; }
+
+/* ═══ HEADINGS ═══════════════════════════════════════════════
+   Per-level tracking, matching the main site rather than one
+   value applied to every level.
+   ═══════════════════════════════════════════════════════════ */
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6),
+.content-panel h1,
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', var(--sl-font-system);
+  text-transform: none;
+  color: var(--ink);
+}
+.sl-markdown-content h1, .content-panel h1 { font-weight: 700; letter-spacing: -0.035em; line-height: 1.05; }
+.sl-markdown-content h2 { font-weight: 600; letter-spacing: -0.025em; }
+.sl-markdown-content h3 { font-weight: 600; letter-spacing: -0.015em; }
+.sl-markdown-content :is(h4, h5, h6) { font-weight: 600; letter-spacing: -0.01em; }
+
+/* The page title carries a short accent rule, the way section heads do
+   on the main site. */
+.content-panel:first-of-type h1 { position: relative; padding-top: var(--sl-nav-gap, 0); }
+.content-panel:first-of-type h1::before {
+  content: ''; display: block; width: 48px; height: 2px;
+  background: var(--sec); margin-bottom: 1rem;
 }
 
-/* Accent — brand lime */
-:root[data-theme='dark'] {
-  --sl-color-accent-low: #1a2600;
-  --sl-color-accent: #A8E10C;
-  --sl-color-accent-high: #c8f04c;
-
-  --sl-color-bg: #0A0A0A;
-  --sl-color-bg-nav: #111111;
-  --sl-color-bg-sidebar: #111111;
+/* Section heads inside a page get a hairline above, which gives long
+   reference pages a visible rhythm. */
+.sl-markdown-content h2 {
+  border-top: 1px solid var(--line);
+  padding-top: 2rem;
+  margin-top: 3rem;
 }
+.sl-markdown-content h2:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
 
-/* Typography */
-:root {
-  --sl-font: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
-  --sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --__sl-font-size-base: 1.05rem;
-  --sl-line-height: 1.7;
-}
-
-/* Headings — Bebas Neue, Swiss style */
-h1,
-h2,
-h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-/* Swiss International Style — sharp edges, minimal decoration */
-.card,
-[class*='card'] {
-  border-radius: 0;
-}
-
-/* Site title in brand display font */
+/* ═══ SITE TITLE AND HEADER ══════════════════════════════════ */
 .site-title {
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.02em;
+  font-family: 'Space Grotesk', var(--sl-font-system);
+  font-weight: 700; letter-spacing: -0.02em; text-transform: none;
+  color: var(--ink);
+}
+header.header {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-panel);
+}
+
+/* ═══ MONO REGISTER ══════════════════════════════════════════
+   All structural chrome is mono, uppercase, tracked open.
+   Spec B12: uppercase is set in the mono face only.
+   ═══════════════════════════════════════════════════════════ */
+/* Top-level group labels read as section headings. */
+.sidebar-content ul.top-level > li > details > summary .group-label > span,
+.right-sidebar h2,
+.pagination-links a > span:first-child,
+starlight-toc h2 {
+  font-family: var(--sl-font-mono) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--ink-3) !important;
+}
+
+/* Nested group labels sit one register down: display face, not mono. */
+.sidebar-content ul.top-level ul .group-label > span {
+  font-family: 'Space Grotesk', var(--sl-font-system);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--ink-2);
+}
+
+/* Top-level entries that are links rather than groups. */
+.sidebar-content ul.top-level > li > a.large {
+  font-family: 'Space Grotesk', var(--sl-font-system);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+}
+.sidebar-content ul.top-level > li > a.large[aria-current='page'] { color: var(--ink); }
+
+/* ═══ SIDEBAR ════════════════════════════════════════════════ */
+.sidebar-pane { border-right: 1px solid var(--line); }
+.sidebar-content a {
+  font-size: 0.875rem;
+  color: var(--ink-3);
+  border-left: 2px solid transparent;
+  padding-left: 0.75rem;
+  transition: color 140ms cubic-bezier(.2,.7,.3,1), background 140ms cubic-bezier(.2,.7,.3,1);
+}
+.sidebar-content a:hover { color: var(--ink); background: var(--bg-raise); }
+.sidebar-content a[aria-current='page'] {
+  color: var(--ink);
+  font-weight: 500;
+  background: var(--bg-raise);
+  border-left-color: var(--sec);
+}
+.sidebar-content ul ul { border-inline-start: 1px solid var(--line); }
+
+/* ═══ TABLE OF CONTENTS ══════════════════════════════════════ */
+starlight-toc a {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  border-left: 1px solid var(--line);
+  padding-left: 0.75rem;
+  transition: color 140ms cubic-bezier(.2,.7,.3,1), border-color 140ms cubic-bezier(.2,.7,.3,1);
+}
+starlight-toc a:hover { color: var(--ink-2); }
+starlight-toc a[aria-current='true'],
+starlight-toc a[aria-current='true']:hover {
+  color: var(--sec);
+  border-left-color: var(--sec);
+  font-weight: 400;
+}
+
+/* ═══ PROSE ══════════════════════════════════════════════════ */
+.sl-markdown-content { color: var(--ink-2); }
+.sl-markdown-content p { max-width: 68ch; }
+.sl-markdown-content li { max-width: 66ch; }
+.sl-markdown-content strong { color: var(--ink); font-weight: 600; }
+
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--sec);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--sec) 40%, transparent);
+  transition: border-color 140ms cubic-bezier(.2,.7,.3,1);
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover { border-bottom-color: var(--sec); }
+
+/* List markers are a short accent rule, not a bullet. */
+.sl-markdown-content ul:not(:where(.not-content *)) { list-style: none; padding-left: 0; }
+.sl-markdown-content ul:not(:where(.not-content *)) > li { position: relative; padding-left: 1.5rem; }
+.sl-markdown-content ul:not(:where(.not-content *)) > li::before {
+  content: ''; position: absolute; left: 0; top: 0.85em;
+  width: 9px; height: 1px; background: var(--sec);
+}
+.sl-markdown-content ol:not(:where(.not-content *)) { padding-left: 1.5rem; }
+.sl-markdown-content ol:not(:where(.not-content *)) > li::marker {
+  font-family: var(--sl-font-mono); font-size: 0.75rem; color: var(--ink-3);
+}
+
+/* ═══ BLOCKQUOTE ═════════════════════════════════════════════ */
+.sl-markdown-content blockquote:not(:where(.not-content *)) {
+  border-inline-start: 2px solid var(--sec);
+  padding-inline-start: 1.5rem;
+  font-family: 'Space Grotesk', var(--sl-font-system);
+  font-weight: 500;
+  font-size: 1.3125rem;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  max-width: 50ch;
+}
+
+/* ═══ TABLES ═════════════════════════════════════════════════
+   No vertical rules, no zebra, no outer border. Spec B25.
+   ═══════════════════════════════════════════════════════════ */
+.sl-markdown-content table:not(:where(.not-content *)) {
+  border-collapse: collapse;
+  border: 0;
+  width: 100%;
+  font-size: 0.875rem;
+}
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 0.75rem 1.25rem;
+  vertical-align: baseline;
+}
+.sl-markdown-content :is(th, td):first-child:not(:where(.not-content *)) { padding-left: 0; }
+.sl-markdown-content :is(th, td):last-child:not(:where(.not-content *)) { padding-right: 0; }
+.sl-markdown-content th:not(:where(.not-content *)) {
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  font-size: 1.4rem;
+  color: var(--ink-3);
+  border-bottom-color: var(--line-strong);
+  text-align: left;
+}
+.sl-markdown-content td:not(:where(.not-content *)) { color: var(--ink-2); }
+.sl-markdown-content tbody tr:hover td { background: var(--bg-raise); }
+/* Right-aligned columns carry tabular figures. */
+.sl-markdown-content :is(th, td)[align='right']:not(:where(.not-content *)) {
+  font-family: var(--sl-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══ INLINE CODE ════════════════════════════════════════════ */
+.sl-markdown-content code:not(:where(.not-content *, pre *)) {
+  font-family: var(--sl-font-mono);
+  font-size: 0.875em;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  padding: 1px 5px;
+  color: var(--ink);
+}
+
+/* ═══ ASIDES ═════════════════════════════════════════════════
+   Rebuilt to the callout contract: colour on the left edge and the
+   label only, body stays neutral, no icons. Spec B24.
+   ═══════════════════════════════════════════════════════════ */
+.starlight-aside {
+  border: 1px solid var(--line);
+  border-inline-start: 2px solid var(--sl-color-asides-text-accent);
+  background: var(--bg-panel);
+  padding: 1.25rem 1.5rem;
+}
+.starlight-aside__title {
+  font-family: var(--sl-font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sl-color-asides-text-accent);
+  gap: 0;
+}
+.starlight-aside__icon { display: none; }
+.starlight-aside__content {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.starlight-aside__content a { color: var(--sl-color-asides-text-accent); }
+
+/* ═══ CODE BLOCKS ════════════════════════════════════════════
+   Syntax comes from the tokyo-night Shiki theme set in
+   astro.config.mjs. This only handles the frame.
+   ═══════════════════════════════════════════════════════════ */
+.expressive-code .frame {
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.expressive-code .frame.is-terminal .header,
+.expressive-code .frame:not(.is-terminal) .header {
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.expressive-code .copy button { border: 1px solid var(--line); }
+
+/* ═══ PAGINATION ═════════════════════════════════════════════
+   Two equal columns split by a hairline, matching the site pager.
+   ═══════════════════════════════════════════════════════════ */
+.pagination-links { gap: 1px; }
+.pagination-links a {
+  border: 1px solid var(--line);
+  background: transparent;
+  box-shadow: none;
+  padding: 1.5rem;
+  transition: background 140ms cubic-bezier(.2,.7,.3,1), border-color 140ms cubic-bezier(.2,.7,.3,1);
+}
+.pagination-links a:hover { background: var(--bg-raise); border-color: var(--line-strong); }
+.pagination-links a > span:last-child {
+  font-family: 'Space Grotesk', var(--sl-font-system);
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.pagination-links svg { color: var(--sec); }
+
+/* ═══ SEARCH ═════════════════════════════════════════════════ */
+site-search button[data-open-modal] {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink-3);
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+site-search button[data-open-modal]:hover { border-color: var(--sec); color: var(--ink); }
+dialog { border: 1px solid var(--line); background: var(--bg); }
+.dialog-frame { background: var(--bg); }
+
+/* ═══ BADGES ═════════════════════════════════════════════════ */
+.sl-badge {
+  font-family: var(--sl-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--line);
+  padding: 2px 7px;
+}
+
+/* ═══ FOOTER ═════════════════════════════════════════════════ */
+.kr-footer {
+  border-top: 1px solid var(--line);
+  margin-top: 3rem;
+}
+.kr-footer__sha {
+  text-align: center;
+  padding: 1rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-4);
+}
+
+/* ═══ SCROLLBAR ══════════════════════════════════════════════ */
+* { scrollbar-color: var(--line-strong) transparent; scrollbar-width: thin; }
+
+/* Motion responds to input only. Spec B28 and B30. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+@media print {
+  .sidebar-pane, .right-sidebar, header.header, .pagination-links { display: none !important; }
+  body { background: #fff; color: #000; }
 }
