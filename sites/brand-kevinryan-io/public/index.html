@@ -1,1213 +1,1226 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brand Guidelines — Kevin Ryan &amp; Associates - Version 2.0</title>
-<link rel="icon" href="favicon-dark.ico">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Bebas+Neue&family=Work+Sans:wght@300;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --accent: #A8E10C;
-  --accent-dim: #92C40A;
-  --black: #0A0A0A;
-  --white: #F5F3EF;
-  --dark: #111111;
-  --dark-mid: #1A1A1A;
-  --grey-100: #ECEAE5;
-  --grey-200: #D4D1CB;
-  --grey-400: #7A7772;
-  --grey-600: #55524E;
-  --grey-800: #2E2D2B;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
-
-body {
-  font-family: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: var(--black);
-  background: var(--white);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-::selection { background: var(--accent); color: var(--black); }
-
-/* ---- Layout ---- */
-.container { max-width: 1000px; margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 4rem); }
-section { padding: 5rem 0; }
-section + section { border-top: 1px solid var(--grey-200); }
-
-/* ---- Typography ---- */
-.section-number {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2.5rem, 4vw, 3.5rem);
-  color: var(--accent);
-  line-height: 1;
-  letter-spacing: 0.02em;
-}
-.section-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-  color: var(--black);
-  line-height: 0.92;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  margin-top: 0.15em;
-  margin-bottom: 1.5rem;
-}
-h3 {
-  font-family: 'Archivo', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--black);
-  margin-top: 2.5rem;
-  margin-bottom: 0.75rem;
-}
-p, li {
-  font-size: 0.95rem;
-  color: var(--grey-600);
-  line-height: 1.7;
-  margin-bottom: 0.75rem;
-}
-.label {
-  font-family: 'Archivo', sans-serif;
-  font-weight: 700;
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--grey-400);
-  margin-bottom: 0.5rem;
-}
-code {
-  font-size: 0.85em;
-  background: var(--grey-100);
-  padding: 0.15em 0.4em;
-  border-radius: 3px;
-  color: var(--grey-800);
-}
-
-/* ---- Cover ---- */
-.cover {
-  background: var(--black);
-  padding: 6rem 0 5rem;
-  border-bottom: none;
-}
-.cover + section { border-top: none; }
-.cover .container { display: flex; flex-direction: column; gap: 3rem; }
-.cover-logo { width: clamp(180px, 30vw, 280px); }
-.cover-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  color: #fff;
-  line-height: 1;
-  letter-spacing: 0.02em;
-}
-.cover-meta { color: var(--grey-400); font-size: 0.8rem; margin-top: auto; }
-.cover-meta a { color: var(--accent); text-decoration: none; }
-
-/* ---- Nav ---- */
-.toc { list-style: none; counter-reset: toc; }
-.toc li {
-  counter-increment: toc;
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid var(--grey-200);
-}
-.toc li::before {
-  content: counter(toc, decimal-leading-zero);
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.2rem;
-  color: var(--accent);
-  min-width: 2rem;
-}
-.toc a { color: var(--black); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
-.toc a:hover { color: var(--accent); }
-
-/* ---- Logo grid ---- */
-.logo-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-.logo-box {
-  border-radius: 8px;
-  padding: 2.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 180px;
-  position: relative;
-}
-.logo-box img { max-width: 200px; width: 100%; }
-.logo-box .box-label {
-  position: absolute;
-  bottom: 0.75rem;
-  font-size: 0.65rem;
-  color: var(--grey-400);
-  text-align: center;
-}
-.logo-box--light { background: #fff; border: 1px solid var(--grey-200); }
-.logo-box--warm { background: var(--white); border: 1px solid var(--grey-200); }
-.logo-box--dark { background: var(--black); }
-.logo-box--dark .box-label { color: var(--grey-600); }
-.logo-box--grey { background: var(--grey-800); }
-.logo-box--grey .box-label { color: var(--grey-600); }
-
-/* ---- Monogram grid ---- */
-.mono-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin: 1.5rem 0;
-}
-.mono-box {
-  border-radius: 8px;
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.mono-box img { width: 60%; }
-.mono-box .box-label { position: absolute; bottom: 0.5rem; font-size: 0.6rem; color: var(--grey-400); }
-.mono-box--dark .box-label, .mono-box--grey .box-label { color: var(--grey-600); }
-
-/* ---- Colour swatches ---- */
-.swatch-row { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0 2rem; }
-.swatch {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-width: 90px;
-}
-.swatch-block {
-  width: 70px;
-  height: 70px;
-  border-radius: 6px;
-}
-.swatch-block--bordered { border: 1px solid var(--grey-200); }
-.swatch-name { font-weight: 700; font-size: 0.72rem; color: var(--black); }
-.swatch-hex { font-size: 0.68rem; color: var(--grey-400); }
-.swatch-rgb { font-size: 0.68rem; color: var(--grey-400); }
-
-/* ---- Usage list ---- */
-.usage-list { list-style: none; margin: 1rem 0; }
-.usage-list li { padding: 0.5rem 0; border-bottom: 1px solid var(--grey-100); font-size: 0.88rem; }
-.usage-list li strong { color: var(--black); }
-
-/* ---- Typography specimens ---- */
-.specimen { margin: 1.5rem 0 2rem; }
-.specimen-display {
-  font-family: 'Bebas Neue', sans-serif;
-  line-height: 1;
-  letter-spacing: 0.02em;
-}
-.specimen-body { font-family: 'Archivo', sans-serif; }
-.specimen-logo { font-family: 'Work Sans', sans-serif; }
-.specimen-note { font-size: 0.8rem; color: var(--grey-400); margin-top: 0.5rem; }
-
-/* ---- Type scale table ---- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-  font-size: 0.85rem;
-}
-th {
-  text-align: left;
-  font-weight: 700;
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--grey-400);
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--grey-200);
-}
-td {
-  padding: 0.5rem 0.75rem;
-  color: var(--grey-600);
-  border-bottom: 1px solid var(--grey-100);
-}
-td:first-child { font-weight: 700; color: var(--black); }
-
-/* ---- Spacing bars ---- */
-.spacing-row {
-  display: grid;
-  grid-template-columns: 140px 120px 1fr;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-}
-.spacing-bar { height: 8px; background: var(--accent); border-radius: 2px; }
-.spacing-label { font-weight: 700; font-size: 0.85rem; color: var(--black); }
-.spacing-usage { font-size: 0.82rem; color: var(--grey-400); }
-
-/* ---- Principles ---- */
-.principles { list-style: none; margin: 1rem 0; }
-.principles li {
-  padding: 0.5rem 0 0.5rem 1.25rem;
-  position: relative;
-  font-size: 0.88rem;
-  color: var(--grey-600);
-}
-.principles li::before {
-  content: '—';
-  position: absolute;
-  left: 0;
-  color: var(--accent);
-  font-weight: 700;
-}
-
-/* ---- Do / Don't ---- */
-.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-top: 1.5rem; }
-.rules-col h3 { margin-top: 0; }
-.do-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem;
-  color: var(--accent);
-  margin-bottom: 1rem;
-}
-.dont-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem;
-  color: #DC2626;
-  margin-bottom: 1rem;
-}
-.rules-list { list-style: none; }
-.rules-list li {
-  padding: 0.4rem 0 0.4rem 1.5rem;
-  position: relative;
-  font-size: 0.88rem;
-  color: var(--grey-600);
-  line-height: 1.5;
-}
-.rules-list--do li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
-.rules-list--dont li::before { content: '✗'; position: absolute; left: 0; color: #DC2626; font-weight: 700; }
-
-/* ---- App table ---- */
-.app-table { margin: 1rem 0; }
-.app-row {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 1rem;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid var(--grey-100);
-  font-size: 0.85rem;
-}
-.app-row strong { color: var(--black); }
-.app-row span { color: var(--grey-400); }
-
-/* ---- Footer ---- */
-.footer {
-  border-top: 1px solid var(--grey-200);
-  padding: 2rem 0;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  color: var(--grey-400);
-}
-.footer a { color: var(--accent); text-decoration: none; }
-
-/* ---- Asset library ---- */
-.asset-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0 2.5rem;
-}
-.asset-card {
-  border: 1px solid var(--grey-200);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.asset-preview {
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-.asset-preview img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-.asset-preview--light { background: #fff; }
-.asset-preview--warm { background: var(--white); }
-.asset-preview--dark { background: var(--black); }
-.asset-preview--grey { background: var(--grey-800); }
-.asset-preview--checker {
-  background-image:
-    linear-gradient(45deg, var(--grey-200) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--grey-200) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--grey-200) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--grey-200) 75%);
-  background-size: 12px 12px;
-  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
-  background-color: #fff;
-}
-.asset-info {
-  padding: 0.6rem 0.75rem;
-  border-top: 1px solid var(--grey-200);
-  background: var(--grey-100);
-}
-.asset-name {
-  font-weight: 700;
-  font-size: 0.72rem;
-  color: var(--black);
-  word-break: break-all;
-}
-.asset-url {
-  font-size: 0.62rem;
-  color: var(--grey-400);
-  word-break: break-all;
-  margin-top: 0.2rem;
-  line-height: 1.4;
-}
-.asset-url a {
-  color: var(--accent-dim);
-  text-decoration: none;
-}
-.asset-url a:hover { text-decoration: underline; }
-.asset-sizes {
-  font-size: 0.65rem;
-  color: var(--grey-400);
-  margin-top: 0.15rem;
-}
-
-/* ---- Responsive ---- */
-@media (max-width: 640px) {
-  .logo-grid { grid-template-columns: 1fr; }
-  .mono-grid { grid-template-columns: repeat(2, 1fr); }
-  .rules-grid { grid-template-columns: 1fr; }
-  .spacing-row { grid-template-columns: 100px 100px 1fr; }
-}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand Book · Kevin Ryan &amp; Associates</title>
+<meta name="description" content="Visual identity for Kevin Ryan &amp; Associates. Wordmark, contextual ampersand, Tokyo Night Moon palette, typography, grid and asset library.">
+<meta name="theme-color" content="#222436">
+<link rel="icon" href="favicon-dark.ico" sizes="any">
+<link rel="icon" href="assets/kra-mark-blue-192.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/kra-mark-blue-192.png">
+<meta property="og:title" content="Brand Book · Kevin Ryan &amp; Associates">
+<meta property="og:description" content="Visual identity, version 3.0.">
+<meta property="og:image" content="https://brand.kevinryan.io/assets/kra-social-dark-800.png">
+<meta property="og:type" content="website">
+<link rel="preload" href="fonts/space-grotesk-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-mono-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="brand.css">
 <script defer src="https://analytics.kevinryan.io/script.js" data-website-id="c41e7b1b-81ea-422d-ba9b-9ac2e73f2192"></script>
 </head>
 <body>
 
-<!-- Cover -->
-<section class="cover">
-  <div class="container">
-    <img src="kevin-ryan-logo-whitetext.svg" alt="Kevin Ryan &amp; Associates" class="cover-logo">
-    <div class="cover-title">BRAND<br>GUIDELINES</div>
-    <div class="cover-meta">
-      Visual Identity Guidelines<br>
-      Version 2.0 — February 2026<br>
-      <a href="https://kevinryan.io">kevinryan.io</a>
+<nav class="topbar">
+  <div class="topbar__nav">
+    <a class="tool" href="#top">00 Home</a>
+    <a class="tool" href="#wordmark">01 Wordmark</a>
+    <a class="tool" href="#ampersand">02 Ampersand</a>
+    <a class="tool" href="#mark">03 Mark</a>
+    <a class="tool" href="#colour">04 Colour</a>
+    <a class="tool" href="#type">05 Type</a>
+    <a class="tool" href="#grid">06 Grid</a>
+    <a class="tool" href="#structure">07 Structure</a>
+    <a class="tool" href="#usage">08 Usage</a>
+    <a class="tool tool--accent" href="#assets">09 Assets ↓</a>
+  </div>
+</nav>
+
+<!-- ═══ COVER ═══ -->
+<header class="section cover" id="top" data-accent="blue">
+  <div class="shell">
+    <div class="cover__grid">
+      <div class="cover__main">
+        <img class="cover__logo" src="assets/kra-wordmark-blue.svg" alt="Kevin Ryan &amp; Associates">
+        <h1 style="max-width:none;font-size:clamp(2rem,4.4vw,3.25rem);margin-bottom:var(--sp-2)">Brand book</h1>
+        <p class="t-meta" style="margin:0">Kevin Ryan &amp; Associates · Visual identity · Version 3.0.0</p>
+        <hr class="rule--accent">
+        <p class="t-lead prose">The identity for Kevin Ryan &amp; Associates. One wordmark, one mark, one palette
+        taken from the development environment, and a set of rules that a person or an agent can apply without
+        asking a further question.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="#assets">Asset library <small>111 files</small></a>
+          <a class="btn" href="https://kevinryan.io">kevinryan.io</a>
+        </div>
+      </div>
+      <aside class="cover__side">
+        <div class="meta-panel">
+          <div class="row"><span class="k">Version</span><span class="v">3.0.0</span></div>
+          <div class="row"><span class="k">Status</span><span class="v"><span class="pill pill--live">Current</span></span></div>
+          <div class="row"><span class="k">Supersedes</span><span class="v">2.0, February 2026</span></div>
+          <div class="row"><span class="k">Palette</span><span class="v">Tokyo Night Moon</span></div>
+          <div class="row"><span class="k">Source</span><span class="v">dotfiles/.chezmoidata.yaml</span></div>
+          <div class="row"><span class="k">Authority</span><span class="v">002-site-theme</span></div>
+          <div class="row"><span class="k">Applies to</span><span class="v">kevinryan.io<br>docs.kevinryan.io<br>brand.kevinryan.io</span></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</header>
+
+<div class="band">
+  <div class="shell"><div class="band__inner">
+    <span class="band__item">Wordmark</span><span class="band__item">Contextual accent</span>
+    <span class="band__item">Tokyo Night Moon</span><span class="band__item">Space Grotesk</span>
+    <span class="band__item">IBM Plex</span><span class="band__item">Zero radius</span>
+    <span class="band__item">Hairline structure</span><span class="band__item">8px scale</span>
+    <span class="band__item">Swiss International</span><span class="band__item">Self-hosted type</span>
+  </div></div>
+</div>
+
+<!-- ═══ 00 CONTENTS ═══ -->
+<section class="section section--sink" data-accent="blue">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">00</span>
+      <h1>Contents</h1>
+    </div>
+    <div class="split split--start">
+      <div>
+        <a class="index-row" href="#wordmark"><span class="n">01</span><span class="t">The wordmark</span><span class="x">KR&amp;A</span></a>
+        <a class="index-row" href="#ampersand"><span class="n">02</span><span class="t">The contextual ampersand</span><span class="x">7 accents</span></a>
+        <a class="index-row" href="#mark"><span class="n">03</span><span class="t">The mark</span><span class="x">Diagonal split</span></a>
+        <a class="index-row" href="#colour"><span class="n">04</span><span class="t">Colour</span><span class="x">Moon ramp</span></a>
+        <a class="index-row" href="#type"><span class="n">05</span><span class="t">Typography</span><span class="x">3 families</span></a>
+        <a class="index-row" href="#grid"><span class="n">06</span><span class="t">Grid and spacing</span><span class="x">8px</span></a>
+        <a class="index-row" href="#structure"><span class="n">07</span><span class="t">Structure and motion</span><span class="x">Hairline</span></a>
+        <a class="index-row" href="#usage"><span class="n">08</span><span class="t">Usage</span><span class="x">Do, do not</span></a>
+        <a class="index-row" href="#assets"><span class="n">09</span><span class="t">Asset library</span><span class="x">111 files</span></a>
+      </div>
+      <div class="callout">
+        <div class="callout__label">How to read this</div>
+        <p>Every value in this document is a token, not a description. Where a colour, size or space appears,
+        the token name is printed beside it. Copy the token, not the value.</p>
+        <p>The palette is not owned here. It is lifted verbatim from the Tokyo Night Moon block in the dotfiles
+        repository, which is the same source the terminal, editor and cluster tooling read. If that block
+        changes, this document changes with it.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Contents -->
-<section>
-  <div class="container">
-    <div class="section-number">00</div>
-    <div class="section-title">Contents</div>
-    <ol class="toc">
-      <li><a href="#logo">Primary Logo</a></li>
-      <li><a href="#variants">Logo Variants</a></li>
-      <li><a href="#monogram">KR Monogram</a></li>
-      <li><a href="#colour">Colour Palette</a></li>
-      <li><a href="#type">Typography</a></li>
-      <li><a href="#grid">Spacing &amp; Grid</a></li>
-      <li><a href="#rules">Usage Rules</a></li>
-      <li><a href="#assets">Asset Library</a></li>
-    </ol>
-  </div>
-</section>
+<!-- ═══ 01 WORDMARK ═══ -->
+<section class="section" id="wordmark" data-accent="blue">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">01</span>
+      <h1>The wordmark</h1>
+    </div>
+    <div class="prose" style="margin-bottom:var(--sp-6)">
+      <p>The wordmark is <strong>KR&amp;A</strong> set in Space Grotesk at weight 700, tracked to
+      <code>-0.05em</code>. All four characters share one weight and one size. The ampersand takes
+      <code>0.02em</code> of optical padding either side because its bowl sits tighter than the flat sides of
+      the R and the A.</p>
+      <p>The ampersand is the only glyph that carries colour. It is what separates the mark from plain text,
+      so it is never dropped, never reweighted and never replaced with the word "and".</p>
+    </div>
 
-<!-- 01 Primary Logo -->
-<section id="logo">
-  <div class="container">
-    <div class="section-number">01</div>
-    <div class="section-title">Primary Logo</div>
-    <p>The primary logo uses <strong>Work Sans Black</strong> for KEVIN and RYAN, stacked to equal visual width using letter-spacing on RYAN. The lighter "& associates" underlines the full width. Work Sans is the only typeface used in the logo — it is distinct from the site body (Archivo) and display (Bebas Neue) fonts.</p>
-
-    <div class="logo-grid">
-      <div class="logo-box logo-box--light">
-        <img src="kevin-ryan-logo-outlined.svg" alt="Logo on light">
-        <span class="box-label">Primary — Light Background</span>
+    <div class="spec-grid" style="margin-bottom:var(--sp-6)">
+      <div class="spec">
+        <div class="spec__stage"><img src="assets/kra-wordmark-blue.svg" alt="Wordmark on the section ground"></div>
+        <div class="spec__foot"><span>Section ground</span><span class="hex">#222436</span></div>
       </div>
-      <div class="logo-box logo-box--dark">
-        <img src="kevin-ryan-logo-whitetext.svg" alt="Logo on dark">
-        <span class="box-label">Primary — Dark Background</span>
+      <div class="spec">
+        <div class="spec__stage spec__stage--sink"><img src="assets/kra-wordmark-blue.svg" alt="Wordmark on the sunken ground"></div>
+        <div class="spec__foot"><span>Sunken ground</span><span class="hex">#1A1B26</span></div>
+      </div>
+      <div class="spec">
+        <div class="spec__stage spec__stage--light"><img src="assets/kra-wordmark-print.svg" alt="Wordmark on warm white"></div>
+        <div class="spec__foot"><span>Print ground</span><span class="hex">#F5F3EF</span></div>
       </div>
     </div>
 
-    <h3>Clear Space</h3>
-    <p>Maintain clear space around the logo equal to the cap height of the letter K. No other graphic elements, text, or edge boundaries should intrude into this zone.</p>
-
-    <h3>Minimum Size</h3>
-    <p>The primary logo should not be reproduced smaller than 120px wide for digital or 30mm wide for print. Below this size, use the KR monogram instead.</p>
-  </div>
-</section>
-
-<!-- 02 Logo Variants -->
-<section id="variants">
-  <div class="container">
-    <div class="section-number">02</div>
-    <div class="section-title">Logo Variants</div>
-    <p>The logo is available in four configurations. Use the appropriate variant based on the background context. The lime green of RYAN never changes across any variant.</p>
-
-    <div class="logo-grid">
-      <div class="logo-box logo-box--light">
-        <img src="kevin-ryan-logo-outlined.svg" alt="Standard light">
-        <span class="box-label">Standard — Light Background</span>
+    <div class="two-col">
+      <div>
+        <h2>Clear space</h2>
+        <p class="prose" style="color:var(--ink-2);font-size:var(--text-ui)">Clear space is one cap height of
+        the K on every side. Nothing intrudes into that zone: no rule, no edge, no other mark. The dashed
+        boundary below is drawn to scale.</p>
+        <div class="clearspace" style="margin-top:var(--sp-3)">
+          <div class="clearspace__inner"><img src="assets/kra-wordmark-blue.svg" alt="Wordmark with its clear space drawn"></div>
+          <div class="clearspace__note">Gutter = cap height of K</div>
+        </div>
       </div>
-      <div class="logo-box logo-box--dark">
-        <img src="kevin-ryan-logo-whitetext.svg" alt="Reversed dark">
-        <span class="box-label">Reversed — Dark Background</span>
-      </div>
-      <div class="logo-box logo-box--warm">
-        <img src="kevin-ryan-logo-outlined.svg" alt="Standard warm">
-        <span class="box-label">Standard — Warm White (#F5F3EF)</span>
-      </div>
-      <div class="logo-box logo-box--grey">
-        <img src="kevin-ryan-logo-whitetext.svg" alt="Reversed grey">
-        <span class="box-label">Reversed — Dark Grey (#2E2D2B)</span>
+      <div>
+        <h2>Minimum size</h2>
+        <p class="prose" style="color:var(--ink-2);font-size:var(--text-ui)">The wordmark holds down to
+        <strong>68px wide</strong> on screen and <strong>18mm</strong> in print. Below that the ampersand thins
+        past the point where the colour registers, and the mark reads as plain text. Use the mark instead.</p>
+        <div class="minsize" style="margin-top:var(--sp-3)">
+          <figure><img src="assets/kra-wordmark-blue.svg" style="width:170px" alt="Wordmark at 170px"><figcaption>170px</figcaption></figure>
+          <figure><img src="assets/kra-wordmark-blue.svg" style="width:110px" alt="Wordmark at 110px"><figcaption>110px</figcaption></figure>
+          <figure><img src="assets/kra-wordmark-blue.svg" style="width:68px" alt="Wordmark at 68px"><figcaption class="ok">68px floor</figcaption></figure>
+          <figure><img src="assets/kra-wordmark-blue.svg" style="width:44px" alt="Wordmark at 44px, below the floor"><figcaption class="no">44px too small</figcaption></figure>
+        </div>
       </div>
     </div>
 
-    <h3>Colour Rules</h3>
-    <p>KEVIN is always black (#0A0A0A) on light backgrounds, white on dark. RYAN is always lime #A8E10C regardless of background. "& associates" follows KEVIN. The lime must never be altered, lightened, darkened, or replaced.</p>
-
-    <h3>File Formats</h3>
-    <p>SVG (outlined paths) is the master format. PNG rasters are provided at 256, 512, 800, and 1200px. ICO files at 16/32/48px are provided for browser favicons. All files hosted at kevinryan.io/brand/.</p>
-  </div>
-</section>
-
-<!-- 03 KR Monogram -->
-<section id="monogram">
-  <div class="container">
-    <div class="section-number">03</div>
-    <div class="section-title">KR Monogram</div>
-    <p>The KR monogram is the compact form of the identity. Use it for app icons, social media avatars, favicons, and anywhere the full logo would be illegible at small sizes. Same colour rules apply.</p>
-
-    <div class="mono-grid">
-      <div class="mono-box logo-box--dark mono-box--dark" style="border-radius:8px">
-        <img src="kr-icon-dark.svg" alt="Monogram dark">
-        <span class="box-label">Dark</span>
-      </div>
-      <div class="mono-box logo-box--light" style="border-radius:8px">
-        <img src="kr-icon-light.svg" alt="Monogram light">
-        <span class="box-label">Light</span>
-      </div>
-      <div class="mono-box logo-box--warm" style="border-radius:8px">
-        <img src="kr-icon-light.svg" alt="Monogram warm">
-        <span class="box-label">Warm White</span>
-      </div>
-      <div class="mono-box logo-box--grey mono-box--grey" style="border-radius:8px">
-        <img src="kr-icon-dark.svg" alt="Monogram dark grey">
-        <span class="box-label">Dark Grey</span>
-      </div>
-    </div>
-
-    <h3>Sizing</h3>
-    <p>Legible from 16px (favicon) to 512px. Provided: 16/32/48px (favicon), 64/128/192/256/512px (app icons), 400/800px (social media).</p>
-
-    <h3>Application</h3>
-    <div class="app-table">
-      <div class="app-row"><strong>Browser favicon</strong><span>favicon-dark.ico or favicon-light.ico (16/32/48px)</span></div>
-      <div class="app-row"><strong>Social media</strong><span>kr-social-dark-400.png or 800.png</span></div>
-      <div class="app-row"><strong>Mobile app icon</strong><span>kr-icon-dark-192.png (Android) or 512.png (App Store)</span></div>
-      <div class="app-row"><strong>Slack / Teams</strong><span>kr-icon-dark-128.png</span></div>
-      <div class="app-row"><strong>Watermark</strong><span>kr-icon-transparent-256.png or 512.png</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- 04 Colour Palette -->
-<section id="colour">
-  <div class="container">
-    <div class="section-number">04</div>
-    <div class="section-title">Colour Palette</div>
-    <p>The palette is taken directly from the kevinryan.io CSS custom properties. It uses warm neutrals and a single lime accent. The warm off-white (#F5F3EF) gives the site its distinctive warmth.</p>
-
-    <h3>Primary</h3>
-    <div class="swatch-row">
-      <div class="swatch">
-        <div class="swatch-block" style="background:#A8E10C"></div>
-        <div class="swatch-name">Lime</div>
-        <div class="swatch-hex">#A8E10C</div>
-        <div class="swatch-rgb">168, 225, 12</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block" style="background:#92C40A"></div>
-        <div class="swatch-name">Lime Dim</div>
-        <div class="swatch-hex">#92C40A</div>
-        <div class="swatch-rgb">146, 196, 10</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block" style="background:#0A0A0A"></div>
-        <div class="swatch-name">Black</div>
-        <div class="swatch-hex">#0A0A0A</div>
-        <div class="swatch-rgb">10, 10, 10</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block swatch-block--bordered" style="background:#F5F3EF"></div>
-        <div class="swatch-name">White</div>
-        <div class="swatch-hex">#F5F3EF</div>
-        <div class="swatch-rgb">245, 243, 239</div>
-      </div>
-    </div>
-
-    <h3>Neutrals</h3>
-    <div class="swatch-row">
-      <div class="swatch">
-        <div class="swatch-block" style="background:#111111"></div>
-        <div class="swatch-name">Dark</div>
-        <div class="swatch-hex">#111111</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block" style="background:#1A1A1A"></div>
-        <div class="swatch-name">Dark Mid</div>
-        <div class="swatch-hex">#1A1A1A</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block" style="background:#2E2D2B"></div>
-        <div class="swatch-name">Grey 800</div>
-        <div class="swatch-hex">#2E2D2B</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block" style="background:#55524E"></div>
-        <div class="swatch-name">Grey 600</div>
-        <div class="swatch-hex">#55524E</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block" style="background:#7A7772"></div>
-        <div class="swatch-name">Grey 400</div>
-        <div class="swatch-hex">#7A7772</div>
-      </div>
-    </div>
-    <div class="swatch-row">
-      <div class="swatch">
-        <div class="swatch-block swatch-block--bordered" style="background:#D4D1CB"></div>
-        <div class="swatch-name">Grey 200</div>
-        <div class="swatch-hex">#D4D1CB</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block swatch-block--bordered" style="background:#ECEAE5"></div>
-        <div class="swatch-name">Grey 100</div>
-        <div class="swatch-hex">#ECEAE5</div>
-      </div>
-      <div class="swatch">
-        <div class="swatch-block swatch-block--bordered" style="background:#FFFFFF"></div>
-        <div class="swatch-name">Pure White</div>
-        <div class="swatch-hex">#FFFFFF</div>
-      </div>
-    </div>
-
-    <h3>Usage</h3>
-    <ul class="usage-list">
-      <li><strong>Lime #A8E10C</strong> — RYAN in logo, accent, links, interactive elements, section numbers, selection highlight.</li>
-      <li><strong>Black #0A0A0A</strong> — KEVIN in logo, headings, primary text, nav bar border, ticker background.</li>
-      <li><strong>White #F5F3EF</strong> — Page background (warm). The site does not use pure white as a background.</li>
-      <li><strong>Grey-600 #55524E</strong> — Body text, paragraph content, secondary information.</li>
-      <li><strong>Grey-400 #7A7772</strong> — Captions, metadata, subtitle labels, footer text.</li>
-      <li><strong>Grey-200 #D4D1CB</strong> — Borders, dividers, card separators.</li>
-      <li><strong>Grey-100 #ECEAE5</strong> — Alternating section backgrounds, image placeholder fills.</li>
-    </ul>
-  </div>
-</section>
-
-<!-- 05 Typography -->
-<section id="type">
-  <div class="container">
-    <div class="section-number">05</div>
-    <div class="section-title">Typography</div>
-    <p>The site uses three typefaces with distinct roles. Archivo for body text, Bebas Neue for display headings, and Work Sans exclusively for the logo mark. This separation gives the logo its own identity while the editorial feel comes from Archivo and Bebas Neue.</p>
-
-    <h3>Display — Bebas Neue</h3>
-    <div class="label">CSS variable: --font-display</div>
-    <div class="specimen">
-      <div class="specimen-display" style="font-size:clamp(2rem,5vw,3.2rem);color:var(--black)">EARLY TO EVERY WAVE</div>
-      <div class="specimen-display" style="font-size:clamp(1.2rem,3vw,1.8rem);color:var(--grey-600);margin-top:0.25rem">BREADTH IS DEPTH — EMBED. BUILD. TRANSFER.</div>
-      <p class="specimen-note">Section headings, numbers (01–09), capability titles, case study names. Always uppercase, letter-spacing 0.02em, line-height 0.88–0.92.</p>
-    </div>
-
-    <h3>Body — Archivo</h3>
-    <div class="label">CSS variable: --font-sans</div>
-    <div class="specimen">
-      <div class="specimen-body" style="font-size:1.3rem;font-weight:900;color:var(--black)">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk</div>
-      <div class="specimen-body" style="font-size:1.05rem;font-weight:700;color:var(--grey-600);margin-top:0.35rem">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm</div>
-      <div class="specimen-body" style="font-size:0.9rem;font-weight:400;color:var(--grey-400);margin-top:0.35rem">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt</div>
-      <p class="specimen-note">Body text, navigation, labels, buttons, metadata. Weights 400–900. Line-height 1.6.</p>
-    </div>
-
-    <h3>Logo — Work Sans</h3>
-    <div class="label">Logo mark only — not used in site content</div>
-    <div class="specimen">
-      <span class="specimen-logo" style="font-size:1.6rem;font-weight:900;color:var(--black)">KEVIN</span>
-      <span class="specimen-logo" style="font-size:1.6rem;font-weight:900;color:var(--accent);margin-left:0.5rem">RYAN</span>
-      <div class="specimen-logo" style="font-size:0.85rem;font-weight:300;color:var(--grey-600);margin-top:0.15rem">& associates</div>
-      <p class="specimen-note">Black (900) for KEVIN/RYAN. Light (300) for "& associates". Not used elsewhere on site.</p>
-    </div>
-
-    <h3>Type Scale</h3>
-    <table>
-      <thead>
-        <tr><th>Role</th><th>Font</th><th>Size</th><th>Usage</th></tr>
-      </thead>
+    <h2 style="margin-top:var(--sp-8)">Construction</h2>
+    <table class="table">
+      <thead><tr><th>Property</th><th>Value</th><th>Token</th></tr></thead>
       <tbody>
-        <tr><td>Display XL</td><td>Bebas Neue</td><td>clamp(4.5rem, 13vw, 12rem)</td><td>Hero heading, section titles</td></tr>
-        <tr><td>Display LG</td><td>Bebas Neue</td><td>clamp(2.5rem, 7vw, 6rem)</td><td>Section headings</td></tr>
-        <tr><td>Section No.</td><td>Bebas Neue</td><td>clamp(3.5rem, 5.5vw, 5.5rem)</td><td>Section numbers (01–09)</td></tr>
-        <tr><td>Body</td><td>Archivo 400</td><td>1.05rem / lh 1.7</td><td>Paragraph text</td></tr>
-        <tr><td>Label</td><td>Archivo 700</td><td>0.7rem / ls 0.18em</td><td>Subtitles, tags, uppercase</td></tr>
-        <tr><td>Button</td><td>Archivo 800</td><td>0.72rem / ls 0.14em</td><td>CTAs, nav links, uppercase</td></tr>
-        <tr><td>Caption</td><td>Archivo 700</td><td>0.68rem / ls 0.12em</td><td>Stats labels, metadata</td></tr>
+        <tr><td class="name">Face</td><td>Space Grotesk</td><td class="tok">--font-display</td></tr>
+        <tr><td class="name">Weight</td><td>700, all four characters</td><td class="tok">700</td></tr>
+        <tr><td class="name">Tracking</td><td>-0.05em</td><td class="tok">--track-display</td></tr>
+        <tr><td class="name">Ampersand padding</td><td>0.02em either side</td><td class="tok">–</td></tr>
+        <tr><td class="name">Letter colour</td><td>#C8D3F5 on dark, #222436 on light</td><td class="tok">--ink, --p-ink</td></tr>
+        <tr><td class="name">Ampersand colour</td><td>Section accent</td><td class="tok">--sec</td></tr>
+        <tr><td class="name">Aspect</td><td>2373 : 700</td><td class="tok">viewBox</td></tr>
+        <tr><td class="name">Master format</td><td>SVG, outlined paths</td><td class="tok">.svg</td></tr>
       </tbody>
     </table>
-
-    <h3>Google Fonts</h3>
-    <p><strong>Archivo:</strong> fonts.google.com/specimen/Archivo — weights 400, 500, 600, 700, 800, 900</p>
-    <p><strong>Bebas Neue:</strong> fonts.google.com/specimen/Bebas+Neue — single weight</p>
-    <p><strong>Work Sans:</strong> fonts.google.com/specimen/Work+Sans — weights 300, 900 (logo only)</p>
   </div>
 </section>
 
-<!-- 06 Spacing & Grid -->
-<section id="grid">
-  <div class="container">
-    <div class="section-number">06</div>
-    <div class="section-title">Spacing &amp; Grid</div>
-    <p>The layout uses an 8px base grid with a maximum content width of 1400px and fluid padding via <code>clamp(1.5rem, 5vw, 6rem)</code>. Section padding is 7rem (112px) vertically.</p>
-
-    <h3>Spacing Scale</h3>
-    <div style="margin:1rem 0 2rem">
-      <div class="spacing-row"><div class="spacing-bar" style="width:5px"></div><div class="spacing-label">4px (xs)</div><div class="spacing-usage">Tight inner padding, icon gaps</div></div>
-      <div class="spacing-row"><div class="spacing-bar" style="width:10px"></div><div class="spacing-label">8px (sm)</div><div class="spacing-usage">Compact elements, inline spacing</div></div>
-      <div class="spacing-row"><div class="spacing-bar" style="width:19px"></div><div class="spacing-label">16px (md)</div><div class="spacing-usage">Default component padding</div></div>
-      <div class="spacing-row"><div class="spacing-bar" style="width:29px"></div><div class="spacing-label">24px (lg)</div><div class="spacing-usage">Section inner padding</div></div>
-      <div class="spacing-row"><div class="spacing-bar" style="width:38px"></div><div class="spacing-label">32px (xl)</div><div class="spacing-usage">Card spacing, group separation</div></div>
-      <div class="spacing-row"><div class="spacing-bar" style="width:58px"></div><div class="spacing-label">48px (2xl)</div><div class="spacing-usage">Major section breaks</div></div>
-      <div class="spacing-row"><div class="spacing-bar" style="width:77px"></div><div class="spacing-label">64px (3xl)</div><div class="spacing-usage">Page section separation</div></div>
-      <div class="spacing-row"><div class="spacing-bar" style="width:134px"></div><div class="spacing-label">112px (4xl)</div><div class="spacing-usage">Section vertical padding (7rem)</div></div>
+<!-- ═══ 02 AMPERSAND ═══ -->
+<section class="section section--sink" id="ampersand" data-accent="cyan1">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">02</span>
+      <h1>The contextual ampersand</h1>
+    </div>
+    <div class="prose" style="margin-bottom:var(--sp-6)">
+      <p>The page is syntax-highlighted. Each section owns one accent from the ramp and every accented thing
+      inside it reads from the same variable. The ampersand is one of those things. It inherits
+      <code>--sec</code> from the section it sits in, so the mark shifts colour as the reader moves down the
+      page without a single per-page logo asset existing.</p>
+      <p>Seven accents are in the rotation. The remainder of the ramp is reserved for section furniture and is
+      not used on the mark, because at small sizes yellow and green sit close enough to ink that the ampersand
+      stops reading as accented, and red reads as an error state rather than a section cue.</p>
     </div>
 
-    <h3>Layout Principles</h3>
-    <ul class="principles">
-      <li>Maximum content width: 1400px, centred with auto margins.</li>
-      <li>Container padding: <code>clamp(1.5rem, 5vw, 6rem)</code> — responsive fluid padding.</li>
-      <li>Section pattern: alternate white (#F5F3EF), grey (#ECEAE5), dark (#111111), black (#0A0A0A).</li>
-      <li>Hover pattern: accent lime fills on capability cards, client grid, case study backgrounds darken.</li>
-      <li>Borders: 2px solid black for nav and ticker; 1px solid grey-200 for card grids.</li>
-      <li>Grid: 12-column desktop via CSS Grid, single column mobile. Gap varies by context.</li>
-      <li>Section headers: number (Bebas Neue, lime) + subtitle (Archivo 700, uppercase) + heading (Bebas Neue).</li>
-    </ul>
+    <div class="amap" style="margin-bottom:var(--sp-6)">
+      <div class="amap__cell" data-accent="blue">
+        <img src="assets/kra-wordmark-blue.svg" alt="KR&amp;A with the blue ampersand" loading="lazy">
+        <span class="ctx">Default, cover, contact</span>
+        <span class="hex">BLUE #82AAFF</span>
+      </div>
+      <div class="amap__cell" data-accent="cyan1">
+        <img src="assets/kra-wordmark-cyan1.svg" alt="KR&amp;A with the cyan1 ampersand" loading="lazy">
+        <span class="ctx">Documentation</span>
+        <span class="hex">CYAN1 #7DCFFF</span>
+      </div>
+      <div class="amap__cell" data-accent="cyan">
+        <img src="assets/kra-wordmark-cyan.svg" alt="KR&amp;A with the cyan ampersand" loading="lazy">
+        <span class="ctx">About, infrastructure</span>
+        <span class="hex">CYAN #86E1FC</span>
+      </div>
+      <div class="amap__cell" data-accent="teal">
+        <img src="assets/kra-wordmark-teal.svg" alt="KR&amp;A with the teal ampersand" loading="lazy">
+        <span class="ctx">Capabilities, specifications</span>
+        <span class="hex">TEAL #4FD6BE</span>
+      </div>
+      <div class="amap__cell" data-accent="orange">
+        <img src="assets/kra-wordmark-orange.svg" alt="KR&amp;A with the orange ampersand" loading="lazy">
+        <span class="ctx">Enterprise delivery, CI and CD</span>
+        <span class="hex">ORANGE #FF966C</span>
+      </div>
+      <div class="amap__cell" data-accent="magenta">
+        <img src="assets/kra-wordmark-magenta.svg" alt="KR&amp;A with the magenta ampersand" loading="lazy">
+        <span class="ctx">Career arc, decision records</span>
+        <span class="hex">MAGENTA #C099FF</span>
+      </div>
+      <div class="amap__cell" data-accent="blue">
+        <img src="assets/kra-wordmark-ink.svg" alt="KR&amp;A with the ink ampersand" loading="lazy">
+        <span class="ctx">Neutral fallback</span>
+        <span class="hex">INK #C8D3F5</span>
+      </div>
+    </div>
+
+    <div class="callout" data-accent="cyan1">
+      <div class="callout__label">Implementation</div>
+      <p>Use <code>kra-wordmark-live.svg</code>, which fills the letters with <code>currentColor</code> and the
+      ampersand with <code>var(--sec)</code>. Inline it rather than loading it through an <code>img</code>
+      element, because an external SVG cannot see the page's custom properties. The fixed-colour files exist
+      for contexts outside the site, not for the site itself.</p>
+    </div>
   </div>
 </section>
 
-<!-- 07 Usage Rules -->
-<section id="rules">
-  <div class="container">
-    <div class="section-number">07</div>
-    <div class="section-title">Usage Rules</div>
-    <p>These rules protect the integrity of the identity. When in doubt, refer to the master SVG files and this document.</p>
+<!-- ═══ 03 MARK ═══ -->
+<section class="section" id="mark" data-accent="cyan">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">03</span>
+      <h1>The mark</h1>
+    </div>
+    <div class="prose" style="margin-bottom:var(--sp-6)">
+      <p>The mark is a square split on the diagonal. The upper left triangle is ink, the lower right is the
+      accent, and a gap of 6.25% of the mark separates them. The whole figure is inset 16% from the edge of
+      its ground, which is what keeps it legible as a favicon at 16px.</p>
+      <p>It is not a monogram and carries no letterforms. Where the wordmark is too small to hold, this
+      replaces it: favicons, app icons, avatars, watermarks and anything below 68px wide.</p>
+    </div>
 
-    <div class="rules-grid">
-      <div class="rules-col">
-        <div class="do-title">DO</div>
-        <ul class="rules-list rules-list--do">
-          <li>Use outlined SVG files as the primary logo source — they render identically everywhere.</li>
-          <li>Maintain the minimum clear space (one cap-height K) around the logo at all times.</li>
-          <li>Use the KR monogram at sizes below 120px / 30mm where the full logo becomes illegible.</li>
-          <li>Keep the lime at exactly #A8E10C — no variations, no gradients, no opacity changes.</li>
-          <li>Use Bebas Neue for display headings, Archivo for body text, Work Sans for logo only.</li>
-          <li>Maintain the warm palette — use #F5F3EF not pure white for page backgrounds.</li>
+    <div class="spec-grid spec-grid--tight" style="margin-bottom:var(--sp-6)">
+      <div class="spec"><div class="spec__stage"><img src="assets/kra-mark-blue.svg" style="width:132px" alt="Mark in blue"></div><div class="spec__foot"><span>Blue</span><span class="hex">#82AAFF</span></div></div>
+      <div class="spec"><div class="spec__stage"><img src="assets/kra-mark-cyan.svg" style="width:132px" alt="Mark in cyan"></div><div class="spec__foot"><span>Cyan</span><span class="hex">#86E1FC</span></div></div>
+      <div class="spec"><div class="spec__stage"><img src="assets/kra-mark-teal.svg" style="width:132px" alt="Mark in teal"></div><div class="spec__foot"><span>Teal</span><span class="hex">#4FD6BE</span></div></div>
+      <div class="spec"><div class="spec__stage spec__stage--light"><img src="assets/kra-mark-light.svg" style="width:132px" alt="Mark on warm white"></div><div class="spec__foot"><span>Print</span><span class="hex">#3D5DA4</span></div></div>
+    </div>
+
+    <div class="cells cells--4">
+      <div class="cell"><div class="cell__n">16 / 32 / 48</div><h3>Favicon</h3><p>ICO with three frames. Dark for the sites, light for anything rendered on a warm white ground.</p><div class="cell__grow"></div><div class="cell__foot cell__foot--file">favicon-dark.ico</div></div>
+      <div class="cell"><div class="cell__n">192 / 512</div><h3>App icon</h3><p>PNG on the section ground. Android takes 192, the App Store takes 512.</p><div class="cell__grow"></div><div class="cell__foot cell__foot--file">kra-mark-blue-512.png</div></div>
+      <div class="cell"><div class="cell__n">400 / 800</div><h3>Avatar</h3><p>Square, mark centred at 62% of the frame. LinkedIn, GitHub, Slack.</p><div class="cell__grow"></div><div class="cell__foot cell__foot--file">kra-social-dark-800.png</div></div>
+      <div class="cell"><div class="cell__n">Any</div><h3>Watermark</h3><p>Transparent ground. Use at reduced opacity over a solid panel, never over a photograph.</p><div class="cell__grow"></div><div class="cell__foot cell__foot--file">kra-mark-transparent.svg</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 04 COLOUR ═══ -->
+<section class="section section--sink" id="colour" data-accent="teal">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">04</span>
+      <h1>Colour</h1>
+    </div>
+    <div class="prose" style="margin-bottom:var(--sp-6)">
+      <p>One theme. Dark only. There is no light variant, no toggle and no automatic detection. Body text
+      meets 7:1 against its background and muted text meets 4.5:1. Every ratio printed below is measured, not
+      estimated.</p>
+      <p>The Moon surfaces sit close together, so depth is carried by hairlines rather than by tonal contrast.
+      The sunken surface exists to give alternating sections a visible step where the panel surface would be
+      indistinguishable.</p>
+    </div>
+
+    <h2>Surfaces</h2>
+    <div class="swatches" style="margin:var(--sp-3) 0 var(--sp-6)">
+      <div class="swatch swatch--surface" style="--c:#222436">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Background</div>
+          <div class="swatch__tok">--bg · #222436</div>
+          <div class="swatch__meta"><span>bg</span><span class="ratio">1.00:1 vs bg</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Section ground and page default</p>
+        </div>
+      </div>
+      <div class="swatch swatch--surface" style="--c:#1a1b26">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Sunken</div>
+          <div class="swatch__tok">--bg-sink · #1A1B26</div>
+          <div class="swatch__meta"><span>page_bg</span><span class="ratio">1.12:1 vs bg</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Alternating sections, footer, code</p>
+        </div>
+      </div>
+      <div class="swatch swatch--surface" style="--c:#1f2335">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Panel</div>
+          <div class="swatch__tok">--bg-panel · #1F2335</div>
+          <div class="swatch__meta"><span>bg_dark</span><span class="ratio">1.02:1 vs bg</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Wells, form panels, feature cells</p>
+        </div>
+      </div>
+      <div class="swatch swatch--surface" style="--c:#2f334d">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Raised</div>
+          <div class="swatch__tok">--bg-raise · #2F334D</div>
+          <div class="swatch__meta"><span>bg_highlight</span><span class="ratio">1.24:1 vs bg</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Hover only</p>
+        </div>
+      </div>
+      <div class="swatch swatch--surface" style="--c:#3b4261">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Hairline</div>
+          <div class="swatch__tok">--line · #3B4261</div>
+          <div class="swatch__meta"><span>fg_gutter</span><span class="ratio">1.56:1 vs bg</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Every structural rule, 1px</p>
+        </div>
+      </div>
+      <div class="swatch swatch--surface" style="--c:#444a73">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Rule strong</div>
+          <div class="swatch__tok">--line-strong · #444A73</div>
+          <div class="swatch__meta"><span>terminal_black</span><span class="ratio">1.80:1 vs bg</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Table head, field border</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Foregrounds</h2>
+    <div class="swatches" style="margin:var(--sp-3) 0 var(--sp-6)">
+      <div class="swatch" style="--c:#c8d3f5">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Ink</div>
+          <div class="swatch__tok">--ink · #C8D3F5</div>
+          <div class="swatch__meta"><span>fg</span><span class="ratio ratio--pass">10.3:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Headings, emphasis, figures</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#a9b1d6">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Ink 2</div>
+          <div class="swatch__tok">--ink-2 · #A9B1D6</div>
+          <div class="swatch__meta"><span>fg_dark</span><span class="ratio ratio--pass">7.2:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Body copy</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#828bb8">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Ink 3</div>
+          <div class="swatch__tok">--ink-3 · #828BB8</div>
+          <div class="swatch__meta"><span>change_gray</span><span class="ratio ratio--pass">4.6:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Labels and metadata. Muted floor</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#737aa2">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Ink 4</div>
+          <div class="swatch__tok">--ink-4 · #737AA2</div>
+          <div class="swatch__meta"><span>dark5</span><span class="ratio">3.7:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Decorative only. Never type</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#636da6">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Comment</div>
+          <div class="swatch__tok">--comment · #636DA6</div>
+          <div class="swatch__meta"><span>comment</span><span class="ratio">3.1:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Decorative only. Never type</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Accents</h2>
+    <p class="prose" style="color:var(--ink-2);font-size:var(--text-ui);margin:var(--sp-2) 0 0">Every accent
+    clears 4.5:1 on the section ground except blue&nbsp;0 and red&nbsp;1, which are borders and markers and
+    never carry type.</p>
+    <div class="swatches" style="margin:var(--sp-3) 0 var(--sp-6)">
+      <div class="swatch" style="--c:#82aaff">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Blue</div>
+          <div class="swatch__tok">--blue · #82AAFF</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">6.7:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Interaction, cover, contact, top bar</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#7aa2f7">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Blue 1</div>
+          <div class="swatch__tok">--blue1 · #7AA2F7</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">6.1:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Clients</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#3d59a1">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Blue 0</div>
+          <div class="swatch__tok">--blue0 · #3D59A1</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio">2.3:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Borders and markers only</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#86e1fc">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Cyan</div>
+          <div class="swatch__tok">--cyan · #86E1FC</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">10.3:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">About, infrastructure</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#7dcfff">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Cyan 1</div>
+          <div class="swatch__tok">--cyan1 · #7DCFFF</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">8.9:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Documentation</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#4fd6be">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Teal</div>
+          <div class="swatch__tok">--teal · #4FD6BE</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">8.5:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Capabilities, specifications</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#c3e88d">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Green</div>
+          <div class="swatch__tok">--green · #C3E88D</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">11.1:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Certifications, observability, live state</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#ffc777">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Yellow</div>
+          <div class="swatch__tok">--yellow · #FFC777</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">10.0:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Published work, sites, draft state</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#ff966c">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Orange</div>
+          <div class="swatch__tok">--orange · #FF966C</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">7.2:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Enterprise delivery, CI and CD</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#ff757f">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Red</div>
+          <div class="swatch__tok">--red · #FF757F</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">5.9:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">The problem, risk, failure state</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#c099ff">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Magenta</div>
+          <div class="swatch__tok">--magenta · #C099FF</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio ratio--pass">6.7:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Career arc, decision records</p>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#c53b53">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Red 1</div>
+          <div class="swatch__tok">--red1 · #C53B53</div>
+          <div class="swatch__meta"><span>on bg</span><span class="ratio">3.0:1</span></div>
+          <p class="swatch__tok" style="margin:8px 0 0;color:var(--ink-3);letter-spacing:0;font-family:var(--font-body);font-size:var(--text-caption);line-height:1.5">Markers only</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Print accents</h2>
+    <p class="prose" style="color:var(--ink-2);font-size:var(--text-ui);margin:var(--sp-2) 0 0">Every Moon
+    accent falls below 4.5:1 on warm white, so print takes a darkened set. Hue is held from the Moon value and
+    lightness is walked down until the colour clears 5.5:1, which is a derivation rather than a choice and can
+    be rerun from <code>tools/printset.py</code>. Print ink is the site background itself, so the light lockup
+    stays in the family instead of falling back to black, paired with print blue on the ampersand.</p>
+    <div class="swatches" style="margin:var(--sp-3) 0 0">
+      <div class="swatch" style="--c:#222436">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print ink</div>
+          <div class="swatch__tok">--p-ink · #222436</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">13.8:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#3D5DA4">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print blue</div>
+          <div class="swatch__tok">--p-blue · #3D5DA4</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.7:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#00697F">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print cyan</div>
+          <div class="swatch__tok">--p-cyan · #00697F</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.7:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#006D5F">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print teal</div>
+          <div class="swatch__tok">--p-teal · #006D5F</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.7:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#4C6913">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print green</div>
+          <div class="swatch__tok">--p-green · #4C6913</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.7:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#865901">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print yellow</div>
+          <div class="swatch__tok">--p-yellow · #865901</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.5:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#A04822">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print orange</div>
+          <div class="swatch__tok">--p-orange · #A04822</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.5:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#AD3543">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print red</div>
+          <div class="swatch__tok">--p-red · #AD3543</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.6:1</span></div>
+        </div>
+      </div>
+      <div class="swatch" style="--c:#714DA3">
+        <div class="swatch__chip"></div>
+        <div class="swatch__body">
+          <div class="swatch__name">Print magenta</div>
+          <div class="swatch__tok">--p-magenta · #714DA3</div>
+          <div class="swatch__meta"><span>on #F5F3EF</span><span class="ratio">5.8:1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 05 TYPE ═══ -->
+<section class="section" id="type" data-accent="orange">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">05</span>
+      <h1>Typography</h1>
+    </div>
+    <div class="prose" style="margin-bottom:var(--sp-6)">
+      <p>Three families with fixed roles. Space Grotesk for display, headings and names. IBM Plex Sans for
+      reading body only. IBM Plex Mono for all structure: numbers, metadata, tags, buttons, labels and table
+      headers.</p>
+      <p>Uppercase is set in the mono face and nowhere else. The display and body faces are never uppercased
+      by CSS. All three are self-hosted as woff2. No request leaves the origin to render type, which is a
+      sovereignty requirement rather than a performance one.</p>
+    </div>
+
+    <div class="cells cells--3" style="margin-bottom:var(--sp-8)">
+      <div class="cell cell--feature">
+        <div class="cell__tag">Display</div>
+        <span class="cell__stat" style="font-size:3.5rem;letter-spacing:-.045em">Aa</span>
+        <h3>Space Grotesk</h3><p>Weights 500, 600, 700. Headings, the wordmark, names and figures.</p>
+        <div class="cell__grow"></div><div class="cell__foot cell__foot--file">--font-display</div>
+      </div>
+      <div class="cell">
+        <div class="cell__tag">Body</div>
+        <span class="cell__stat" style="font-family:var(--font-body);font-size:3.5rem;font-weight:400">Aa</span>
+        <h3>IBM Plex Sans</h3><p>Weights 400, 600. Reading copy only. Never a label, never a number.</p>
+        <div class="cell__grow"></div><div class="cell__foot cell__foot--file">--font-body</div>
+      </div>
+      <div class="cell">
+        <div class="cell__tag">Mono</div>
+        <span class="cell__stat" style="font-family:var(--font-mono);font-size:3.5rem;font-weight:400">Aa</span>
+        <h3>IBM Plex Mono</h3><p>Weights 400, 500. Every label, tag, figure, button and table header.</p>
+        <div class="cell__grow"></div><div class="cell__foot cell__foot--file">--font-mono</div>
+      </div>
+    </div>
+
+    <h2>The scale</h2>
+    <p class="prose" style="color:var(--ink-2);font-size:var(--text-ui);margin:var(--sp-2) 0 var(--sp-4)">
+    Eleven fixed steps. Two are fluid and clamped. Generated output uses these steps and no intermediate
+    values.</p>
+
+    <div class="type-row"><div class="type-row__meta"><b>--text-display</b>100px · clamped 44 to 100<br>Space Grotesk 700</div><div class="type-row__spec" style="font-family:var(--font-display);font-weight:700;font-size:var(--fluid-display);line-height:.92;letter-spacing:var(--track-display)">KR&amp;A</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-h1</b>44px · clamped 30 to 44<br>Space Grotesk 700</div><div class="type-row__spec" style="font-family:var(--font-display);font-weight:700;font-size:var(--fluid-h1);line-height:var(--lh-title);letter-spacing:var(--track-title)">Digital sovereignty</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-h2</b>24px<br>Space Grotesk 600</div><div class="type-row__spec" style="font-family:var(--font-display);font-weight:600;font-size:var(--text-h2);letter-spacing:var(--track-heading)">AI-native engineering</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-h3</b>21px<br>Space Grotesk 600</div><div class="type-row__spec" style="font-family:var(--font-display);font-weight:600;font-size:var(--text-h3);letter-spacing:var(--track-tight)">Specification quality is the bottleneck</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-lead</b>19px<br>IBM Plex Sans 400</div><div class="type-row__spec" style="font-size:var(--text-lead);line-height:var(--lh-lead);color:var(--ink-2)">A locked specification is the single source of authority.</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-read</b>17px<br>IBM Plex Sans 400</div><div class="type-row__spec" style="font-size:var(--text-read);line-height:var(--lh-body);color:var(--ink-2)">Forkability under an OSI-approved licence, plus jurisdictional control of data flow at runtime.</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-ui</b>14px<br>IBM Plex Sans 400</div><div class="type-row__spec" style="font-size:var(--text-ui);line-height:1.6;color:var(--ink-2)">Vendor domicile alone is insufficient. The licence model is the operative mechanism.</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-code</b>13px<br>IBM Plex Mono 400</div><div class="type-row__spec" style="font-family:var(--font-mono);font-size:var(--text-code);color:var(--ink-2)">kubectl get nodes -o wide</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-caption</b>12px<br>IBM Plex Mono 500</div><div class="type-row__spec" style="font-family:var(--font-mono);font-weight:500;font-size:var(--text-caption);letter-spacing:var(--track-mono);color:var(--ink-3)">01 · CAPABILITIES</div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-label</b>11px<br>IBM Plex Mono 500</div><div class="type-row__spec"><span class="label">Enterprise delivery</span></div></div>
+    <div class="type-row"><div class="type-row__meta"><b>--text-micro</b>10px<br>IBM Plex Mono 500</div><div class="type-row__spec"><span class="pill pill--live">Live</span> <span class="pill pill--draft">Draft</span> <span class="pill pill--plan">Planned</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 06 GRID ═══ -->
+<section class="section section--sink" id="grid" data-accent="magenta">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">06</span>
+      <h1>Grid and spacing</h1>
+    </div>
+    <div class="prose" style="margin-bottom:var(--sp-6)">
+      <p>All spacing derives from an 8px scale. An arbitrary pixel value is a defect, not a judgement call.
+      The shell is 1400px with fluid padding, and the cover uses a twelve column grid that collapses to one at
+      900px.</p>
+    </div>
+
+    <div class="split split--start">
+      <div>
+        <h2>The scale</h2>
+        <div class="ruler" style="margin-top:var(--sp-3)">
+          <div class="ruler__row"><span class="ruler__k">--sp-1 · 8</span><span class="ruler__bar" style="--w:8px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-2 · 16</span><span class="ruler__bar" style="--w:16px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-3 · 24</span><span class="ruler__bar" style="--w:24px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-4 · 32</span><span class="ruler__bar" style="--w:32px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-5 · 40</span><span class="ruler__bar" style="--w:40px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-6 · 48</span><span class="ruler__bar" style="--w:48px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-7 · 56</span><span class="ruler__bar" style="--w:56px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-8 · 64</span><span class="ruler__bar" style="--w:64px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-10 · 80</span><span class="ruler__bar" style="--w:80px"></span></div>
+          <div class="ruler__row"><span class="ruler__k">--sp-14 · 112</span><span class="ruler__bar" style="--w:112px"></span></div>
+        </div>
+      </div>
+      <div class="meta-panel">
+        <div class="row"><span class="k">Shell</span><span class="v">1400px</span></div>
+        <div class="row"><span class="k">Page padding</span><span class="v">clamp(24, 5vw, 72)</span></div>
+        <div class="row"><span class="k">Top bar</span><span class="v">52px</span></div>
+        <div class="row"><span class="k">Section padding</span><span class="v">112px, 64 below 900</span></div>
+        <div class="row"><span class="k">Reading measure</span><span class="v">68ch</span></div>
+        <div class="row"><span class="k">Cover grid</span><span class="v">12 col, 7 / 5 split</span></div>
+        <div class="row"><span class="k">Break, wide</span><span class="v">1180px</span></div>
+        <div class="row"><span class="k">Break, narrow</span><span class="v">900px</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 07 STRUCTURE ═══ -->
+<section class="section" id="structure" data-accent="blue1">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">07</span>
+      <h1>Structure and motion</h1>
+    </div>
+    <div class="cells cells--3">
+      <div class="cell cell--phase"><div class="cell__n">01</div><h3>Zero radius</h3><p>Border radius is zero on every element without exception. Buttons, fields, panels, pills and images all square.</p></div>
+      <div class="cell cell--phase"><div class="cell__n">02</div><h3>No depth effects</h3><p>No shadows, gradients, glows or glass. Depth is expressed with the surface ramp and hairlines only.</p></div>
+      <div class="cell cell--phase"><div class="cell__n">03</div><h3>Hairline structure</h3><p>Structural lines are 1px. Emphasis edges are 2px and appear only on blockquotes, callout edges, cell hover edges and figure rules.</p></div>
+      <div class="cell cell--phase"><div class="cell__n">04</div><h3>One dashed border</h3><p>The dashed border belongs to the empty state and the clear-space diagram. It appears nowhere else.</p></div>
+      <div class="cell cell--phase"><div class="cell__n">05</div><h3>Motion on input</h3><p>Nothing animates on entry. Scroll-triggered reveals, marquees and any self-starting animation are prohibited.</p></div>
+      <div class="cell cell--phase"><div class="cell__n">06</div><h3>Visible focus</h3><p>Focus is a 2px square ring in the section accent at 3px offset. All motion is suppressed under reduced-motion.</p></div>
+    </div>
+
+    <div class="two-col" style="margin-top:var(--sp-8)">
+      <div>
+        <h2>Components that exist</h2>
+        <p class="prose" style="color:var(--ink-2);font-size:var(--text-ui)">The system is deliberately small.
+        Adding a component is a decision, not a convenience.</p>
+        <table class="table" style="margin-top:var(--sp-3)">
+          <thead><tr><th>Component</th><th>Rule</th></tr></thead>
+          <tbody>
+            <tr><td class="name">Status pill</td><td>Exactly three: live, draft, planned</td></tr>
+            <tr><td class="name">Callout</td><td>Left edge and label carry colour. Body stays neutral. No icons</td></tr>
+            <tr><td class="name">Table</td><td>No vertical rules, no zebra, no outer border</td></tr>
+            <tr><td class="name">Button</td><td>One primary per view</td></tr>
+            <tr><td class="name">Top bar</td><td>Left-aligned routes. No wordmark, no progress bar</td></tr>
+            <tr><td class="name">Cell grid</td><td>The only card primitive. Two, three or four across</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Deliberate absences</h2>
+        <p class="prose" style="color:var(--ink-2);font-size:var(--text-ui)">Non-bloat is a feature. These are
+        not gaps waiting to be filled.</p>
+        <div class="cells cells--2" style="margin-top:var(--sp-3)">
+          <div class="cell" style="padding:var(--sp-3)"><h3 style="font-size:var(--text-ui)">No icon set</h3><p>Labels do the work icons would do.</p></div>
+          <div class="cell" style="padding:var(--sp-3)"><h3 style="font-size:var(--text-ui)">No light theme</h3><p>Adopting Tokyo Night Day is a separate decision.</p></div>
+          <div class="cell" style="padding:var(--sp-3)"><h3 style="font-size:var(--text-ui)">No animation library</h3><p>Transitions are CSS and respond to input.</p></div>
+          <div class="cell" style="padding:var(--sp-3)"><h3 style="font-size:var(--text-ui)">No component framework</h3><p>Plain CSS classes, consumable from any renderer.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 08 USAGE ═══ -->
+<section class="section section--sink" id="usage" data-accent="yellow">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">08</span>
+      <h1>Usage</h1>
+    </div>
+    <div class="rules">
+      <div class="rules__col rules--do">
+        <h3><span class="mk">✓</span> Do</h3>
+        <ul>
+          <li>Use the outlined SVG masters as the primary source. They render identically everywhere.</li>
+          <li>Inline <code>kra-wordmark-live.svg</code> on the sites so the ampersand inherits the section accent.</li>
+          <li>Keep one cap height of clear space on every side of the wordmark.</li>
+          <li>Swap to the mark below 68px wide, rather than shrinking the wordmark further.</li>
+          <li>Use the print accent set on warm white grounds, and only there.</li>
+          <li>Take colours, sizes and spaces by token name. Copy the token, not the value.</li>
         </ul>
       </div>
-      <div class="rules-col">
-        <div class="dont-title">DON'T</div>
-        <ul class="rules-list rules-list--dont">
-          <li>Alter the proportions, letter-spacing, or stacking order of the logo.</li>
-          <li>Change the lime to any other colour, including lighter or darker shades.</li>
-          <li>Place the logo on busy photographic backgrounds without a solid backing panel.</li>
-          <li>Use drop shadows, gradients, outlines, or any effects on the logo.</li>
-          <li>Recreate the logo in a different typeface — always use the supplied SVG assets.</li>
-          <li>Substitute Archivo or Bebas Neue with other typefaces, or use cool-toned greys.</li>
+      <div class="rules__col rules--dont">
+        <h3><span class="mk">✕</span> Do not</h3>
+        <ul>
+          <li>Reweight, resize or reposition the ampersand relative to the letters.</li>
+          <li>Set the ampersand in yellow, green or red. Those three are outside the rotation.</li>
+          <li>Recreate the wordmark by typing it. Space Grotesk must be present and tracked, so use the file.</li>
+          <li>Apply shadows, gradients, outlines, glows or opacity changes to either mark.</li>
+          <li>Place a mark on a photograph without a solid backing panel.</li>
+          <li>Introduce a colour, a type size or a spacing value that is not in this document.</li>
         </ul>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- 08 Asset Library -->
-<section id="assets">
-  <div class="container">
-    <div class="section-number">08</div>
-    <div class="section-title">Asset Library</div>
-    <p>Every asset below is served from <strong>brand.kevinryan.io</strong>. Click any URL to open the file directly. SVG master files are the canonical source — use PNGs only where SVG is not supported.</p>
-
-    <h3>Logo — SVG Masters</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kevin-ryan-logo-outlined.svg" alt="Logo outlined SVG">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kevin-ryan-logo-outlined.svg</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kevin-ryan-logo-outlined.svg">brand.kevinryan.io/kevin-ryan-logo-outlined.svg</a></div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kevin-ryan-logo-whitetext.svg" alt="Logo white text SVG">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kevin-ryan-logo-whitetext.svg</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kevin-ryan-logo-whitetext.svg">brand.kevinryan.io/kevin-ryan-logo-whitetext.svg</a></div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--light">
-          <img src="kevin-ryan-logo-dark-bg.svg" alt="Logo dark background SVG">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kevin-ryan-logo-dark-bg.svg</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kevin-ryan-logo-dark-bg.svg">brand.kevinryan.io/kevin-ryan-logo-dark-bg.svg</a></div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kevin-ryan-logo-live-text.svg" alt="Logo live text SVG">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kevin-ryan-logo-live-text.svg</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kevin-ryan-logo-live-text.svg">brand.kevinryan.io/kevin-ryan-logo-live-text.svg</a></div>
-          <div class="asset-sizes">Editable text — requires Work Sans font</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Logo — Dark Text PNGs (Light Backgrounds)</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="logo-darktext-256.png" alt="Logo dark text 256px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-darktext-256.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-darktext-256.png">brand.kevinryan.io/logo-darktext-256.png</a></div>
-          <div class="asset-sizes">256px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="logo-darktext-512.png" alt="Logo dark text 512px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-darktext-512.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-darktext-512.png">brand.kevinryan.io/logo-darktext-512.png</a></div>
-          <div class="asset-sizes">512px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="logo-darktext-800.png" alt="Logo dark text 800px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-darktext-800.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-darktext-800.png">brand.kevinryan.io/logo-darktext-800.png</a></div>
-          <div class="asset-sizes">800px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="logo-darktext-1200.png" alt="Logo dark text 1200px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-darktext-1200.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-darktext-1200.png">brand.kevinryan.io/logo-darktext-1200.png</a></div>
-          <div class="asset-sizes">1200px wide</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Logo — White Text PNGs (Dark Backgrounds)</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="logo-whitetext-256.png" alt="Logo white text 256px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-whitetext-256.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-whitetext-256.png">brand.kevinryan.io/logo-whitetext-256.png</a></div>
-          <div class="asset-sizes">256px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="logo-whitetext-512.png" alt="Logo white text 512px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-whitetext-512.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-whitetext-512.png">brand.kevinryan.io/logo-whitetext-512.png</a></div>
-          <div class="asset-sizes">512px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="logo-whitetext-800.png" alt="Logo white text 800px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-whitetext-800.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-whitetext-800.png">brand.kevinryan.io/logo-whitetext-800.png</a></div>
-          <div class="asset-sizes">800px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="logo-whitetext-1200.png" alt="Logo white text 1200px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-whitetext-1200.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-whitetext-1200.png">brand.kevinryan.io/logo-whitetext-1200.png</a></div>
-          <div class="asset-sizes">1200px wide</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Logo — Dark Background PNGs (Self-contained)</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--grey">
-          <img src="logo-dark-bg-512.png" alt="Logo dark bg 512px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-dark-bg-512.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-dark-bg-512.png">brand.kevinryan.io/logo-dark-bg-512.png</a></div>
-          <div class="asset-sizes">512px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--grey">
-          <img src="logo-dark-bg-800.png" alt="Logo dark bg 800px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-dark-bg-800.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-dark-bg-800.png">brand.kevinryan.io/logo-dark-bg-800.png</a></div>
-          <div class="asset-sizes">800px wide</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--grey">
-          <img src="logo-dark-bg-1200.png" alt="Logo dark bg 1200px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">logo-dark-bg-1200.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/logo-dark-bg-1200.png">brand.kevinryan.io/logo-dark-bg-1200.png</a></div>
-          <div class="asset-sizes">1200px wide</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Monogram — SVG Masters</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-icon-dark.svg" alt="Monogram dark SVG">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-dark.svg</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-dark.svg">brand.kevinryan.io/kr-icon-dark.svg</a></div>
-          <div class="asset-sizes">For dark backgrounds</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-icon-light.svg" alt="Monogram light SVG">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-light.svg</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-light.svg">brand.kevinryan.io/kr-icon-light.svg</a></div>
-          <div class="asset-sizes">For light backgrounds</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--checker">
-          <img src="kr-icon-transparent.svg" alt="Monogram transparent SVG">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-transparent.svg</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-transparent.svg">brand.kevinryan.io/kr-icon-transparent.svg</a></div>
-          <div class="asset-sizes">Transparent — watermarks, overlays</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Monogram — Dark PNGs (For Dark Backgrounds)</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-icon-dark-64.png" alt="Monogram dark 64px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-dark-64.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-dark-64.png">brand.kevinryan.io/kr-icon-dark-64.png</a></div>
-          <div class="asset-sizes">64 × 64px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-icon-dark-128.png" alt="Monogram dark 128px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-dark-128.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-dark-128.png">brand.kevinryan.io/kr-icon-dark-128.png</a></div>
-          <div class="asset-sizes">128 × 128px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-icon-dark-192.png" alt="Monogram dark 192px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-dark-192.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-dark-192.png">brand.kevinryan.io/kr-icon-dark-192.png</a></div>
-          <div class="asset-sizes">192 × 192px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-icon-dark-256.png" alt="Monogram dark 256px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-dark-256.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-dark-256.png">brand.kevinryan.io/kr-icon-dark-256.png</a></div>
-          <div class="asset-sizes">256 × 256px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-icon-dark-512.png" alt="Monogram dark 512px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-dark-512.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-dark-512.png">brand.kevinryan.io/kr-icon-dark-512.png</a></div>
-          <div class="asset-sizes">512 × 512px</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Monogram — Light PNGs (For Light Backgrounds)</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-icon-light-64.png" alt="Monogram light 64px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-light-64.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-light-64.png">brand.kevinryan.io/kr-icon-light-64.png</a></div>
-          <div class="asset-sizes">64 × 64px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-icon-light-128.png" alt="Monogram light 128px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-light-128.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-light-128.png">brand.kevinryan.io/kr-icon-light-128.png</a></div>
-          <div class="asset-sizes">128 × 128px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-icon-light-192.png" alt="Monogram light 192px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-light-192.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-light-192.png">brand.kevinryan.io/kr-icon-light-192.png</a></div>
-          <div class="asset-sizes">192 × 192px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-icon-light-256.png" alt="Monogram light 256px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-light-256.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-light-256.png">brand.kevinryan.io/kr-icon-light-256.png</a></div>
-          <div class="asset-sizes">256 × 256px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-icon-light-512.png" alt="Monogram light 512px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-light-512.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-light-512.png">brand.kevinryan.io/kr-icon-light-512.png</a></div>
-          <div class="asset-sizes">512 × 512px</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Monogram — Transparent PNGs (Watermarks &amp; Overlays)</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--checker">
-          <img src="kr-icon-transparent-64.png" alt="Monogram transparent 64px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-transparent-64.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-transparent-64.png">brand.kevinryan.io/kr-icon-transparent-64.png</a></div>
-          <div class="asset-sizes">64 × 64px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--checker">
-          <img src="kr-icon-transparent-128.png" alt="Monogram transparent 128px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-transparent-128.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-transparent-128.png">brand.kevinryan.io/kr-icon-transparent-128.png</a></div>
-          <div class="asset-sizes">128 × 128px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--checker">
-          <img src="kr-icon-transparent-192.png" alt="Monogram transparent 192px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-transparent-192.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-transparent-192.png">brand.kevinryan.io/kr-icon-transparent-192.png</a></div>
-          <div class="asset-sizes">192 × 192px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--checker">
-          <img src="kr-icon-transparent-256.png" alt="Monogram transparent 256px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-transparent-256.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-transparent-256.png">brand.kevinryan.io/kr-icon-transparent-256.png</a></div>
-          <div class="asset-sizes">256 × 256px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--checker">
-          <img src="kr-icon-transparent-512.png" alt="Monogram transparent 512px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-icon-transparent-512.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-icon-transparent-512.png">brand.kevinryan.io/kr-icon-transparent-512.png</a></div>
-          <div class="asset-sizes">512 × 512px</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Social Media</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-social-dark-400.png" alt="Social dark 400px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-social-dark-400.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-social-dark-400.png">brand.kevinryan.io/kr-social-dark-400.png</a></div>
-          <div class="asset-sizes">400 × 400px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="kr-social-dark-800.png" alt="Social dark 800px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-social-dark-800.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-social-dark-800.png">brand.kevinryan.io/kr-social-dark-800.png</a></div>
-          <div class="asset-sizes">800 × 800px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-social-light-400.png" alt="Social light 400px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-social-light-400.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-social-light-400.png">brand.kevinryan.io/kr-social-light-400.png</a></div>
-          <div class="asset-sizes">400 × 400px</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="kr-social-light-800.png" alt="Social light 800px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-social-light-800.png</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-social-light-800.png">brand.kevinryan.io/kr-social-light-800.png</a></div>
-          <div class="asset-sizes">800 × 800px</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Favicons</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--dark">
-          <img src="favicon-dark.ico" alt="Favicon dark" style="image-rendering:pixelated;width:48px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">favicon-dark.ico</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/favicon-dark.ico">brand.kevinryan.io/favicon-dark.ico</a></div>
-          <div class="asset-sizes">16 / 32 / 48px — dark backgrounds</div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--warm">
-          <img src="favicon-light.ico" alt="Favicon light" style="image-rendering:pixelated;width:48px">
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">favicon-light.ico</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/favicon-light.ico">brand.kevinryan.io/favicon-light.ico</a></div>
-          <div class="asset-sizes">16 / 32 / 48px — light backgrounds</div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Documents</h3>
-    <div class="asset-grid">
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--light" style="flex-direction:column;gap:0.25rem">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1">PDF</div>
-          <div style="font-size:0.65rem;color:var(--grey-400)">Brand Guidelines</div>
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-brand-guidelines.pdf</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-brand-guidelines.pdf">brand.kevinryan.io/kr-brand-guidelines.pdf</a></div>
-        </div>
-      </div>
-      <div class="asset-card">
-        <div class="asset-preview asset-preview--light" style="flex-direction:column;gap:0.25rem">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);line-height:1">MD</div>
-          <div style="font-size:0.65rem;color:var(--grey-400)">Brand Guidelines</div>
-        </div>
-        <div class="asset-info">
-          <div class="asset-name">kr-brand-guidelines.md</div>
-          <div class="asset-url"><a href="https://brand.kevinryan.io/kr-brand-guidelines.md">brand.kevinryan.io/kr-brand-guidelines.md</a></div>
-        </div>
-      </div>
+    <div class="callout" data-accent="red" style="margin-top:var(--sp-8)">
+      <div class="callout__label">If the palette changes</div>
+      <p>This identity does not own its colours. They are read from the Tokyo Night Moon block in the dotfiles
+      repository. If that block changes, regenerate the assets and this document rather than editing a hex value
+      in either. The generator lives beside the site.</p>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
-<div class="container">
-  <div class="footer">
-    <span><strong>Kevin Ryan &amp; Associates</strong> — <a href="https://kevinryan.io">kevinryan.io</a></span>
-    <span>{{COMMIT_SHA}} — Version 2.0 — February 2026</span>
+<!-- ═══ 09 ASSETS ═══ -->
+<section class="section" id="assets" data-accent="green">
+  <div class="shell">
+    <div class="sec-head">
+      <span class="sec-mark">09</span>
+      <h1>Asset library</h1>
+    </div>
+    <p class="t-lead prose" style="margin-bottom:var(--sp-6)">111 files. SVG is the master format in every
+    case. Rasters are provided for contexts that cannot take vector, and are regenerated from the SVG rather
+    than edited.</p>
+
+    <h3 style="margin-top:var(--sp-6)">Wordmark, SVG masters</h3>
+    <div class="assets">
+      <a class="asset" href="assets/kra-wordmark-black.svg" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-wordmark-black.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-black.svg</span>
+        <span class="asset__use">Single colour, light</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-blue.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-blue.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-blue.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-blue1.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-blue1.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-blue1.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-cyan.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-cyan.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-cyan.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-cyan1.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-cyan1.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-cyan1.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-green.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-green.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-green.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-ink.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-ink.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-ink.svg</span>
+        <span class="asset__use">Neutral on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-live.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-blue.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-live.svg</span>
+        <span class="asset__use">Inline, inherits --sec</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-magenta.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-magenta.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-magenta.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-orange.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-orange.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-orange.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-print.svg" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-wordmark-print.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-print.svg</span>
+        <span class="asset__use">Warm white ground</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-red.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-red.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-red.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-teal.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-teal.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-teal.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-white.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-white.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-white.svg</span>
+        <span class="asset__use">Single colour, dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-yellow.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-yellow.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-yellow.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+    </div>
+    <h3 style="margin-top:var(--sp-6)">Mark, SVG masters</h3>
+    <div class="assets">
+      <a class="asset" href="assets/kra-mark-blue.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-blue.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-blue.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-cyan.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-cyan.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-cyan.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-ink.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-ink.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-ink.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-light.svg" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-mark-light.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-light.svg</span>
+        <span class="asset__use">Warm white ground</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-magenta.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-magenta.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-magenta.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-orange.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-orange.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-orange.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-sink.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-sink.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-sink.svg</span>
+        <span class="asset__use">Sunken ground</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-teal.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-teal.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-teal.svg</span>
+        <span class="asset__use">Accent on dark</span>
+        <span class="asset__go">306 B ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-transparent.svg" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-transparent.svg" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-transparent.svg</span>
+        <span class="asset__use">Watermark, overlay</span>
+        <span class="asset__go">261 B ↓</span>
+      </a>
+    </div>
+    <h3 style="margin-top:var(--sp-6)">Wordmark rasters, 1200 and 2000px</h3>
+    <div class="assets">
+      <a class="asset" href="assets/kra-wordmark-black-2000.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-wordmark-black-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-black-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">46 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-blue-2000.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-blue-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-blue-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">50 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-cyan-2000.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-cyan-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-cyan-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">50 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-ink-2000.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-ink-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-ink-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">50 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-magenta-2000.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-magenta-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-magenta-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">50 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-orange-2000.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-orange-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-orange-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">50 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-print-2000.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-wordmark-print-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-print-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">50 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-teal-2000.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-teal-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-teal-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">50 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-white-2000.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-white-2000.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-white-2000.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">39 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-black-1200.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-wordmark-black-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-black-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">26 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-blue-1200.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-blue-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-blue-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">28 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-cyan-1200.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-cyan-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-cyan-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">28 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-ink-1200.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-ink-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-ink-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">28 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-magenta-1200.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-magenta-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-magenta-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">28 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-orange-1200.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-orange-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-orange-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">28 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-print-1200.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-wordmark-print-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-print-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">28 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-teal-1200.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-teal-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-teal-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">29 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-wordmark-white-1200.png" download>
+        <span class="asset__thumb"><img src="assets/kra-wordmark-white-1200.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-wordmark-white-1200.png</span>
+        <span class="asset__use">Raster, transparent</span>
+        <span class="asset__go">22 KB ↓</span>
+      </a>
+    </div>
+    <h3 style="margin-top:var(--sp-6)">Mark rasters, 192 and 512px</h3>
+    <div class="assets">
+      <a class="asset" href="assets/kra-mark-blue-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-blue-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-blue-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-cyan-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-cyan-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-cyan-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-ink-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-ink-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-ink-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-light-512.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-mark-light-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-light-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-magenta-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-magenta-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-magenta-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-orange-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-orange-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-orange-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-sink-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-sink-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-sink-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-teal-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-teal-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-teal-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-transparent-512.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-transparent-512.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-transparent-512.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">3 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-blue-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-blue-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-blue-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-cyan-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-cyan-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-cyan-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-ink-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-ink-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-ink-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-light-192.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-mark-light-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-light-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-magenta-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-magenta-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-magenta-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-orange-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-orange-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-orange-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-sink-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-sink-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-sink-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-teal-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-teal-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-teal-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-mark-transparent-192.png" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-transparent-192.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-mark-transparent-192.png</span>
+        <span class="asset__use">App icon, avatar</span>
+        <span class="asset__go">1 KB ↓</span>
+      </a>
+    </div>
+    <h3 style="margin-top:var(--sp-6)">Social avatars</h3>
+    <div class="assets">
+      <a class="asset" href="assets/kra-social-dark-400.png" download>
+        <span class="asset__thumb"><img src="assets/kra-social-dark-400.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-social-dark-400.png</span>
+        <span class="asset__use">Social avatar</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-social-dark-800.png" download>
+        <span class="asset__thumb"><img src="assets/kra-social-dark-800.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-social-dark-800.png</span>
+        <span class="asset__use">Social avatar</span>
+        <span class="asset__go">5 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-social-light-400.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-social-light-400.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-social-light-400.png</span>
+        <span class="asset__use">Social avatar</span>
+        <span class="asset__go">2 KB ↓</span>
+      </a>
+      <a class="asset" href="assets/kra-social-light-800.png" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-social-light-800.png" alt="" loading="lazy"></span>
+        <span class="asset__name">kra-social-light-800.png</span>
+        <span class="asset__use">Social avatar</span>
+        <span class="asset__go">5 KB ↓</span>
+      </a>
+    </div>
+    <h3 style="margin-top:var(--sp-6)">Favicons</h3>
+    <div class="assets">
+      <a class="asset" href="favicon-dark.ico" download>
+        <span class="asset__thumb"><img src="assets/kra-mark-blue-64.png" alt="" loading="lazy"></span>
+        <span class="asset__name">favicon-dark.ico</span>
+        <span class="asset__use">Browser favicon</span>
+        <span class="asset__go">257 B ↓</span>
+      </a>
+      <a class="asset" href="favicon-light.ico" download>
+        <span class="asset__thumb asset__thumb--light"><img src="assets/kra-mark-light-64.png" alt="" loading="lazy"></span>
+        <span class="asset__name">favicon-light.ico</span>
+        <span class="asset__use">Browser favicon</span>
+        <span class="asset__go">256 B ↓</span>
+      </a>
+    </div>
   </div>
-</div>
+</section>
+
+<footer class="site-footer">
+  <div class="shell site-footer__inner">
+    <span>Kevin Ryan &amp; Associates · Brand book v3.0.0 · {{COMMIT_SHA}}</span>
+    <span>Tokyo Night Moon · dotfiles/.chezmoidata.yaml</span>
+    <span><a href="https://kevinryan.io">kevinryan.io</a> · <a href="https://docs.kevinryan.io">docs</a></span>
+  </div>
+</footer>
 
 </body>
 </html>
