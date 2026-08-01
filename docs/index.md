@@ -1,5 +1,5 @@
 ---
-title: Kevin Ryan — Platform Docs
+title: kevinryan.io - Platform Docs
 description: Documentation for the Kevin Ryan platform — a monorepo hosting portfolio, brand, and documentation sites for Kevin Ryan, DevOps & AI Governance Consultant.
 ---
 

@@ -73,7 +73,7 @@ export default defineConfig({
       },
     }),
     starlight({
-      title: 'Kevin Ryan — Docs',
+      title: 'kevinryan.io - docs',
       favicon: '/favicon-dark.ico',
       head: [
         {
