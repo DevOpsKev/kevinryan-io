@@ -226,6 +226,7 @@ blockquote cite {
 .section { padding: var(--sp-14) 0; border-top: var(--hair) solid var(--line); }
 .section--sink { background: var(--bg-sink); }
 .sec-head { margin-bottom: var(--sp-10); }
+.sec-lead { max-width: 78ch; margin: var(--sp-3) 0 0; }
 
 /* ═══ COVER ══════════════════════════════════════════════════ */
 .cover { border-top: 0; padding: 0; }

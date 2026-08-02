@@ -1,4 +1,5 @@
 import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
 
 const AUDIENCES = [
   { n: '01', title: 'CTOs & VPs ENGINEERING', text: "You've invested in AI tooling. Adoption is patchy. You need evidence-based guidance on where to invest next and a framework to justify that investment to the board." },
@@ -10,10 +11,7 @@ export default function AssessmentAudience() {
   return (
     <section className="section section--sink" id="audience" data-accent="magenta">
       <Container>
-        <div className="sec-head">
-          <span className="sec-mark">05 · Audience</span>
-          <h1 className="t-h1">WHO THIS IS FOR.</h1>
-        </div>
+        <SectionHeader subtitle="05 · Audience" title="WHO THIS IS FOR." />
 
         <div className="cells cells--3">
           {AUDIENCES.map((a) => (

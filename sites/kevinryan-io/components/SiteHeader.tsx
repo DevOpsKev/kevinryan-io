@@ -6,10 +6,9 @@ import { MouseEvent } from "react"
 
 /**
  * Left-aligned three-button nav. No wordmark, no section-locus readout.
- * HOME and ASSESSMENT are internal routes; clicking either returns to the
- * start of that page — when already on the target page a plain <Link> to
- * the same route is a no-op, so we intercept and smooth-scroll to top.
- * CONTACT is a same-page scroll to the home page's contact section.
+ * Home, Contact and Kevin are all internal routes; clicking either returns
+ * to the start of that page — when already on the target page a plain <Link>
+ * to the same route is a no-op, so we intercept and smooth-scroll to top.
  */
 export default function SiteHeader(): React.JSX.Element {
   const pathname = usePathname()
@@ -28,14 +27,14 @@ export default function SiteHeader(): React.JSX.Element {
     <header className="topbar">
       <nav className="topbar__nav">
         <Link className="tool" href="/" onClick={(e) => goTop(e, '/')}>Home</Link>
+        <Link className="tool" href="/contact" onClick={(e) => goTop(e, '/contact')}>Contact</Link>
         <Link
           className="tool"
-          href="/ai-native-readiness-assessment"
-          onClick={(e) => goTop(e, '/ai-native-readiness-assessment')}
+          href="/kevin"
+          onClick={(e) => goTop(e, '/kevin')}
         >
-          Assessment
+          Kevin
         </Link>
-        <a className="tool tool--accent" href="#contact">Contact</a>
       </nav>
     </header>
   )

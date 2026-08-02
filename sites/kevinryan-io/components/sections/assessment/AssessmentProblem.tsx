@@ -1,4 +1,5 @@
 import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
 
 const STATS = [
   { number: '90%', label: 'Of professionals using AI at work' },
@@ -11,13 +12,11 @@ export default function AssessmentProblem() {
   return (
     <section className="section section--sink" id="problem" data-accent="red">
       <Container>
-        <div className="sec-head">
-          <span className="sec-mark">01 · The Problem</span>
-          <h1 className="t-h1">YOU BOUGHT THE TOOLS. WHERE ARE THE RESULTS?</h1>
-          <p className="t-lead" style={{ maxWidth: '78ch', margin: 'var(--sp-3) 0 0' }}>
-            90% of technology professionals now use AI at work. Most organisations have invested in licences. But DORA&rsquo;s 2025 research — based on nearly 5,000 professionals — reveals a critical truth: AI adoption alone has only a modest impact on performance. Without the right foundations, you&rsquo;re amplifying dysfunction, not delivery.
-          </p>
-        </div>
+        <SectionHeader
+          subtitle="01 · The Problem"
+          title="YOU BOUGHT THE TOOLS. WHERE ARE THE RESULTS?"
+          lead="90% of technology professionals now use AI at work. Most organisations have invested in licences. But DORA’s 2025 research — based on nearly 5,000 professionals — reveals a critical truth: AI adoption alone has only a modest impact on performance. Without the right foundations, you’re amplifying dysfunction, not delivery."
+        />
 
         <div className="cells cells--4">
           {STATS.map((s) => (

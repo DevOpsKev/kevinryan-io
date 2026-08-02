@@ -1,4 +1,5 @@
 import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
 
 const DELIVERABLES = [
   { n: '01', title: 'EXECUTIVE REPORT', text: '10–15 page report for leadership: current state, key findings, prioritised recommendations, and the business case for investment.' },
@@ -15,13 +16,11 @@ export default function AssessmentDeliverables() {
   return (
     <section className="section" id="deliverables" data-accent="green">
       <Container>
-        <div className="sec-head">
-          <span className="sec-mark">04 · Deliverables</span>
-          <h1 className="t-h1">WHAT YOU GET.</h1>
-          <p className="t-lead" style={{ maxWidth: '78ch', margin: 'var(--sp-3) 0 0' }}>
-            Every assessment produces a set of actionable deliverables. This is a roadmap, not a slide deck.
-          </p>
-        </div>
+        <SectionHeader
+          subtitle="04 · Deliverables"
+          title="WHAT YOU GET."
+          lead="Every assessment produces a set of actionable deliverables. This is a roadmap, not a slide deck."
+        />
 
         <div className="cells cells--4">
           {DELIVERABLES.map((d) => (

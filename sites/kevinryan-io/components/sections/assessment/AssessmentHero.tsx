@@ -18,7 +18,7 @@ export default function AssessmentHero() {
             <p className="t-lead" style={{ maxWidth: '62ch', margin: 'var(--sp-3) 0 var(--sp-5)' }}>
               A structured diagnostic that evaluates your organisation&rsquo;s capacity to realise measurable value from AI-assisted software development. Based on the DORA AI Capabilities Model. Enhanced with Spec-Driven Development methodology.
             </p>
-            <a href="#contact" className="btn btn--primary">Book a Discovery Call</a>
+            <a href="/contact" className="btn btn--primary">Book a Discovery Call</a>
           </div>
 
           <div className="meta-panel">

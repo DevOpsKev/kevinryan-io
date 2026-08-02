@@ -9,7 +9,7 @@ const INDEX = [
   { n: '05', href: '#timeline', t: 'Career arc', x: '1995 →' },
   { n: '06', href: '#projects', t: 'Published work', x: '3' },
   { n: '07', href: '#certs', t: 'Certifications', x: '14' },
-  { n: '08', href: '#contact', t: 'Contact', x: '↓' },
+  { n: '08', href: '/contact', t: 'Contact', x: '↓' },
 ]
 
 const META = [
@@ -25,14 +25,6 @@ export default function HeroSection() {
       <Container>
         <div className="cover__grid">
           <div className="cover__main">
-            <p className="avail">
-              <span><span className="dot" />Available for contract</span>
-              <span className="avail__sep">/</span>
-              <span>Remote first</span>
-              <span className="avail__sep">/</span>
-              <span>Budapest · Dublin · London</span>
-            </p>
-
             <h1 className="t-display">Kevin <em>Ryan</em></h1>
 
             <p className="t-lead" style={{ maxWidth: '52ch', marginBottom: 'var(--sp-3)' }}>
@@ -51,7 +43,7 @@ export default function HeroSection() {
             </div>
 
             <div className="actions">
-              <a className="btn btn--primary" href="#contact">Get in touch</a>
+              <a className="btn btn--primary" href="/contact">Get in touch</a>
               <a className="btn" href="#delivery">Case studies <small>· 6</small></a>
               <a className="btn" href="https://docs.kevinryan.io" target="_blank" rel="noopener noreferrer">
                 Documentation ↗
@@ -74,8 +66,28 @@ export default function HeroSection() {
                 </span>
               </div>
               <div className="row">
-                <span className="k">Status</span>
-                <span className="v"><span className="dot" />Building in public</span>
+                <span className="k">Email</span>
+                <span className="v">
+                  <a href="mailto:kevin@kevinryan.io">kevin@kevinryan.io</a>
+                </span>
+              </div>
+              <div className="row">
+                <span className="k">Phone</span>
+                <span className="v">
+                  <a href="tel:+36701674009">+36 70 167 4009</a>
+                </span>
+              </div>
+              <div className="row">
+                <span className="k">GitHub</span>
+                <span className="v">
+                  <a href="https://github.com/devopskev" target="_blank" rel="noopener noreferrer">devopskev ↗</a>
+                </span>
+              </div>
+              <div className="row">
+                <span className="k">LinkedIn</span>
+                <span className="v">
+                  <a href="https://linkedin.com/in/devopskev" target="_blank" rel="noopener noreferrer">devopskev ↗</a>
+                </span>
               </div>
             </div>
           </div>
@@ -87,7 +99,7 @@ export default function HeroSection() {
               </div>
               <figcaption className="portrait__caption">
                 <span>Kevin Ryan</span>
-                <span>Budapest · Dublin</span>
+                <span>Budapest · London · Dublin</span>
               </figcaption>
             </figure>
 

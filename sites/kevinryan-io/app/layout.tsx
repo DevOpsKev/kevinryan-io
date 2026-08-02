@@ -18,7 +18,11 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kevin Ryan & Associates | AI-Native Engineering · Platform Engineering",
+  metadataBase: new URL('https://kevinryan.io'),
+  title: {
+    default: 'Kevin Ryan & Associates',
+    template: '%s — Kevin Ryan & Associates',
+  },
   description:
     "Thirty years embedding with enterprise clients and making complex technology work in production. AI-native engineering, platform engineering, delivery management and AI governance. CERN, Nestlé, NatWest, BBC Worldwide, Financial Times, Dematic.",
 };

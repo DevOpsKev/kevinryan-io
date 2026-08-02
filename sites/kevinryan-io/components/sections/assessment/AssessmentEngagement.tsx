@@ -1,4 +1,5 @@
 import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
 
 const PHASES = [
   { number: '01', title: 'DIAGNOSE', desc: 'Capability survey across all seven DORA dimensions. Stakeholder interviews. Team skills self-assessment sessions. Map your team archetype.', output: 'Output: Capability radar · Team archetype · Skills heatmap' },
@@ -11,13 +12,11 @@ export default function AssessmentEngagement() {
   return (
     <section className="section section--sink" id="engagement" data-accent="cyan">
       <Container>
-        <div className="sec-head">
-          <span className="sec-mark">03 · The Engagement</span>
-          <h1 className="t-h1">HOW IT WORKS.</h1>
-          <p className="t-lead" style={{ maxWidth: '78ch', margin: 'var(--sp-3) 0 0' }}>
-            Four phases. Discrete deliverables at each stage. A clear narrative arc from diagnosis to action.
-          </p>
-        </div>
+        <SectionHeader
+          subtitle="03 · The Engagement"
+          title="HOW IT WORKS."
+          lead="Four phases. Discrete deliverables at each stage. A clear narrative arc from diagnosis to action."
+        />
 
         <div className="cells cells--4">
           {PHASES.map((p) => (

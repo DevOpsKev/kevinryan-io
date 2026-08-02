@@ -1,4 +1,5 @@
 import Container from '@/components/Container'
+import SectionHeader from '@/components/SectionHeader'
 
 const CAPS = [
   { n: '01', title: 'CLEAR & COMMUNICATED AI STANCE', text: 'Ambiguity creates risk. A clear policy provides the psychological safety needed for effective experimentation.', outcome: '→ Individual effectiveness · Org performance · Throughput' },
@@ -14,13 +15,11 @@ export default function AssessmentCapabilities() {
   return (
     <section className="section" id="capabilities" data-accent="teal">
       <Container>
-        <div className="sec-head">
-          <span className="sec-mark">02 · The Seven Capabilities</span>
-          <h1 className="t-h1">WHAT WE ASSESS.</h1>
-          <p className="t-lead" style={{ maxWidth: '78ch', margin: 'var(--sp-3) 0 0' }}>
-            The assessment evaluates your organisation against the seven foundational capabilities identified by DORA&rsquo;s research as proven amplifiers of AI&rsquo;s positive impact on performance.
-          </p>
-        </div>
+        <SectionHeader
+          subtitle="02 · The Seven Capabilities"
+          title="WHAT WE ASSESS."
+          lead="The assessment evaluates your organisation against the seven foundational capabilities identified by DORA’s research as proven amplifiers of AI’s positive impact on performance."
+        />
 
         <div className="cells cells--4">
           {CAPS.map((c) => (

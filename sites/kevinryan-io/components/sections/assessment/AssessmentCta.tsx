@@ -1,14 +1,12 @@
 import Container from '@/components/Container'
-import AssessmentContactForm from '@/components/AssessmentContactForm'
+import SectionHeader from '@/components/SectionHeader'
+import AssessmentContactForm from '@/components/sections/assessment/AssessmentContactForm'
 
 export default function AssessmentCta() {
   return (
-    <section className="section section--sink" id="contact" data-accent="blue">
+    <section className="section section--sink" data-accent="blue">
       <Container>
-        <div className="sec-head">
-          <span className="sec-mark">Interested?</span>
-          <h1 className="t-h1">LET&rsquo;S ARRANGE A CONVERSATION.</h1>
-        </div>
+        <SectionHeader subtitle="Interested?" title="LET&rsquo;S ARRANGE A CONVERSATION." />
 
         <div className="two-col">
           <div className="prose">
