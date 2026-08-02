@@ -1,7 +1,23 @@
-# SSL/TLS mode is set to "Full" in the Cloudflare dashboard.
-# Cannot manage via Terraform — API token lacks Zone Settings:Edit permission
-# and cloudflare_zone_settings_override has known issues with read-only settings.
-# TODO: Update API token permissions and revisit.
+# HTTP→HTTPS redirect and SSL/TLS mode are managed via the Cloudflare API, not
+# Terraform. Context:
+#   - All four zones are on the Free plan, which does not expose the
+#     `http_request_dynamic_redirect` ruleset phase (the API returns 404 for it),
+#     so a Dynamic Redirect ruleset cannot be created. That was attempted in
+#     commit 741a350 and reverted because every apply failed "request is not
+#     authorized" (the provider's misleading rendering of a 404 phase gate).
+#   - The API token DOES have Zone Settings:Edit (verified: PATCH
+#     /zones/{id}/settings/always_use_https returns editable=true), so the
+#     Free-plan-native path is the "Always Use HTTPS" zone setting, set to `on`
+#     on all four zones via the API.
+#   - `cloudflare_zone_settings_override` is NOT used because the provider sends
+#     the full settings block on apply, and unspecified fields revert to provider
+#     defaults — which would reset ssl mode from `full` to the default and break
+#     the origin behind the proxy. Managing one setting safely would require
+#     pinning all 11 editable settings, which is brittle.
+# Reproduce the redirect config (idempotent):
+#   curl -X PATCH -H "Authorization: Bearer $TOKEN" \
+#     "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/settings/always_use_https" \
+#     -H "Content-Type: application/json" -d '{"value":"on"}'
 
 resource "cloudflare_record" "root" {
   zone_id = var.zone_id
@@ -45,30 +61,6 @@ locals {
     [for s in var.cache_bypass_subdomains : "(http.host eq \"${s}.${var.domain}\")"]
   )
   bypass_expression = "(${join(" or ", local.bypass_host_expressions)}) and (starts_with(http.request.uri.path, \"/auth\") or starts_with(http.request.uri.path, \"/api\") or http.request.uri.path eq \"/\" or starts_with(http.request.uri.path, \"/login\"))"
-}
-
-resource "cloudflare_ruleset" "https_redirect" {
-  zone_id     = var.zone_id
-  name        = "Redirect HTTP to HTTPS for ${var.domain}"
-  description = "Permanently redirect all plain-HTTP requests to HTTPS"
-  kind        = "zone"
-  phase       = "http_request_dynamic_redirect"
-
-  rules {
-    action = "redirect"
-    action_parameters {
-      from_value {
-        status_code = 301
-        target_url {
-          expression = "concat(\"https://\", http.host, http.request.uri.path)"
-        }
-        preserve_query_string = true
-      }
-    }
-    expression  = "(not http.request.scheme eq \"https\")"
-    description = "Redirect HTTP to HTTPS"
-    enabled     = true
-  }
 }
 
 resource "cloudflare_ruleset" "cache" {
