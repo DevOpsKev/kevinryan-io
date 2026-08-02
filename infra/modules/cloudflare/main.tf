@@ -47,6 +47,30 @@ locals {
   bypass_expression = "(${join(" or ", local.bypass_host_expressions)}) and (starts_with(http.request.uri.path, \"/auth\") or starts_with(http.request.uri.path, \"/api\") or http.request.uri.path eq \"/\" or starts_with(http.request.uri.path, \"/login\"))"
 }
 
+resource "cloudflare_ruleset" "https_redirect" {
+  zone_id     = var.zone_id
+  name        = "Redirect HTTP to HTTPS for ${var.domain}"
+  description = "Permanently redirect all plain-HTTP requests to HTTPS"
+  kind        = "zone"
+  phase       = "http_request_dynamic_redirect"
+
+  rules {
+    action = "redirect"
+    action_parameters {
+      from_value {
+        status_code = 301
+        target_url {
+          expression = "concat(\"https://\", http.host, http.request.uri.path)"
+        }
+        preserve_query_string = true
+      }
+    }
+    expression  = "(not http.request.scheme eq \"https\")"
+    description = "Redirect HTTP to HTTPS"
+    enabled     = true
+  }
+}
+
 resource "cloudflare_ruleset" "cache" {
   zone_id     = var.zone_id
   name        = "Cache rules for ${var.domain}"
