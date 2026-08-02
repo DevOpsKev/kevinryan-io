@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import PropositionsHero from '@/components/sections/PropositionsHero'
 import AssessmentHero from '@/components/sections/assessment/AssessmentHero'
 import AssessmentProblem from '@/components/sections/assessment/AssessmentProblem'
 import AssessmentCapabilities from '@/components/sections/assessment/AssessmentCapabilities'
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <main>
+      <PropositionsHero />
       <AssessmentHero />
       <AssessmentProblem />
       <AssessmentCapabilities />

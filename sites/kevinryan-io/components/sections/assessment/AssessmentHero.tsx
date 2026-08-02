@@ -13,8 +13,7 @@ export default function AssessmentHero() {
       <Container>
         <div className="split">
           <div>
-            <span className="sec-mark">Kevin Ryan &amp; Associates</span>
-            <h1 className="t-h1" style={{ maxWidth: '16ch' }}>AI-NATIVE READINESS ASSESSMENT</h1>
+            <h2 className="t-h1" style={{ maxWidth: '16ch' }}>AI-NATIVE READINESS ASSESSMENT</h2>
             <p className="t-lead" style={{ maxWidth: '62ch', margin: 'var(--sp-3) 0 var(--sp-5)' }}>
               A structured diagnostic that evaluates your organisation&rsquo;s capacity to realise measurable value from AI-assisted software development. Based on the DORA AI Capabilities Model. Enhanced with Spec-Driven Development methodology.
             </p>

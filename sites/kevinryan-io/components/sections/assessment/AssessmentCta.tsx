@@ -2,22 +2,22 @@ import Container from '@/components/Container'
 import SectionHeader from '@/components/SectionHeader'
 import AssessmentContactForm from '@/components/sections/assessment/AssessmentContactForm'
 
-export default function AssessmentCta() {
+export default function AssessmentCta({ as = 'h2' }: { as?: 'h1' | 'h2' }) {
   return (
     <section className="section section--sink" data-accent="blue">
       <Container>
-        <SectionHeader subtitle="Interested?" title="LET&rsquo;S ARRANGE A CONVERSATION." />
+        <SectionHeader as={as} subtitle="Interested?" title="LET&rsquo;S ARRANGE A CONVERSATION." />
 
         <div className="two-col">
           <div className="prose">
             <p className="t-lead">
-              If this sounds right for your organisation, get in touch.
-              We&rsquo;ll talk through the fit, the scope, and what works for your context.
-              No pitch deck. Just a conversation.
+              If you think we can help, start a conversation. We will be straight about the fit,
+              tell you what the work actually involves, and say so if we are not the right people
+              for it. No pitch deck.
             </p>
             <p>
-              You can also reach me directly at{' '}
-              <a href="mailto:kevin@kevinryan.io" className="link-out">kevin@kevinryan.io</a> or connect on{' '}
+              You can also reach out to Kevin directly at{' '}
+              <a href="mailto:kevin@kevinryan.io" className="link-out">kevin@kevinryan.io</a> or on{' '}
               <a href="https://linkedin.com/in/devopskev" className="link-out">LinkedIn</a>.
             </p>
           </div>

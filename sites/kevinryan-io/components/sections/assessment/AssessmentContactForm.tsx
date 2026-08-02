@@ -32,9 +32,9 @@ export default function AssessmentContactForm(): React.JSX.Element {
 
   if (status === 'success') {
     return (
-      <div className="callout">
-        <span className="callout__label">&#10003; Enquiry Sent</span>
-        <p>Thanks for reaching out. I&rsquo;ll be in touch shortly to arrange a conversation.</p>
+      <div className="callout" data-accent="green">
+        <span className="callout__label">Enquiry sent</span>
+        <p>Thanks for reaching out. We will be in touch shortly to arrange a conversation.</p>
       </div>
     )
   }
@@ -47,34 +47,34 @@ export default function AssessmentContactForm(): React.JSX.Element {
           <input type="hidden" name="_subject" value="AI-Native Readiness Assessment Enquiry" />
 
           {status === 'error' && (
-            <div className="callout" style={{ borderLeftColor: 'var(--danger)', marginBottom: 'var(--sp-3)' }}>
-              <span className="callout__label" style={{ color: 'var(--danger)' }}>Something went wrong</span>
+            <div className="callout" data-accent="red" style={{ marginBottom: 'var(--sp-3)' }}>
+              <span className="callout__label">Something went wrong</span>
               <p>
                 Please try again, or email{' '}
-                <a href="mailto:kevin@kevinryan.io" style={{ color: 'var(--accent)' }}>kevin@kevinryan.io</a>{' '}
+                <a href="mailto:kevin@kevinryan.io" className="link-out">kevin@kevinryan.io</a>{' '}
                 directly.
               </p>
             </div>
           )}
 
-          <div className="two-col" style={{ gap: 'var(--sp-3)' }}>
+          <div className="frow">
             <div className="fgroup">
-              <label className="label" htmlFor="ar-name" style={{ display: 'block', marginBottom: 8 }}>Name</label>
+              <label className="label flabel" htmlFor="ar-name">Name</label>
               <input className="field" type="text" id="ar-name" name="name" placeholder="Your name" required />
             </div>
             <div className="fgroup">
-              <label className="label" htmlFor="ar-email" style={{ display: 'block', marginBottom: 8 }}>Email</label>
+              <label className="label flabel" htmlFor="ar-email">Email</label>
               <input className="field" type="email" id="ar-email" name="email" placeholder="you@company.com" required />
             </div>
           </div>
 
-          <div className="two-col" style={{ gap: 'var(--sp-3)' }}>
+          <div className="frow">
             <div className="fgroup">
-              <label className="label" htmlFor="ar-company" style={{ display: 'block', marginBottom: 8 }}>Company</label>
+              <label className="label flabel" htmlFor="ar-company">Company</label>
               <input className="field" type="text" id="ar-company" name="company" placeholder="Your organisation" required />
             </div>
             <div className="fgroup">
-              <label className="label" htmlFor="ar-role" style={{ display: 'block', marginBottom: 8 }}>Role</label>
+              <label className="label flabel" htmlFor="ar-role">Role</label>
               <select className="field" id="ar-role" name="role" required defaultValue="">
                 <option value="" disabled>Select your role</option>
                 <option value="CTO / VP Engineering">CTO / VP Engineering</option>
@@ -87,7 +87,7 @@ export default function AssessmentContactForm(): React.JSX.Element {
           </div>
 
           <div className="fgroup">
-            <label className="label" htmlFor="ar-eng-size" style={{ display: 'block', marginBottom: 8 }}>Engineering Team Size</label>
+            <label className="label flabel" htmlFor="ar-eng-size">Engineering Team Size</label>
             <select className="field" id="ar-eng-size" name="engineering_team_size" required defaultValue="">
               <option value="" disabled>Approximate number of engineers</option>
               <option value="< 50">Fewer than 50</option>
@@ -98,14 +98,14 @@ export default function AssessmentContactForm(): React.JSX.Element {
           </div>
 
           <div className="fgroup">
-            <label className="label" htmlFor="ar-message" style={{ display: 'block', marginBottom: 8 }}>
-              What&rsquo;s prompting this? <span style={{ textTransform: 'none', letterSpacing: 0 }}>(Optional)</span>
+            <label className="label flabel" htmlFor="ar-message">
+              What&rsquo;s prompting this? <span className="fnote">(Optional)</span>
             </label>
             <textarea
               className="field"
               id="ar-message"
               name="message"
-              placeholder="Tell me briefly about your situation — AI tools in use, what's working, what isn't."
+              placeholder="Tell us briefly about your situation. AI tools in use, what is working, what is not."
               rows={4}
             />
           </div>
@@ -114,7 +114,7 @@ export default function AssessmentContactForm(): React.JSX.Element {
             {status === 'submitting' ? 'Sending…' : 'Book a Discovery Call'}
           </button>
 
-          <p className="label" style={{ marginTop: 'var(--sp-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.5 }}>
+          <p className="label fnote" style={{ marginTop: 'var(--sp-3)' }}>
             No commitment. No pitch deck. A 30-minute conversation about your context.
           </p>
         </form>

@@ -1,0 +1,37 @@
+/* Specimen chrome only. Every other rule in this file is
+   app/globals.css verbatim, including its breakpoints. */
+*,*::before,*::after{ box-sizing:border-box }
+button,input,textarea,select{ font:inherit; color:inherit; background:none; border:0 }
+button{ cursor:pointer }
+.sheet-head{ border-bottom:var(--hair) solid var(--line); padding:var(--sp-8) 0 var(--sp-6) }
+.sheet-head h1{ font-family:var(--font-display); font-weight:700; font-size:var(--fluid-h1); line-height:1.05; letter-spacing:var(--track-title); margin:0 0 var(--sp-2) }
+.block{ padding:var(--sp-10) 0; border-bottom:var(--hair) solid var(--line) }
+.block > h2{ font-family:var(--font-mono); font-weight:500; font-size:var(--text-label);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  color:var(--sec); margin:0 0 var(--sp-5); }
+.note{ font-family:var(--font-mono); font-size:var(--text-label); letter-spacing:var(--track-mono); color:var(--ink-3); margin:var(--sp-3) 0 0; line-height:1.7 }
+.grid2{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:var(--sp-6) }
+.ramp{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); border-top:var(--hair) solid var(--line); border-left:var(--hair) solid var(--line) }
+.sw{ border-right:var(--hair) solid var(--line); border-bottom:var(--hair) solid var(--line) }
+.sw .chip{ height:64px }
+.sw .meta{ padding:10px 12px; font-family:var(--font-mono); font-size:var(--text-label); letter-spacing:var(--track-mono) }
+.sw .name{ display:block; color:var(--ink-2) }
+.sw .hex{ display:block; color:var(--ink-4); margin-top:3px; text-transform:uppercase }
+.sw .cr{ display:block; color:var(--ink-3); margin-top:3px }
+.sw .cr b{ color:var(--red); font-weight:500 }
+.scale{ width:100%; border-collapse:collapse }
+.scale th{ text-align:left; padding:0 var(--sp-3) 12px 0; border-bottom:var(--hair) solid var(--line-strong); font-family:var(--font-mono); font-weight:500; font-size:var(--text-label); letter-spacing:var(--track-mono-wide); text-transform:uppercase; color:var(--ink-3) }
+.scale td{ padding:14px var(--sp-3) 14px 0; border-bottom:var(--hair) solid var(--line); vertical-align:baseline }
+.scale td.k{ font-family:var(--font-mono); font-size:var(--text-label); letter-spacing:var(--track-mono); text-transform:uppercase; color:var(--ink-4); white-space:nowrap }
+.cell h3{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h3); letter-spacing:var(--track-tight); margin:0 0 var(--sp-1) }
+.cell--feature .cell__n,.cell--feature .cell__foot,.cell--feature .cell__stat{ color:var(--sec) }
+.tl__what h3{ font-family:var(--font-display); font-weight:600; font-size:var(--text-h3); margin:0 0 6px; letter-spacing:var(--track-tight) }
+.map{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); border-top:var(--hair) solid var(--line); border-left:var(--hair) solid var(--line) }
+.map .row{ border-right:var(--hair) solid var(--line); border-bottom:var(--hair) solid var(--line); padding:var(--sp-3); border-left:var(--border-emphasis) solid var(--sec) }
+.map .row .s{ display:block; font-family:var(--font-display); font-weight:600; font-size:1rem; letter-spacing:-.01em; margin-bottom:4px }
+.map .row .a{ font-family:var(--font-mono); font-size:var(--text-label); letter-spacing:var(--track-mono); text-transform:uppercase; color:var(--sec) }
+.rules{ list-style:none; padding:0; margin:0; max-width:var(--measure) }
+.rules li{ position:relative; padding-left:var(--sp-3); margin-bottom:var(--sp-1); font-size:var(--text-ui); line-height:1.6; color:var(--ink-2) }
+.rules li::before{ content:""; position:absolute; left:0; top:.72em; width:9px; height:var(--hair); background:var(--sec) }
+.scroll-x{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+.scroll-x .scale{ min-width:520px }

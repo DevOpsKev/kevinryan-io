@@ -139,6 +139,10 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
+  /* Native form UI follows the page rather than the OS. Without this
+     the select popup, the caret, autofill and scrollbars all render
+     in the light system theme on a dark page. */
+  color-scheme: dark;
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--topbar) + 24px);
   -webkit-text-size-adjust: 100%;
@@ -270,6 +274,10 @@ blockquote cite {
 
 /* ═══ BUTTONS. One primary per view. ═════════════════════════ */
 .btn {
+  /* Also used on <button>, which Safari otherwise gives its own
+     background, radius and font. */
+  appearance: none; -webkit-appearance: none;
+  background: transparent; color: inherit; cursor: pointer;
   display: inline-flex; align-items: center; gap: 12px;
   padding: 13px 20px; border: var(--hair) solid var(--line-strong);
   font-family: var(--font-mono); font-size: var(--text-caption);
@@ -512,17 +520,53 @@ blockquote cite {
   border: var(--hair) solid var(--line-strong); color: var(--ink);
   font-family: var(--font-mono); font-size: var(--text-ui);
   transition: border-color var(--dur-fast) var(--ease);
+  /* Strip the UA control. Safari rounds corners and adds an inner
+     shadow on text inputs otherwise, which breaks B17 and B18. */
+  appearance: none; -webkit-appearance: none;
+  border-radius: var(--radius);
+  accent-color: var(--sec);
+  scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg);
 }
-.field::placeholder { color: var(--ink-4); }
-.field:focus { outline: 0; border-color: var(--sec); }
+.field::placeholder { color: var(--ink-4); opacity: 1; }
+/* A 1px border change is a weak focus indicator, so the ring is
+   doubled inwards to 2px in the section accent. See B29. */
+.field:focus { outline: 0; border-color: var(--sec); box-shadow: inset 0 0 0 1px var(--sec); }
+/* Only once the field has been interacted with, never on load. */
+.field:user-invalid { border-color: var(--red); }
+.field:user-invalid:focus { box-shadow: inset 0 0 0 1px var(--red); }
+
+/* Chrome repaints an autofilled control with its own background and
+   text colour. An inset shadow is the only way to override it. */
+.field:-webkit-autofill,
+.field:-webkit-autofill:hover,
+.field:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: inset 0 0 0 100px var(--bg);
+  caret-color: var(--ink);
+  font-family: var(--font-mono);
+  transition: background-color 100000s ease 0s;
+}
+
 textarea.field { resize: vertical; min-height: 120px; line-height: 1.6; }
 .fgroup { margin-bottom: var(--sp-3); }
 select.field {
-  appearance: none; cursor: pointer; padding-right: 40px;
+  appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 40px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23737aa2' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 14px center;
 }
-select.field option { background: var(--bg); color: var(--ink); }
+/* The popup list is drawn by the OS and cannot be styled beyond
+   this. color-scheme above is what makes it render dark. */
+select.field option,
+select.field optgroup { background: var(--bg); color: var(--ink); }
+/* A required select still on its empty option is a placeholder. */
+select.field:invalid { color: var(--ink-4); }
+
+/* Rows inside a form panel. .two-col is a page level layout and its
+   340px minimum will not pair inside a panel. */
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--sp-3); }
+@media (max-width: 560px) { .frow { grid-template-columns: 1fr; } }
+.flabel { display: block; margin-bottom: 8px; }
+.fnote { text-transform: none; letter-spacing: 0; line-height: 1.5; }
 .reach__row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-2); padding: var(--sp-2) 0; border-bottom: var(--hair) solid var(--line); }
 .reach__v { font-family: var(--font-mono); font-size: var(--text-ui); color: var(--ink-2); transition: color var(--dur-fast) var(--ease); }
 a.reach__v:hover { color: var(--sec); }
@@ -556,6 +600,260 @@ a.reach__v:hover { color: var(--sec); }
   .index-row { grid-template-columns: 38px 1fr; }
   .index-row .x { display: none; }
   .stats { gap: var(--sp-3); }
+}
+
+/* ═══ WORDMARK ═══════════════════════════════════════════════
+   Live text, not an asset, so the ampersand can read --sec from
+   whatever section it sits in. Construction per the brand book:
+   Space Grotesk 700, tracking -0.05em, 0.02em of optical padding
+   either side of the ampersand because its bowl sits tighter than
+   the flat sides of the R and the A.
+   ═══════════════════════════════════════════════════════════ */
+.wordmark {
+  display: inline-block; margin: 0; max-width: none;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(4rem, 15vw, 12.5rem); line-height: 0.88;
+  letter-spacing: -0.05em; color: var(--ink);
+}
+.wordmark i { font-style: normal; color: var(--sec); padding: 0 0.02em; }
+
+/* ═══ PROPOSITIONS VENN ══════════════════════════════════════
+   Three sets on an equilateral triangle, radius 180, centres 170
+   apart, inside a fixed 900 x 700 coordinate space that scales as
+   one unit. Every offset below is a stage pixel derived from those
+   two numbers, so the construction is auditable rather than eyed.
+
+   Set colours are teal, yellow and magenta because that is the
+   most even three-way hue split the ramp allows: 134, 132 and 94
+   degrees apart. Cyan was tried and sat 24 degrees from teal,
+   which read as one colour.
+   ═══════════════════════════════════════════════════════════ */
+.venn {
+  --set-a: var(--teal);      /* AI-Native Engineering */
+  --set-b: var(--yellow);    /* Digital Sovereignty   */
+  --set-c: var(--magenta);   /* Ethical Technology    */
+  display: flex; justify-content: center; overflow: hidden;
+  height: 700px; width: 100%;
+}
+.venn__stage {
+  position: relative; width: 900px; height: 700px; flex: none;
+  transform-origin: top center;
+  /* The circles sit at stage x 320, but the stage is 900 wide
+     because the caller runs out to 830. Centring the box therefore
+     hangs the cluster left of the page axis. Offsetting by 130 puts
+     the cluster, rather than the bounding box, on the axis. This is
+     `left` and not a margin because a margin is folded into the
+     flex centring and only moves the box by half the value.
+
+     The offset needs room: the caller then ends at half the content
+     width plus 510, so it only applies where that fits. */
+  left: var(--venn-nudge, 0px);
+}
+@media (min-width: 1040px) { .venn { --venn-nudge:  70px; } }
+@media (min-width: 1180px) { .venn { --venn-nudge: 130px; } }
+
+/* ── the three sets ─────────────────────────────────────── */
+.venn__set {
+  position: absolute; width: 360px; height: 360px; border-radius: 50%;
+  border: var(--hair) solid color-mix(in srgb, var(--c) 58%, transparent);
+  background: radial-gradient(circle at center,
+    color-mix(in srgb, var(--c) 14%, transparent) 0%,
+    color-mix(in srgb, var(--c)  7%, transparent) 60%,
+    color-mix(in srgb, var(--c)  3%, transparent) 100%);
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+/* an inner hairline, so the ring reads as drawn rather than as a fill edge */
+.venn__set::after {
+  content: ""; position: absolute; inset: 6px; border-radius: 50%;
+  border: var(--hair) solid color-mix(in srgb, var(--c) 15%, transparent);
+}
+.venn__set--a { left: 140px; top:  92px; --c: var(--set-a); }
+.venn__set--b { left:  55px; top: 239px; --c: var(--set-b); }
+.venn__set--c { left: 225px; top: 239px; --c: var(--set-c); }
+
+/* ── set titles ─────────────────────────────────────────── */
+.venn__title {
+  position: absolute; width: 240px; text-align: center;
+  font-family: var(--font-display); font-weight: 600; font-size: 1.0625rem;
+  line-height: 1.25; letter-spacing: var(--track-tight); color: var(--ink);
+  transition: color var(--dur) var(--ease);
+}
+.venn__title i {
+  display: block; font-style: normal; margin-top: 5px;
+  font-family: var(--font-mono); font-weight: 500; font-size: var(--text-micro);
+  letter-spacing: var(--track-mono-xwide); text-transform: uppercase; color: var(--tc);
+}
+.venn__title::after { content: ""; position: absolute; left: 50%; width: var(--hair); height: 24px; }
+.venn__title--a { left: 200px; top:  12px; --tc: var(--set-a); }
+.venn__title--b { left:  55px; top: 612px; --tc: var(--set-b); }
+.venn__title--c { left: 345px; top: 612px; --tc: var(--set-c); }
+.venn__title--a::after { bottom: -30px; background: linear-gradient(var(--tc), transparent); }
+.venn__title--b::after,
+.venn__title--c::after { top: -30px; background: linear-gradient(transparent, var(--tc)); }
+
+/* ── overlap captions ────────────────────────────────────
+   Placed on the pole of inaccessibility of each two-set-only
+   region, not its centroid: the centroid of a crescent falls in
+   its thin part and the labels collide with the rings there.
+   ─────────────────────────────────────────────────────── */
+.venn__lune {
+  position: absolute; width: 128px; text-align: center; transform: translate(-50%, -50%);
+  font-family: var(--font-mono); font-size: var(--text-micro);
+  letter-spacing: var(--track-mono); text-transform: uppercase;
+  color: var(--ink-4); line-height: 1.7;
+}
+.venn__lune b {
+  display: block; font-weight: 500; color: var(--lc);
+  margin-bottom: 4px; letter-spacing: 0.02em; white-space: nowrap;
+}
+/* An overlap belongs to neither set, so its label is the two mixed.
+   Measured on bg: A+B 9.2:1, A+C 7.6:1, B+C 8.3:1. */
+.venn__lune--ab { left: 200px; top: 301px; --lc: color-mix(in oklab, var(--set-a), var(--set-b)); }
+.venn__lune--ac { left: 440px; top: 301px; --lc: color-mix(in oklab, var(--set-a), var(--set-c)); }
+.venn__lune--bc { left: 320px; top: 509px; --lc: color-mix(in oklab, var(--set-b), var(--set-c)); }
+
+/* ── the centre. Always the top layer. ──────────────────── */
+.venn__core {
+  position: absolute; left: 320px; top: 370px; transform: translate(-50%, -50%);
+  z-index: 20; display: flex; flex-direction: column; align-items: center;
+}
+/* a faint concentric target. The triple region admits an inscribed
+   circle of radius 82, so 158 is the largest ring that stays inside. */
+.venn__core::before,
+.venn__core::after {
+  content: ""; position: absolute; left: 50%; top: 50%; border-radius: 50%;
+  transform: translate(-50%, -50%); border: var(--hair) solid; pointer-events: none;
+}
+.venn__core::before { width: 114px; height: 114px; border-color: color-mix(in srgb, var(--blue) 22%, transparent); }
+.venn__core::after  { width: 158px; height: 158px; border-color: color-mix(in srgb, var(--blue) 11%, transparent); }
+.venn__core .wordmark {
+  position: relative; z-index: 1;
+  font-size: 2.125rem; line-height: 1;
+}
+.venn__core .wordmark i { color: var(--blue); }
+
+/* ── the curved arrow ────────────────────────────────────
+   Circle of radius 165 centred at (496.7, 313.3). The bottom
+   border draws the arc from 45deg to 135deg, so the path runs from
+   the tail at (613.3, 430) down under the apex at (496.7, 478.3)
+   and up to the head at (380, 430). That route threads the corridor
+   between the two lower captions and enters the core from the
+   south east, the only approach that crosses no text.
+   ─────────────────────────────────────────────────────── */
+.venn__arrow {
+  position: absolute; left: 331.7px; top: 148.3px; width: 330px; height: 330px;
+  border: var(--border-emphasis) solid transparent; border-bottom-color: var(--blue);
+  border-radius: 50%; z-index: 3; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to left, transparent 0 2%, #000 22%);
+          mask-image: linear-gradient(to left, transparent 0 2%, #000 22%);
+}
+/* The head. A filled dart clipped from a box, carrying three points:
+   the tip, and one either side of the shaft. The box is anchored by
+   its right hand centre, which is where the polygon puts the tip, so
+   the 225deg rotation happens about the tip itself and the point
+   lands exactly on the arc terminus. 14.645% / 85.355% is where a
+   bottom border arc terminates. */
+.venn__arrow::after {
+  content: ""; position: absolute; left: 14.645%; top: 85.355%;
+  width: 23px; height: 19px; background: var(--blue);
+  clip-path: polygon(100% 50%, 0 0, 27% 50%, 0 100%);
+  transform-origin: 100% 50%;
+  transform: translate(-100%, -50%) rotate(225deg);
+}
+
+/* ── the caller, centred on the arrow tail ──────────────── */
+.venn__caller {
+  position: absolute; left: 632px; top: 430px; transform: translateY(-50%); z-index: 3;
+  padding: 6px 0 6px 16px; border-left: var(--border-emphasis) solid var(--blue);
+}
+.venn__caller b {
+  display: block; font-family: var(--font-display); font-weight: 700;
+  font-size: var(--text-h3); letter-spacing: -0.025em;
+  color: var(--ink); line-height: 1.15; white-space: nowrap;
+}
+
+/* ── hover. Motion responds to input only. ──────────────── */
+.venn__set:hover {
+  border-color: var(--c);
+  background: radial-gradient(circle at center,
+    color-mix(in srgb, var(--c) 24%, transparent) 0%,
+    color-mix(in srgb, var(--c) 13%, transparent) 60%,
+    color-mix(in srgb, var(--c)  5%, transparent) 100%);
+}
+.venn__stage:has(.venn__set--a:hover) .venn__title--a,
+.venn__stage:has(.venn__set--b:hover) .venn__title--b,
+.venn__stage:has(.venn__set--c:hover) .venn__title--c { color: var(--tc); }
+
+/* ── the stage scales as one unit rather than reflowing.
+      Each step is (viewport - 2 x page padding) / 900. ──── */
+@media (max-width: 1010px) { .venn__stage { transform: scale(1.01); } .venn { height: 707px; } }
+@media (max-width:  950px) { .venn__stage { transform: scale(0.95); } .venn { height: 665px; } }
+@media (max-width:  900px) { .venn__stage { transform: scale(0.90); } .venn { height: 630px; } }
+@media (max-width:  850px) { .venn__stage { transform: scale(0.85); } .venn { height: 595px; } }
+@media (max-width:  800px) { .venn__stage { transform: scale(0.80); } .venn { height: 560px; } }
+@media (max-width:  750px) { .venn__stage { transform: scale(0.75); } .venn { height: 525px; } }
+@media (max-width:  700px) { .venn__stage { transform: scale(0.70); } .venn { height: 490px; } }
+@media (max-width:  650px) { .venn__stage { transform: scale(0.65); } .venn { height: 455px; } }
+@media (max-width:  600px) { .venn__stage { transform: scale(0.60); } .venn { height: 420px; } }
+@media (max-width:  550px) { .venn__stage { transform: scale(0.55); } .venn { height: 385px; } }
+@media (max-width:  500px) { .venn__stage { transform: scale(0.50); } .venn { height: 350px; } }
+@media (max-width:  450px) { .venn__stage { transform: scale(0.44); } .venn { height: 308px; } }
+@media (max-width:  400px) { .venn__stage { transform: scale(0.39); } .venn { height: 273px; } }
+
+/* ═══ PROPOSITIONS HERO ══════════════════════════════════════
+   The wordmark sits top left and the diagram is centred in the
+   full shell width. Those two are the only things competing for
+   attention, so the gap between them is the largest step on the
+   scale rather than a section gap.
+   ═══════════════════════════════════════════════════════════ */
+.phero { border-top: 0; padding: var(--sp-8) 0 var(--sp-10); }
+
+/* The head is the mark with the full name locked under it.
+   inline-block shrink-wraps the head to its widest child, which is
+   the mark, so the name below has an exact width to justify to. If
+   the name is ever naturally wider than the mark it simply sets the
+   width itself and sits at its own tracking, so this cannot clip. */
+.phero__head { display: inline-block; }
+.phero__head .wordmark { display: block; }
+
+/* One glyph per flex item, so space-between distributes the slack as
+   even tracking rather than as three large word gaps. Word breaks
+   are a fixed spacer, which keeps them reading as breaks once the
+   tracking opens up. */
+.phero__name {
+  display: flex; justify-content: space-between; align-items: baseline;
+  width: 100%; margin: 5px 0 0;
+  font-family: var(--font-mono); font-weight: 500;
+  font-size: clamp(0.5625rem, 1.32vw, 1.125rem); line-height: 1;
+  text-transform: uppercase; color: var(--ink-3);
+
+  /* Align to the mark's ink, not to its box. Space Grotesk carries a
+     0.066em left bearing on the K and a 0.018em right bearing on the
+     A, which over a 2.373em mark is 2.78% and 0.76% of the box. The
+     mono face has bearings of its own, 0.078em on the K and 0.052em
+     on the S, so those come back off. Percentages resolve against the
+     head, which is the mark's width, so this holds at every size. */
+  padding-left:  calc(2.78% - 0.078em);
+  padding-right: calc(0.76% - 0.052em);
+}
+.phero__name span { display: block; }
+.phero__name .sp { width: 0.55em; }
+.phero__venn { margin-top: var(--sp-4); }
+.phero__cells { margin-top: var(--sp-6); border-top: 0; }
+
+/* Each card is tied to its circle by quoting the circle's own
+   construction rather than by adding a new device: the top hairline
+   uses the identical expression as the ring, so it is literally the
+   same colour. Nothing else changes, and the hover behaviour stays
+   the system default. */
+.phero__cells .cell {
+  border-top: var(--hair) solid color-mix(in srgb, var(--sec) 58%, transparent);
+}
+
+@media (max-width: 900px) {
+  .phero { padding: var(--sp-6) 0 var(--sp-8); }
+  .phero__venn { margin-top: var(--sp-3); }
+  .phero__cells { margin-top: var(--sp-5); }
 }
 
 /* Motion responds to input only. Nothing animates on entry. */

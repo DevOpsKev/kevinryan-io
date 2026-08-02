@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <main>
-      <AssessmentCta />
+      {/* The only heading on this page, so it carries the h1. */}
+      <AssessmentCta as="h1" />
     </main>
   )
 }

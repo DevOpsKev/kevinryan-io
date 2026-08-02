@@ -1,9 +1,17 @@
 # Kevin Ryan & Associates · Brand Guidelines
 
-**Version 3.0.0**
+**Version 3.1.0**
 **brand.kevinryan.io**
 
-Supersedes version 2.0, February 2026, and the lime-on-warm-white identity it described.
+Supersedes 3.0.0, and version 2.0 of February 2026 with the lime-on-warm-white identity it described.
+
+## Changed in 3.1.0
+
+Two colour decisions moved after 3.0.0 was stamped, so a 3.0.0 copy of this book carries different hexes for both. Nothing else changed.
+
+The light ground lockup was black letters with a teal ampersand. It is now the site background `#222436` with the ampersand in print blue `#3D5DA4`. Black has left the identity entirely.
+
+The print accent set was hand-picked. It is now derived: hue is held from the Moon value and lightness is walked down until the colour clears 5.5:1 on warm white, which makes it reproducible rather than a matter of taste. Every value in the table below changed. Rerun `tools/printset.py` if the Moon block changes.
 
 ---
 
@@ -250,5 +258,5 @@ The complete set is browsable at [brand.kevinryan.io](https://brand.kevinryan.io
 ---
 
 **Kevin Ryan & Associates** · brand.kevinryan.io
-Version 3.0.0. Palette source: `dotfiles/.chezmoidata.yaml → theme.tokyo_night_moon`.
+Version 3.1.0. Palette source: `dotfiles/.chezmoidata.yaml → theme.tokyo_night_moon`.
 Authority: `sites/kevinryan-io/design-spec/theme-spec.md`, specification `002-site-theme`.
