@@ -28,8 +28,9 @@ const PROPOSITIONS = [
     accent: 'teal',
     title: 'AI-Native Engineering',
     body:
-      'Building software with AI as the primary implementer rather than an autocomplete. ' +
-      'The specification is the source of authority, and the bottleneck, not the code.',
+      'AI is the primary implementer, not an autocomplete. When the machine writes the code, ' +
+      'the code stops being the record of what the business decided. We keep people on the ' +
+      'decisions and the knowledge somewhere people can still read it.',
     foot: 'Methodology',
   },
   {
@@ -37,8 +38,9 @@ const PROPOSITIONS = [
     accent: 'yellow',
     title: 'Digital Sovereignty',
     body:
-      'Jurisdictional and architectural control over infrastructure, data flow and models. ' +
-      'Forkability under an OSI-approved licence, and control of data flow at runtime.',
+      'Sovereignty is architectural, not contractual. A European region on a hyperscaler ' +
+      'invoice is not control. We build on open source and open weights wherever possible, ' +
+      'and hold the remainder to jurisdictional guarantees you can enforce.',
     foot: 'Architecture',
   },
   {
@@ -46,8 +48,8 @@ const PROPOSITIONS = [
     accent: 'magenta',
     title: 'Ethical Technology',
     body:
-      'Provenance, fair economic distribution and regulatory compliance. The Distributed ' +
-      'Equity Licence and EU AI Act Article 4 as the working floor.',
+      'Every system encodes a distribution of value, whether anyone chose it or not. We make ' +
+      'the choice explicit. Who it is built for, who is paid for it, and who is able to use it.',
     foot: 'Governance',
   },
 ] as const

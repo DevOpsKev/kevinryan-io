@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 """Regenerates design-spec/theme-sheet.html for 002-site-theme.
 
+Run from design-spec/:  python3 mksheet.py
+
 The component CSS is app/globals.css verbatim, with the @theme block
 lifted into :root so the custom properties resolve without Tailwind.
 Only the specimen chrome is authored here. That is deliberate: the
 3.0.0 sheet carried a hand-maintained copy of the component CSS, which
 drifted, which is what open item O8 recorded.
+
+The base is sheet-base.html, the 3.0.0 sheet, and never the generator's
+own last output. Reading the output back in made the run non-idempotent:
+the splices below insert whole blocks, so a second run duplicated the
+wordmark, the Venn and the set cards. Nothing here writes to the base.
 """
 import re, sys
 
+VERSION = "3.1.1"
 GLOBALS = "../app/globals.css"
-OLD     = "theme-sheet.html"        # read for its embedded fonts and its blocks
+BASE    = "sheet-base.html"      # the 3.0.0 sheet. Read only, never written.
 CHROME  = "sheet-chrome.css"
 OUT     = "theme-sheet.html"
 
-old = open(OLD).read()
+old = open(BASE).read()
 fonts = "\n".join(re.findall(r'@font-face\{[^}]*\}', old))
 css   = open(GLOBALS).read()
 theme = re.search(r"@theme \{(.*?)\n\}", css, re.S).group(1)
@@ -24,7 +32,7 @@ chrome = open(CHROME).read()
 
 # ── body: keep every 3.0.0 block, add the 3.1.0 ones ──────────────
 body = old[old.index('<body>')+len('<body>'):old.rindex('</body>')]
-body = body.replace('002-site-theme · v3.0.0 · locked', '002-site-theme · v3.1.0 · locked')
+body = body.replace('002-site-theme · v3.0.0 · locked', '002-site-theme · v' + VERSION + ' · locked')
 
 # the type specimen table is wider than a phone and was pushing the page
 body = body.replace('<table class="scale">', '<div class="scroll-x"><table class="scale">')
@@ -112,6 +120,52 @@ VENN = '''
       </div>''' % (a, n, t, f) for n, a, t, f in CARDS),
 )
 
+
+CAPGROUPS = [
+  ("01", "teal",    "AI-Native Engineering", [
+    ("AI-Native Readiness Assessment", "Where your engineering organisation actually stands."),
+    ("Human in the Loop by Design",    "Where a person has to decide, review and sign."),
+    ("Knowledge That Outlives the Code", "Behaviour specifications and interface contracts."),
+    ("Engineering Enablement",         "Practitioner training and co-delivery."),
+  ]),
+  ("02", "yellow",  "Digital Sovereignty", [
+    ("Sovereignty Exposure Audit",       "Forkable under an open licence, and control at runtime."),
+    ("Sovereign Reference Architecture", "A working European stack. We run our own business on it."),
+    ("Migration and Exit Engineering",   "Exit cost established before you commit."),
+    ("Model Change Control",             "An unannounced model update is a re-certification event."),
+  ]),
+  ("03", "magenta", "Ethical Technology", [
+    ("Accessibility Engineering",  "The standard in your definition of done, not in a backlog."),
+    ("Provenance and Attribution", "The Distributed Equity Licence applied in practice."),
+    ("Workforce Impact",           "Which roles move, which disappear, and what is fair."),
+    ("EU AI Act Article 4",        "Universal scope, so the first obligation rather than the last."),
+  ]),
+]
+
+CAPBLOCK = '''
+  <!-- \u2550\u2550 CAPABILITY GROUPS \u2550\u2550 -->
+  <section class="block" data-accent="cyan">
+    <h2>Capability groups \u00b7 B41</h2>
+    <div class="capgrid">
+%s
+    </div>
+    <p class="note">
+      A list, not a card. The cell grid\u2019s hairline system with none of its behaviour: no hover, no
+      accent edge, no pointer, because there is nothing to click. The group head carries the same
+      colour expression as the set card above it and as the ring in the Venn, so one hue runs from the
+      diagram to the work. Item titles are mono uppercase in --sec. The numeral is --ink-3 rather than
+      the cell grid\u2019s --ink-4, because it is read content and has to clear 4.5:1. Three groups do
+      not halve, so the grid goes to one column at 1180 rather than leaving an orphan at two.
+    </p>
+  </section>
+''' % "\n".join(
+  '''      <div class="capgroup" data-accent="%s">
+        <div class="capgroup__hd"><span class="capgroup__n">%s</span><h3 class="capgroup__t">%s</h3></div>
+''' % (a, n, t) + "\n".join(
+    '        <div class="capitem"><span class="capitem__t">%s</span><p>%s</p></div>' % it
+    for it in items) + "\n      </div>"
+  for n, a, t, items in CAPGROUPS)
+
 FORM = '''  <!-- ══ FORM ══ -->
   <section class="block" data-accent="blue">
     <h2>Form controls · B39, B40</h2>
@@ -167,7 +221,7 @@ FORM = '''  <!-- ══ FORM ══ -->
 # and the form block replaced wholesale
 anchor = body.index('  <!-- ══ FORM ══ -->')
 end    = body.index('  <!-- ══ CONSTRAINTS ══ -->')
-body   = body[:anchor] + VENN + "\n" + FORM + "\n" + body[end:]
+body   = body[:anchor] + VENN + "\n" + CAPBLOCK + "\n" + FORM + "\n" + body[end:]
 
 m = re.search(r'(  <!-- ══ PROSE ══ -->|  <!-- ══ CONTROLS ══ -->)', body)
 insert_at = m.start() if m else body.index('  <!-- ══ FORM ══ -->')
@@ -179,7 +233,8 @@ body = body.replace('      <li>One primary button per view.</li>',
       <li>The wordmark is live text. Its ampersand reads the section accent.</li>
       <li>One h1 per page. Section heads are h2.</li>
       <li>Native form chrome is suppressed. color-scheme is dark.</li>
-      <li>/kevin speaks as a person. Every other page speaks as the firm.</li>''')
+      <li>/kevin speaks as a person. Every other page speaks as the firm.</li>
+      <li>A capability group is a list, not a card. No hover, nothing to click.</li>''')
 
 body = body.replace('same faces through @fontsource. No request leaves the origin to render type.',
 '''same faces through @fontsource. No request leaves the origin to render type.<br>
@@ -189,7 +244,7 @@ body = body.replace('same faces through @fontsource. No request leaves the origi
 open(OUT, "w").write(
   '<!DOCTYPE html>\n<html lang="en-GB">\n<head>\n<meta charset="utf-8">\n'
   '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-  '<title>Theme sheet · Kevin Ryan &amp; Associates · 002-site-theme v3.1.0</title>\n'
+  '<title>Theme sheet · Kevin Ryan &amp; Associates · 002-site-theme v' + VERSION + '</title>\n'
   '<style>' + fonts + '</style>\n'
   '<style>' + shim + '</style>\n'
   '<style>' + css + '</style>\n'

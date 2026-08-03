@@ -2,14 +2,15 @@
 id: 002-site-theme
 title: Kevin Ryan & Associates, site theme
 status: locked
-version: 3.1.0
+version: 3.1.1
 authority: this document
-supersedes: 3.0.0 · 2.0.0, the washed-lime-on-neutral palette
+supersedes: 3.1.0 · 3.0.0 · 2.0.0, the washed-lime-on-neutral palette
 artefacts:
   - app/globals.css                # canonical implementation
   - design-spec/theme-sheet.html   # rendered specimen, visual acceptance. Generated.
   - design-spec/mksheet.py         # regenerates the sheet from globals.css
   - design-spec/sheet-chrome.css   # the sheet's own furniture, the only CSS authored there
+  - design-spec/sheet-base.html    # the 3.0.0 sheet, the generator's fixed input
 palette-source: dotfiles/.chezmoidata.yaml → theme.tokyo_night_moon
 related:
   - 001-book-theme                 # The AI-Native Engineer. Sibling, not parent.
@@ -26,9 +27,28 @@ The theme is consumed by generators as well as by people. Every value in it must
 
 This document is the authority. `app/globals.css` is the canonical implementation and must not diverge from it. `design-spec/theme-sheet.html` is the visual acceptance artefact. If the three disagree, this document wins and the others are rebuilt.
 
-As of 3.1.0 the sheet is generated rather than authored. It inlines `app/globals.css` verbatim, with the `@theme` block lifted into `:root` so the custom properties resolve without Tailwind, and the fonts embedded so it renders identically from disk. The only CSS written by hand is the specimen furniture in `sheet-chrome.css`. Run `python3 design-spec/mksheet.py` after changing the stylesheet. Editing the sheet by hand is what let it drift out of date between 3.0.0 and 3.1.0.
+As of 3.1.0 the sheet is generated rather than authored. It inlines `app/globals.css` verbatim, with the `@theme` block lifted into `:root` so the custom properties resolve without Tailwind, and the fonts embedded so it renders identically from disk. The only CSS written by hand is the specimen furniture in `sheet-chrome.css`. Run `python3 mksheet.py` from `design-spec/` after changing the stylesheet. Editing the sheet by hand is what let it drift out of date between 3.0.0 and 3.1.0.
+
+The generator's input is `sheet-base.html`, which is the 3.0.0 sheet and is never written to. As shipped in 3.1.0 it read its own last output instead, which made a second run duplicate the wordmark, the Venn and the set cards. That is fixed in 3.1.1 and the run is now idempotent: the same stylesheet produces a byte-identical sheet however many times it is run.
 
 The palette is not owned here. It is lifted verbatim from `theme.tokyo_night_moon` in the `dotfiles` repository, which is the same source the terminal, editor, k9s, btop and lazygit configurations read. If that block changes, this theme changes with it. No colour is invented in this file.
+
+## Changed in 3.1.1
+
+A copy revision on the home page, and the one component it needed. Nothing in B1 to B40 was
+altered.
+
+- The capability groups are specified, B41. Twelve items under the three propositions, four to
+  a group, added between the propositions hero and the assessment.
+- The section accent map gains a row. Our Capabilities takes `cyan`, and the three groups inside
+  it override it with the fixed set colours, so the diagram, the cards and the work all carry the
+  same three hues down the page.
+- The three proposition cards were rewritten and the assessment section head was rewritten. Copy
+  only, no markup change beyond adding the eyebrow the new head needs.
+- One of the six upper-case headings in O3 is lowered, because the copy revision touched it.
+  Five remain.
+- `mksheet.py` read its own output as its input, so running it twice duplicated three blocks. It
+  now reads `sheet-base.html`, which it never writes, and the run is idempotent.
 
 ## Changed in 3.1.0
 
@@ -79,6 +99,7 @@ This is what makes a multi-accent palette disciplined rather than decorative. A 
 | Assessment: audience | `magenta` |
 | Assessment: evidence | `yellow` |
 | Propositions hero | `blue` |
+| Our Capabilities | `cyan` |
 
 The three propositions carry fixed set colours rather than section accents, because they are a legend and must stay stable wherever they appear: AI-Native Engineering `teal`, Digital Sovereignty `yellow`, Ethical Technology `magenta`. That is the most even three-way hue split the ramp allows, 134, 132 and 94 degrees apart. Cyan was tried for the second and sat 24 degrees from teal, which read as one colour.
 
@@ -133,6 +154,17 @@ Resolves O2 from 3.0.0.
   stage is offset 130px so the circle cluster, rather than the bounding box, lands on the page
   axis.
 - B38. Cards that restate a set quote that set's construction rather than adding a device. The card top hairline uses the same expression as the ring, `color-mix(in srgb, var(--sec) 58%, transparent)`, so it is the same colour and not an approximation.
+- B41. A capability group, `.capgroup`, is a list rather than a card. It uses the cell grid's
+  hairline system and none of its behaviour: no hover, no accent edge on hover, no pointer,
+  because there is nothing to click. The group head carries the same
+  `color-mix(in srgb, var(--sec) 58%, transparent)` edge the set cards use, per B38, so a reader
+  can follow one hue from the circle in the Venn to the card under it to the work itself. Item
+  titles are mono uppercase in `--sec`, per B12. The numeral is `--ink-3`, not the cell grid's
+  `--ink-4`, because it is the only thing carrying the group's position in the set and so has to
+  clear 4.5:1 per B4. Three groups do not halve, so the grid goes to one column at 1180 rather
+  than leaving an orphan at two; this is the one place the B31 rule is departed from, and it is
+  departed from so that the grid does not disagree with the three set cards directly above it,
+  which drop to two at the same width.
 - B39. Native form chrome is suppressed. `color-scheme: dark` on `html`, without which the select popup, the caret, autofill and the scrollbars all render in the light system theme on a dark page. `appearance: none` on `.field`, `select.field` and `.btn`, without which Safari rounds corners and adds an inner shadow, breaking B17 and B18. Autofill is overridden with an inset shadow, which is the only mechanism Chrome honours. The select popup list itself is drawn by the OS and cannot be styled beyond `color-scheme`.
 
 ### Motion and accessibility
@@ -221,7 +253,7 @@ The print accent set is not defined here. It belongs to the brand book, which de
 ## Open
 
 - O1. The site is internally consistent at six GitLab badges and fourteen credentials in total, and the hero states the same. The practice brief says nine GitLab. Reconcile the brief or the badges.
-- O3. Six headings are authored in upper case as literal strings, `AI-NATIVE READINESS ASSESSMENT` and the five `SectionHeader` titles on the assessment page. This conflicts with B12 in spirit, since the display face is being uppercased by hand rather than by CSS. Lowering them is a content change and has not been made.
+- O3. Five headings remain authored in upper case as literal strings, the `SectionHeader` titles on the assessment page. This conflicts with B12 in spirit, since the display face is being uppercased by hand rather than by CSS. Lowering them is a content change. `AI-NATIVE READINESS ASSESSMENT` was the sixth and was lowered in 3.1.1 because the copy revision rewrote that head anyway; the other five were not touched.
 - O7. This directory sits at the site root rather than the monorepo root. If the theme is to be shared across the other seven sites, move it up and import from there.
 
 ### Struck in 3.1.0
@@ -243,6 +275,12 @@ within 0.3px at eight viewport widths, the circle cluster lands on the page axis
 and neither the site nor the sheet has horizontal overflow from 1600 down to 375. Regenerating
 the sheet also surfaced and fixed a 3.0.0 defect: the type specimen table overflowed a phone
 viewport and now scrolls in its own container.
+
+The 3.1.1 addition was verified the same way. Measurements: no horizontal overflow in the new
+section from 1600 down to 320, and every text colour in it clears its floor on the sunken
+surface, the lowest being the group numeral at 5.16:1 and the lowest body colour at 8.10:1. The
+sheet regenerates to the same bytes on a second run, which is the check that the generator is no
+longer reading its own output.
 
 `pnpm build` has not been run against these changes, because `node_modules/.bin` resolves through the pnpm store and was not reachable from the environment they were authored in. The changed components were typechecked in an isolated project instead, which passed. Run the build before deploying.
 

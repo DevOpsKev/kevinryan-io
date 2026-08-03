@@ -856,6 +856,94 @@ a.reach__v:hover { color: var(--sec); }
   .phero__cells { margin-top: var(--sp-5); }
 }
 
+/* ═══ CAPABILITY GROUPS ══════════════════════════════════════
+   Twelve capabilities, four to a proposition. The grid is the cell
+   grid's hairline system, but a column here is a grouped list
+   rather than a card, so it takes none of the cell hover
+   behaviour: there is nothing to click.
+
+   Each group quotes its circle in the Venn above using the same
+   colour expression the proposition cards use, so a reader can
+   follow one colour from the diagram through the card to the work.
+   ═══════════════════════════════════════════════════════════ */
+.capgrid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border-top: var(--hair) solid var(--line);
+  border-left: var(--hair) solid var(--line);
+}
+.capgroup {
+  padding: var(--sp-4);
+  border-right: var(--hair) solid var(--line);
+  border-bottom: var(--hair) solid var(--line);
+}
+.capgroup__hd {
+  padding-bottom: var(--sp-2); margin-bottom: var(--sp-1);
+  border-bottom: var(--border-emphasis) solid color-mix(in srgb, var(--sec) 58%, transparent);
+}
+/* ink-3 rather than the cell grid's ink-4: this numeral is the only
+   thing carrying the group's position in the set, so it is read
+   content and has to clear 4.5:1. B4. */
+.capgroup__n {
+  display: block; margin-bottom: 6px;
+  font-family: var(--font-mono); font-size: var(--text-caption);
+  letter-spacing: var(--track-mono); color: var(--ink-3);
+}
+.capgroup__t {
+  margin: 0; font-family: var(--font-display); font-weight: 500;
+  font-size: var(--text-h3); line-height: var(--lh-heading);
+  letter-spacing: -0.01em; color: var(--ink);
+}
+
+/* An item is a mono label over its explanation, separated from the
+   next by a hairline, so a group reads as one list rather than as
+   four stacked cards. The first sits under the group's own 2px
+   edge and needs no rule of its own. */
+.capitem { padding: var(--sp-3) 0; border-top: var(--hair) solid var(--line); }
+.capgroup__hd + .capitem { border-top: 0; }
+.capitem:last-child { padding-bottom: 0; }
+.capitem__t {
+  display: block; margin-bottom: 8px;
+  font-family: var(--font-mono); font-size: var(--text-label);
+  letter-spacing: var(--track-mono-wide); text-transform: uppercase;
+  color: var(--sec);
+}
+.capitem p {
+  margin: 0; font-size: var(--text-ui); line-height: 1.6;
+  color: var(--ink-2); max-width: 52ch;
+}
+
+/* Two paragraphs of standfirst, so this cannot be the section
+   head's single lead. Same measure and colour as .sec-lead. */
+.capintro { max-width: 78ch; margin: 0 0 var(--sp-8); }
+.capintro p {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--text-lead); line-height: var(--lh-lead); color: var(--ink-2);
+}
+.capintro p:last-child { margin-bottom: 0; }
+
+/* The bridge into the assessment section below. Reuses the
+   callout's left edge rather than introducing a device. B19. */
+.capclose {
+  margin: var(--sp-6) 0 0; padding-left: var(--sp-3); max-width: 74ch;
+  border-left: var(--border-emphasis) solid var(--sec);
+  font-size: var(--text-lead); line-height: var(--lh-lead); color: var(--ink-2);
+}
+
+/* A head followed by its own standfirst block rather than by
+   content, so it carries the smaller gap. */
+.sec-head--tight { margin-bottom: var(--sp-4); }
+
+/* Three groups do not halve, so the grid goes straight to one
+   column rather than leaving an orphan at two. */
+@media (max-width: 1180px) {
+  .capgrid { grid-template-columns: 1fr; }
+  .capitem p { max-width: 68ch; }
+}
+@media (max-width: 900px) {
+  .capgroup { padding: var(--sp-3); }
+  .capintro { margin-bottom: var(--sp-6); }
+}
+
 /* Motion responds to input only. Nothing animates on entry. */
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
@@ -865,5 +953,6 @@ a.reach__v:hover { color: var(--sec); }
   .section { padding: 16pt 0; }
   .prose { max-width: none; }
   h1, h2, h3 { break-after: avoid; }
-  .cell { break-inside: avoid; }
+  .cell, .capitem { break-inside: avoid; }
+  .capgrid { grid-template-columns: 1fr; }
 }
