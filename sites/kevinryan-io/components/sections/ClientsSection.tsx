@@ -9,6 +9,7 @@ const CLIENTS = [
   { name: "Deloitte Digital", url: "https://www.deloittedigital.com" },
   { name: "Elsevier", url: "https://www.elsevier.com" },
   { name: "EY", url: "https://www.ey.com" },
+  { name: "GitLab", url: "https://gitlab.com" },
   { name: "Heathrow Airport", url: "https://www.heathrow.com" },
   { name: "HelloFresh", url: "https://www.hellofresh.com" },
   { name: "Informa", url: "https://www.informa.com" },
