@@ -2,29 +2,43 @@
 
 ## Project Summary
 
-This is a monorepo hosting multiple sites for Kevin Ryan (DevOps & AI Governance Consultant):
+This is a monorepo hosting multiple sites for Kevin Ryan (DevOps & AI Governance Consultant), plus shared platform infrastructure (Terraform, K3s manifests, Flux CD GitOps). All sites deploy to a K3s cluster on Azure behind Cloudflare.
 
-- **kevinryan.io** — static Next.js 16 portfolio site
-- **brand.kevinryan.io** — static HTML brand guidelines site (no build step, no Node.js tooling)
-- **aiimmigrants.com** — static HTML holding page (no build step, no Node.js tooling)
+### Sites
 
-**Stack:**
+- **kevinryan.io** — portfolio site. Next.js 16 (App Router, static export), React 19, Tailwind CSS 4. Marketing sections plus the AI Capabilities Assessment.
+- **brand.kevinryan.io** — static HTML brand guidelines site (no build step, no Node.js tooling).
+- **docs.kevinryan.io** — platform documentation site. Astro Starlight, serves the ADRs, specs, provenance records, and infrastructure guides.
+- **hq.kevinryan.io** — authenticated internal app. Next.js 16 (dynamic, **not** statically exportable) with Auth0, an Anthropic-backed chat API (`/api/chat`), health check (`/api/healthz`), and Auth0 middleware proxy.
+- **aiimmigrants.com** — static HTML holding page for the *AI Immigrants* book (no build step, no Node.js tooling).
+- **distributedequity.org** — static HTML site for the Distributed Equity License (no build step, no Node.js tooling).
+- **ai-native-engineer.io** — static HTML marketing page for *The AI-Native Engineer* (no build step, no Node.js tooling).
 
-- Next.js 16 (App Router)
-- React 19
-- TypeScript (strict mode)
-- Tailwind CSS 4
-- pnpm
-- Static export served by nginx on K3s (Flux CD GitOps)
+### Stack
+
+- Next.js 16 (App Router) — kevinryan.io (static export) and hq.kevinryan.io (dynamic server)
+- Astro Starlight — docs.kevinryan.io
+- React 19 (kevinryan.io, hq.kevinryan.io)
+- TypeScript (strict mode, kevinryan.io / docs-kevinryan.io / hq.kevinryan.io)
+- Tailwind CSS 4 — kevinryan.io
+- pnpm workspace
+- Static sites served by nginx on K3s via Flux CD GitOps
 
 ## Key Constraints
 
+Applicable to all **static** sites (kevinryan.io, brand-kevinryan-io, aiimmigrants-com, distributedequity-org, ai-native-engineer-io, docs-kevinryan-io):
+
 - No server-side runtime dependencies
+- All pages must be statically exportable (Next.js `output: 'export'` for kevinryan.io; Astro static build for docs-kevinryan.io)
+
+Applicable to all TypeScript/React sites (kevinryan.io, hq.kevinryan-io, docs-kevinryan-io):
+
 - No `any` type without justification
-- No custom CSS when Tailwind suffices
-- All pages must be statically exportable
+- No custom CSS when Tailwind suffices (kevinryan.io and hq.kevinryan.io)
 - Maximum component size: 200 lines
 - One component per file
+
+**Exception — hq.kevinryan.io:** This is the only site permitted to run server-side: API routes (`/api/chat`, `/api/healthz`), Auth0 middleware, and Anthropic SDK at runtime. It is deliberately excluded from the static-export and zero-runtime constraints.
 
 ## Build Commands
 
@@ -158,14 +172,21 @@ kevin-ryan-platform/
 │   │   ├── gotk-components.yaml
 │   │   ├── gotk-sync.yaml
 │   │   ├── kustomization.yaml
-│   │   ├── kevinryan-io-sync.yaml
-│   │   ├── brand-kevinryan-io-sync.yaml
-│   │   └── aiimmigrants-com-sync.yaml
-│   ├── kevinryan-io/       # Plain manifests only (no flux-system)
-│   ├── brand-kevinryan-io/ # Plain manifests only
-│   └── aiimmigrants-com/   # Plain manifests only
+│   │   └── <site>-sync.yaml # One Kustomization per site + infra stack
+│   ├── kevinryan-io/              # Plain manifests (static export)
+│   ├── hq-kevinryan-io/           # Plain manifests (dynamic Next.js)
+│   ├── docs-kevinryan-io/         # Plain manifests (Astro static)
+│   ├── brand-kevinryan-io/        # Plain manifests (static HTML)
+│   ├── aiimmigrants-com/          # Plain manifests (static HTML)
+│   ├── distributedequity-org/     # Plain manifests (static HTML)
+│   ├── ai-native-engineer-io/     # Plain manifests (static HTML)
+│   ├── directus/                  # Headless CMS (shared)
+│   ├── external-secrets/          # ESO controller ensemble
+│   ├── external-secrets-store/    # ExternalSecret + SecretStore CRs
+│   ├── observability/             # Grafana, Loki, VictoriaMetrics
+│   └── umami/                     # Self-hosted analytics
 ├── sites/                  # Individual site packages
-│   ├── kevinryan-io/       # kevinryan.io Next.js app
+│   ├── kevinryan-io/       # kevinryan.io Next.js app (static export)
 │   │   ├── app/            # Next.js App Router pages
 │   │   ├── components/     # React components (one per file)
 │   │   ├── hooks/          # Custom React hooks
@@ -173,13 +194,34 @@ kevin-ryan-platform/
 │   │   ├── public/         # Static assets
 │   │   ├── Dockerfile
 │   │   └── nginx.conf
-│   ├── brand-kevinryan-io/ # brand.kevinryan.io — static HTML, no build step
+│   ├── hq-kevinryan-io/    # hq.kevinryan.io — dynamic Next.js (Auth0 + Anthropic)
+│   │   ├── app/            # App Router, api/chat, api/healthz
+│   │   ├── lib/            # auth0, shared utilities
+│   │   ├── proxy.ts        # Auth0 middleware
+│   │   ├── Dockerfile
+│   │   └── next.config.ts
+│   ├── docs-kevinryan-io/  # docs.kevinryan.io — Astro Starlight
+│   │   ├── src/            # Astro content (ADRs, specs, provenance)
+│   │   ├── public/         # Static assets
+│   │   ├── Dockerfile
+│   │   └── nginx.conf
+│   ├── brand-kevinryan-io/ # brand.kevinryan.io — static HTML
 │   │   ├── public/         # Static assets (index.html, SVGs, PNGs, PDFs)
 │   │   ├── Dockerfile
 │   │   ├── nginx.conf
 │   │   └── docker-compose.yml
-│   └── aiimmigrants-com/   # aiimmigrants.com — static HTML, no build step
-│       ├── public/         # Static assets (index.html)
+│   ├── aiimmigrants-com/   # aiimmigrants.com — static HTML
+│   │   ├── public/         # Static assets (index.html)
+│   │   ├── Dockerfile
+│   │   ├── nginx.conf
+│   │   └── docker-compose.yml
+│   ├── distributedequity-org/ # distributedequity.org — static HTML
+│   │   ├── public/
+│   │   ├── Dockerfile
+│   │   ├── nginx.conf
+│   │   └── docker-compose.yml
+│   └── ai-native-engineer-io/ # ai-native-engineer.io — static HTML
+│       ├── public/
 │       ├── Dockerfile
 │       ├── nginx.conf
 │       └── docker-compose.yml
@@ -194,8 +236,8 @@ To onboard a new site into Flux CD:
 2. Create `k8s/flux-system/<site-name>-sync.yaml` — a `Kustomization` CR pointing `spec.path` at `./k8s/<site-name>`.
 3. Add `<site-name>-sync.yaml` to the `resources` list in `k8s/flux-system/kustomization.yaml`.
 
-> **Note:** `brand-kevinryan-io` and `aiimmigrants-com` are pure static HTML sites with no build step.
-> TypeScript, Next.js, Tailwind, ESLint, and related conventions do **not** apply to them.
+> **Note:** `brand-kevinryan-io`, `aiimmigrants-com`, `distributedequity-org`, and `ai-native-engineer-io` are pure static HTML sites with no build step.
+> TypeScript, Next.js, Astro, Tailwind, ESLint, and related conventions do **not** apply to them.
 > The root `build` and `lint` scripts use `--if-present` to skip these packages automatically.
 
 ## When Generating Code
