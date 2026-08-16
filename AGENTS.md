@@ -132,7 +132,13 @@ Entries in `.env.agents`:
 
 - **Azure service principal** (assumes the machine is not already authenticated via `az login`): `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID`, `ARM_SUBSCRIPTION_ID` (and matching `AZURE_*` aliases). Used by `terraform`, `tflint`, `az`, and `docker`→`az acr login`.
 - **Azure Container Registry**: `ACR_NAME`, `ACR_LOGIN_SERVER` — for `docker build`/`push` to ACR.
-- **Kubernetes**: `KUBECONFIG` pointing at a kubeconfig for the target cluster (the default context is `colima`; replace it before `kubectl`/`flux`/`k9s`/`kubectx` are useful).
+- **Kubernetes**: `KUBECONFIG` points at `~/.kube/kr-k3s.yaml` (k3s cluster on Azure, `rg-kevinryan-io`). The kubeconfig's server is `127.0.0.1:6443`, so start an SSH tunnel once per session before using `kubectl`/`flux`/`k9s`/`kubectx`:
+
+  ```bash
+  ssh -fN -L 6443:127.0.0.1:6443 kr-node1
+  ```
+
+  (`kr-node1` is the k3s server VM, defined in `~/.ssh/config`.)
 - **Tool credentials (non-`TF_VAR`)**: `CLOUDFLARE_API_TOKEN` (terraform Cloudflare provider + `wrangler`), `FLUX_GITHUB_TOKEN`.
 - **Terraform secrets** (`TF_VAR_<name>` for every `sensitive = true` variable in `infra/variables.tf`):
   - `TF_VAR_cloudflare_api_token`, `TF_VAR_github_token`
