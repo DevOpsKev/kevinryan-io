@@ -35,8 +35,15 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# Local environment / agent credentials — never commit real values.
+# All .env* files are ignored EXCEPT the committed .env.tpl template
+# (ADR-012 1Password-reference template, contains op:// URIs not values).
+# *.env catches non-.env-prefixed names (agents.env, secrets.env, etc.) so a
+# stray rename can never leak into a PUBLIC repo.
 .env*
+!.env.tpl
+!.env.agents.example
+*.env
 
 # vercel
 .vercel
