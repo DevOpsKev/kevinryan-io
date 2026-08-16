@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-This is a monorepo hosting multiple sites for Kevin Ryan (DevOps & AI Governance Consultant), plus shared platform infrastructure (Terraform, K3s manifests, Flux CD GitOps). All sites deploy to a K3s cluster on Azure behind Cloudflare.
+This is a monorepo hosting multiple sites for Kevin Ryan (AI-Native Engineering Consultant), plus shared platform infrastructure (Terraform, K3s manifests, Flux CD GitOps). All sites deploy to a K3s cluster on Azure behind Cloudflare.
 
 ### Sites
 
