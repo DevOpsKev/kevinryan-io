@@ -89,11 +89,26 @@ The following CLI tools are installed in the local environment and should be use
 
 `glab`, `az`, `cloudflared`, `wrangler`, `cloudflare-speed-cli`, `op`, `cmake`, and the interactive TUIs (`starship`, `htop`, `btop`, `bandwhich`, `dust`, `atuin`, `herdr`, `fzf`, `zoxide`, `eza`, `bat`, `glow`, `tree`, `lazygit`, `lazydocker`, `nvim`, `ghostty`, `MesloLGS NF`) are not relevant to agent workflow on this repo.
 
-## Local credentials (`.env.agents`)
+## Local credentials (`.env.agents` — single source of truth for secrets)
 
-The repo is **public**, so secrets must never be committed. The local file `.env.agents` (gitignored — confirmed via `git check-ignore .env.agents`) holds real credential values for agent/CLI use. `.gitignore` blocks every real-values env filename (`.env*` and `*.env`) and only allows the committed `.env.tpl` template from ADR-012 (which holds 1Password `op://` references, not values).
+The repo is **public**, so secrets must never be committed. `.env.agents` (gitignored — confirmed via `git check-ignore .env.agents`) is the **single source of truth for every secret** in the project. `.gitignore` blocks every real-values env filename (`.env*` and `*.env`) and only allows the committed `.env.agents.example` template (placeholders) plus the ADR-012 `.env.tpl` (1Password `op://` references, not values).
 
-To populate it, copy the skeleton from the repo root or your password manager and fill in the placeholders. Then source it before running tools:
+The split between the two Terraform inputs is rule-based, driven by Terraform's own `sensitive = true` flag in `infra/variables.tf`:
+
+- **`infra/terraform.tfvars`** (gitignored) holds **non-secret config only**: `location`, `vm_size`, `admin_username`, `acr_name`, `keyvault_name`, `github_repo_owner`, `github_repo_name`, `admin_ssh_public_key` (a public key), and the four `cloudflare_zone_id*` (public identifiers). The committed template is `infra/terraform.tfvars.example`.
+- **`.env.agents`** holds **every secret**. Terraform consumes the secret variables via the `TF_VAR_<name>` convention (Terraform reads `TF_VAR_<name>` from the environment natively — no `tfvars` entry needed for them). CLI tools consume their own conventional env vars (`ARM_*`, `AZURE_*`, `CLOUDFLARE_API_TOKEN`, `KUBECONFIG`, …).
+
+This eliminates the prior duplication where secrets were declared in both `terraform.tfvars` and `.env.agents`. Each secret now lives exactly once.
+
+To populate `.env.agents`:
+
+```bash
+# One-time: copy the committed template and fill in real values
+cp .env.agents.example .env.agents
+# (edit .env.agents with real values; the file is gitignored)
+```
+
+Then load it before running any tool or Terraform:
 
 ```bash
 # Load credentials into the current shell (set -a exports every var)
@@ -106,18 +121,23 @@ az login --service-principal \
   --username "$ARM_CLIENT_ID" \
   --password  "$ARM_CLIENT_SECRET" \
   --tenant    "$ARM_TENANT_ID"
+
+# Terraform reads TF_VAR_* secrets directly from the environment
+# (terraform.tfvars supplies the non-secret config)
+cd infra
+terraform plan
 ```
 
-Required entries in `.env.agents`:
+Entries in `.env.agents`:
 
 - **Azure service principal** (assumes the machine is not already authenticated via `az login`): `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID`, `ARM_SUBSCRIPTION_ID` (and matching `AZURE_*` aliases). Used by `terraform`, `tflint`, `az`, and `docker`→`az acr login`.
 - **Azure Container Registry**: `ACR_NAME`, `ACR_LOGIN_SERVER` — for `docker build`/`push` to ACR.
-- **Cloudflare**: `CLOUDFLARE_API_TOKEN` (+ `TF_VAR_cloudflare_api_token`) and the four `TF_VAR_cloudflare_zone_id*` entries — for `terraform` (Cloudflare provider) and `wrangler`.
-- **GitHub PAT** for Flux git source / terraform github module: `FLUX_GITHUB_TOKEN` (+ `TF_VAR_github_token`).
 - **Kubernetes**: `KUBECONFIG` pointing at a kubeconfig for the target cluster (the default context is `colima`; replace it before `kubectl`/`flux`/`k9s`/`kubectx` are useful).
-- **Admin SSH public key**: `TF_VAR_admin_ssh_public_key`.
-
-Optional entries (only needed when `terraform apply` touches those resources) are commented out in `.env.agents`: Auth0 (`TF_VAR_auth0_*`), Anthropic (`TF_VAR_anthropic_api_key` / `ANTHROPIC_API_KEY`), Linear (`TF_VAR_linear_api_key`), and GitHub MCP (`TF_VAR_github_mcp_token`).
+- **Tool credentials (non-`TF_VAR`)**: `CLOUDFLARE_API_TOKEN` (terraform Cloudflare provider + `wrangler`), `FLUX_GITHUB_TOKEN`.
+- **Terraform secrets** (`TF_VAR_<name>` for every `sensitive = true` variable in `infra/variables.tf`):
+  - `TF_VAR_cloudflare_api_token`, `TF_VAR_github_token`
+  - Auth0 (HQ app): `TF_VAR_auth0_secret`, `TF_VAR_auth0_client_id`, `TF_VAR_auth0_client_secret`, `TF_VAR_auth0_domain`, `TF_VAR_auth0_issuer_base_url`
+  - HQ integrations: `TF_VAR_anthropic_api_key`, `TF_VAR_github_mcp_token`, `TF_VAR_linear_api_key`
 
 > **Deviation from ADR-012:** ADR-012 mandates 1Password CLI (`op run --env-file=.env.tpl -- <cmd>`) with secret *references* and no values on disk. A local `.env.agents` with real values is a convenience deviation for agent workflow. It is acceptable here **only** because `.gitignore` guarantees the file is never committed to this public repo. If you'd prefer the ADR-012 flow, use the committed `.env.tpl` (op:// URIs) and run `op run --env-file=.env.tpl -- <cmd>` instead of sourcing `.env.agents`.
 

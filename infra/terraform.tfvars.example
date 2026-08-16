@@ -1,22 +1,25 @@
+# Template for infra/terraform.tfvars (gitignored). Non-secret config only.
+# Terraform "sensitive = true" variables are NOT declared here — they are
+# injected as TF_VAR_<name> environment variables from .env.agents (the single
+# source of truth for secrets). See AGENTS.md "Local credentials".
+
 location                             = "northeurope"
 vm_size                              = "Standard_B2ms"
 admin_username                       = "azureuser"
 admin_ssh_public_key                 = "ssh-rsa AAAA... your-key-here"
-# admin_ip is now a tracked local in infra/admin-allowlist.tf (local.admin_ip);
-# do not set it here. Edit the CIDR there and push to main to deploy via CI/CD.
-cloudflare_api_token                 = "your-cloudflare-api-token"
+# admin_ip is tracked in infra/admin-allowlist.tf (local.admin_ip) — do not set
+# it here. Edit the CIDR there and push to main to deploy via CI/CD.
 cloudflare_zone_id                   = "your-cloudflare-zone-id"
-domain                               = "kevinryan.io"
-acr_name                             = "kevinryanacr"
-github_repo                          = "DevOpsKev/kevinryan-io"
-github_token                         = "ghp_your-github-pat"
 cloudflare_zone_id_aiimmigrants      = "297b223a1bd3a470375576e56df1ccfb"
 cloudflare_zone_id_distributedequity = "fc0d63db19fb8cee0f964911038c0286"
-cloudflare_zone_id_ainativeengineer = "your-cloudflare-zone-id"
-auth0_secret                         = "your-openssl-rand-hex-32-output"
-auth0_issuer_base_url                = "https://devopskev.eu.auth0.com"
-auth0_client_id                      = "your-auth0-client-id"
-auth0_client_secret                  = "your-auth0-client-secret"
-auth0_domain                         = "your-tenant.eu.auth0.com"
-anthropic_api_key                    = "your-anthropic-api-key"
-github_mcp_token                     = "github_pat_your-fine-grained-token-here"
+cloudflare_zone_id_ainativeengineer  = "your-cloudflare-zone-id"
+acr_name                             = "kevinryanacr"
+keyvault_name                        = "kv-kevinryan-io"
+github_repo_owner                    = "kevin-ryan-associates"
+github_repo_name                     = "kra-platform"
+
+# Secrets (sensitive = true) — declared in .env.agents as TF_VAR_<name>:
+#   TF_VAR_cloudflare_api_token     TF_VAR_github_token
+#   TF_VAR_auth0_secret             TF_VAR_auth0_client_id     TF_VAR_auth0_client_secret
+#   TF_VAR_auth0_domain             TF_VAR_auth0_issuer_base_url
+#   TF_VAR_anthropic_api_key        TF_VAR_github_mcp_token    TF_VAR_linear_api_key
