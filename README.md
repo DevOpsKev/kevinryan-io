@@ -19,7 +19,7 @@ Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant).
 - [Astro Starlight](https://starlight.astro.build/) — Documentation site (docs.kevinryan.io)
 - [React 19](https://react.dev) — UI library
 - [TypeScript](https://www.typescriptlang.org) — Type safety (strict mode)
-- [Tailwind CSS 4](https://tailwindcss.com) + [DaisyUI](https://daisyui.com) — Styling
+- [Tailwind CSS 4](https://tailwindcss.com) — Styling (@theme token layer)
 - [pnpm](https://pnpm.io) — Workspace package manager
 - [Terraform](https://www.terraform.io) — Infrastructure as code (Azure + Cloudflare)
 - [K3s](https://k3s.io) — Lightweight Kubernetes

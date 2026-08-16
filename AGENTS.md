@@ -13,7 +13,7 @@ This is a monorepo hosting multiple sites for Kevin Ryan (DevOps & AI Governance
 - Next.js 16 (App Router)
 - React 19
 - TypeScript (strict mode)
-- Tailwind CSS 4 + DaisyUI
+- Tailwind CSS 4
 - pnpm
 - Static export to GitHub Pages
 
