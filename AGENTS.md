@@ -15,7 +15,7 @@ This is a monorepo hosting multiple sites for Kevin Ryan (DevOps & AI Governance
 - TypeScript (strict mode)
 - Tailwind CSS 4
 - pnpm
-- Static export to GitHub Pages
+- Static export served by nginx on K3s (Flux CD GitOps)
 
 ## Key Constraints
 
