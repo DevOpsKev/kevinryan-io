@@ -139,7 +139,7 @@ Entries in `.env.agents`:
   ```
 
   (`kr-node1` is the k3s server VM, defined in `~/.ssh/config`.)
-- **Tool credentials (non-`TF_VAR`)**: `CLOUDFLARE_API_TOKEN` (terraform Cloudflare provider + `wrangler`), `FLUX_GITHUB_TOKEN`.
+- **Tool credentials (non-`TF_VAR`)**: `CLOUDFLARE_API_TOKEN` (terraform Cloudflare provider + `wrangler`), `CLOUDFLARE_ACCOUNT_ID` (for `wrangler whoami` / account-scoped API), `FLUX_GITHUB_TOKEN`.
 - **Terraform secrets** (`TF_VAR_<name>` for every `sensitive = true` variable in `infra/variables.tf`):
   - `TF_VAR_cloudflare_api_token`, `TF_VAR_github_token`
   - Auth0 (HQ app): `TF_VAR_auth0_secret`, `TF_VAR_auth0_client_id`, `TF_VAR_auth0_client_secret`, `TF_VAR_auth0_domain`, `TF_VAR_auth0_issuer_base_url`
