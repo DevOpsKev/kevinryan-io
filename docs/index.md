@@ -1,6 +1,6 @@
 ---
 title: kevinryan.io - Platform Docs
-description: Documentation for the Kevin Ryan platform — a monorepo hosting portfolio, brand, and documentation sites for Kevin Ryan, DevOps & AI Governance Consultant.
+description: Documentation for the Kevin Ryan platform — a monorepo hosting portfolio, brand, and documentation sites for Kevin Ryan, AI-Native Engineering Consultant.
 ---
 
 Welcome to the platform documentation. This repository is a **monorepo** hosting all sites, infrastructure-as-code, Kubernetes manifests, and documentation for [kevinryan.io](https://kevinryan.io).

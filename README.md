@@ -1,6 +1,6 @@
 # kevin-ryan-platform
 
-Multi-site platform monorepo for Kevin Ryan (DevOps & AI Governance Consultant). Hosts six sites across four domains, deployed to a K3s Kubernetes cluster on Azure via Flux CD GitOps. Full documentation at [docs.kevinryan.io](https://docs.kevinryan.io).
+Multi-site platform monorepo for Kevin Ryan (AI-Native Engineering Consultant). Hosts six sites across four domains, deployed to a K3s Kubernetes cluster on Azure via Flux CD GitOps. Full documentation at [docs.kevinryan.io](https://docs.kevinryan.io).
 
 ## Sites
 
