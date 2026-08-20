@@ -1,0 +1,43 @@
+---
+import { render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BookLayout from '../layouts/BookLayout.astro';
+import ContentsRail from '../components/ContentsRail.astro';
+import Gauge from '../components/Gauge.astro';
+import OnPage from '../components/OnPage.astro';
+import ChapterReader from '../components/ChapterReader.astro';
+import { chapters, neighbours } from '../lib/chapters';
+
+export const getStaticPaths = (async () => {
+  const list = await chapters();
+  return list.map((c) => ({ params: { slug: c.id }, props: { chapter: c, list } }));
+}) satisfies GetStaticPaths;
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+const { chapter, list } = Astro.props;
+const { prev, next } = neighbours(list, chapter.id);
+const isLive = chapter.data.status === 'live';
+const rendered = isLive ? await render(chapter) : null;
+const Content = rendered?.Content;
+const headings = (rendered?.headings as Heading[] | undefined) ?? [];
+const locus = `§ ${chapter.data.n} ${chapter.data.title}`;
+---
+
+<BookLayout
+  locus={locus}
+  title={`${chapter.data.title} · The AI-Native Engineer`}
+  prevSlug={prev?.id}
+  nextSlug={next?.id}
+>
+  <div class="reader-shell" id="reader">
+    <ContentsRail chapters={list} currentSlug={chapter.id} headings={headings} />
+    <Gauge />
+    <ChapterReader chapter={chapter} chapters={list} Content={Content} />
+    <OnPage headings={headings} />
+  </div>
+</BookLayout>

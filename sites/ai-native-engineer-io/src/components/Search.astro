@@ -1,0 +1,13 @@
+---
+// Client-side search overlay. The reader script fetches /search-index.json
+// (built from the live chapters) on first open and filters in-memory,
+// matching the prototype's instant feel without a runtime dependency.
+---
+
+<div class="overlay" id="search" role="dialog" aria-label="Search the book">
+  <div class="panel">
+    <input class="field" id="q" type="text" placeholder="Search the book…" autocomplete="off" spellcheck="false" />
+    <div id="results" class="results-scroll"></div>
+  </div>
+</div>
+<div class="scrim" id="scrim" aria-hidden="true"></div>

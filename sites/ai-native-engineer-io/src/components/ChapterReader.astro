@@ -1,0 +1,70 @@
+---
+import type { render } from 'astro:content';
+import type { Chapter } from '../lib/chapters';
+import { neighbours } from '../lib/chapters';
+import Pill from './Pill.astro';
+
+// The component returned by astro:content's render(); its public type is
+// not on a stable import path, so derive it from render's return shape.
+type Rendered = NonNullable<Awaited<ReturnType<typeof render>>>;
+
+type ContentComponent = Rendered['Content'];
+
+interface Props {
+  chapter: Chapter;
+  chapters: Chapter[];
+  Content?: ContentComponent;
+}
+const { chapter, chapters, Content } = Astro.props;
+const { prev, next } = neighbours(chapters, chapter.id);
+
+// Live chapters render their markdown body; draft/plan chapters render
+// the dashed empty state (B19) populated from the frontmatter outline.
+const isLive = chapter.data.status === 'live' && Content;
+
+const stubCopy = {
+  draft: { h: 'Drafting now', p: 'This chapter is written but still being revised. It goes live once it stops changing every day. The outline below is stable.' },
+  plan: { h: 'Outlined, not yet written', p: 'The argument is settled and the chapter is scheduled. Published chapters land roughly every two weeks.' },
+} as const;
+const stub = chapter.data.status === 'draft' || chapter.data.status === 'plan' ? stubCopy[chapter.data.status] : null;
+---
+
+<article id="article">
+  <header class="ch-head">
+    <span class="t-numeral">{chapter.data.n}</span>
+    <h1>{chapter.data.title}</h1>
+    <div class="ch-meta t-meta">
+      <Pill status={chapter.data.status} />
+      <span>{chapter.data.mins} min read</span>
+      <span>·</span>
+      <span>rev {isLive ? 'a91f3c2' : 'unbuilt'}</span>
+    </div>
+  </header>
+
+  {isLive && (
+    <div class="prose">
+      <Content />
+    </div>
+  )}
+
+  {stub && (
+    <div class="empty-state">
+      <h4>{stub.h}</h4>
+      <p>{stub.p}</p>
+      <ul class="prose flush">
+        {chapter.data.outline.map((point) => <li>{point}</li>)}
+      </ul>
+    </div>
+  )}
+
+  <nav class="pager" aria-label="Chapter navigation">
+    <a href={prev ? `/${prev.id}` : undefined} class={`prev${prev ? '' : ' is-disabled'}`}>
+      <span class="dir">← Previous</span>
+      <span class="nm">{prev ? `${prev.data.n} ${prev.data.title}` : '—'}</span>
+    </a>
+    <a href={next ? `/${next.id}` : undefined} class={`next${next ? '' : ' is-disabled'}`}>
+      <span class="dir">Next →</span>
+      <span class="nm">{next ? `${next.data.n} ${next.data.title}` : '—'}</span>
+    </a>
+  </nav>
+</article>

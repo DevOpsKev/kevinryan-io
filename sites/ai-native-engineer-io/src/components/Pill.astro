@@ -1,0 +1,11 @@
+---
+import type { ChapterStatus } from '../lib/chapters';
+import { STATUS_LABEL } from '../lib/chapters';
+
+interface Props {
+  status: ChapterStatus;
+}
+const { status } = Astro.props;
+---
+
+<span class={`pill pill--${status}`}>{STATUS_LABEL[status]}</span>

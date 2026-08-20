@@ -1,0 +1,66 @@
+---
+import type { Chapter } from '../lib/chapters';
+import { COMMIT_DATE, COMMIT_SHA } from '../lib/provenance';
+import Pill from './Pill.astro';
+
+interface Props {
+  chapters: Chapter[];
+}
+const { chapters } = Astro.props;
+
+const live = chapters.filter((c) => c.data.status === 'live');
+const drafting = chapters.filter((c) => c.data.status === 'draft');
+const outlined = chapters.filter((c) => c.data.status === 'plan');
+
+const publishedMinutes = live.reduce((sum, c) => sum + c.data.mins, 0);
+const hours = Math.floor(publishedMinutes / 60);
+const mins = publishedMinutes % 60;
+const readingTime = hours > 0 ? `${hours} h ${mins} m` : `${mins} m`;
+
+---
+
+<main class="cover" id="cover">
+  <div class="cover-main">
+    <p class="eyebrow t-meta">Written in the open · <b>{live.length > 0 ? `Chapter ${live.length} published this week` : 'Drafting'}</b></p>
+
+    <h1 class="t-display">The AI-Native <em>Engineer</em></h1>
+
+    <p class="deck">Software engineering after the typing bottleneck. How specifications, agents and provenance replace the craft assumptions that thirty years of practice were built on.</p>
+
+    <div class="actions">
+      <a class="btn btn--primary" href={`/${chapters[0]?.id ?? '#'}`}>Start reading <small>· ch. 00</small></a>
+      <a class="btn" href="#" download>↓ PDF <small>· 4.2 MB</small></a>
+      <a class="btn" href="#" download>↓ EPUB <small>· 1.1 MB</small></a>
+    </div>
+
+    <p class="t-meta flush">Free to read online and free to download. No account, no email wall.</p>
+
+    <hr class="rule" />
+
+    <div class="meta-panel">
+      <div class="row"><span class="k">Edition</span><span class="v">0.0.0 · living draft</span></div>
+      <div class="row"><span class="k">Last commit</span><span class="v">{COMMIT_DATE} · <span class="dot"></span><span class="tabular">{COMMIT_SHA}</span></span></div>
+      <div class="row"><span class="k">Chapters</span><span class="v">{live.length} published · {drafting.length} drafting · {outlined.length} outlined</span></div>
+      <div class="row"><span class="k">Reading time</span><span class="v">{readingTime} published</span></div>
+      <div class="row"><span class="k">Licence</span><span class="v">CC BY 4.0 + DEL v1.0</span></div>
+      <div class="row"><span class="k">Status</span><span class="v"><span class="dot"></span>Building in public</span></div>
+    </div>
+  </div>
+
+  <aside class="cover-side">
+    <h3>Contents</h3>
+    <p>Chapters go live as they are finished. Outlined chapters show their argument so you can see where the book is heading.</p>
+    <nav class="cover-index" aria-label="Book contents">
+      {chapters.map((c) => (
+        <a class="index-row" href={`/${c.id}`}>
+          <span class="n">{c.data.n}</span>
+          <span class="t">{c.data.title}</span>
+          <Pill status={c.data.status} />
+        </a>
+      ))}
+    </nav>
+
+    <h3 class="spaced">The author</h3>
+    <p>Kevin Ryan has spent thirty years in enterprise engineering, from CERN to the BBC, the Financial Times and Nestlé. He now runs an AI-native consultancy in Europe.</p>
+  </aside>
+</main>

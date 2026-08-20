@@ -1,0 +1,143 @@
+/* ═══════════════════════════════════════════════════════════════
+   THE AI-NATIVE ENGINEER — PAGE CHROME
+   Page assembly that sits on top of the canonical design-assets/theme.css.
+   This file references semantic tokens only; it never forks a value.
+   theme.css remains the source of truth for the component system.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── TOP RAIL ─────────────────────────────────────────────── */
+/* The burger is the mobile drawer toggle only; on desktop the contents
+   rail is always visible, so the button is hidden to avoid clutter. */
+.menu-btn{ display:none; border:0; padding:0 var(--sp-1) }
+.topbar{
+  position:sticky; top:0; z-index:100;
+  display:grid; grid-template-columns:var(--rail) 1fr auto; align-items:center;
+  height:var(--topbar); background:var(--bg); border-bottom:var(--hair) solid var(--line);
+}
+.topbar .brand{
+  display:flex; align-items:center; gap:calc(var(--sp-1) * 1.5);
+  padding-left:calc(var(--sp-3)); height:100%; border-right:var(--hair) solid var(--line);
+}
+.topbar .brand b{
+  font-family:var(--font-display); font-weight:var(--w-bold);
+  font-size:var(--size-caption); letter-spacing:-0.01em;
+}
+.topbar .brand-link{
+  display:flex; align-items:center; gap:calc(var(--sp-1)*1.5);
+  text-decoration:none; color:inherit;
+}
+.topbar .locus{
+  padding:0 var(--sp-3); color:var(--ink-3); display:flex; gap:var(--sp-2);
+  align-items:center; min-width:0;
+}
+.topbar .locus span{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.topbar .tools{ display:flex; height:100% }
+.glyph{
+  width:20px; height:20px; flex:0 0 20px; border:1.5px solid var(--accent); position:relative;
+}
+.glyph::after{ content:""; position:absolute; left:3px; top:3px; right:3px; bottom:9px; background:var(--accent) }
+
+/* ── COVER ────────────────────────────────────────────────── */
+.cover{ min-height:calc(100vh - var(--topbar)); display:grid; grid-template-columns:repeat(var(--grid-cols),1fr) }
+.cover-main{ grid-column:1 / 9; border-right:var(--hair) solid var(--line); padding:var(--sp-8) var(--sp-6) var(--sp-6) }
+.cover-side{ grid-column:9 / 13; padding:var(--sp-8) var(--sp-4) }
+
+.eyebrow{ color:var(--ink-3); margin:0 0 var(--sp-4) }
+.eyebrow b{ color:var(--accent); font-weight:var(--w-medium) }
+.deck{
+  font-size:var(--size-lead); line-height:var(--lh-lead); color:var(--ink-2);
+  max-width:46ch; margin:0 0 var(--sp-5);
+}
+.actions{ display:flex; flex-wrap:wrap; gap:calc(var(--sp-1) * 1.5); margin-bottom:var(--sp-5) }
+.actions + .t-meta{ margin:0 }
+
+.cv-side h3{ font-family:var(--font-mono); font-size:var(--size-label); letter-spacing:var(--track-mono-xwide); text-transform:uppercase; color:var(--ink-3); margin:0 0 var(--sp-2); font-weight:var(--w-medium) }
+.cv-side h3 + p,
+.cv-side p{ font-size:0.9375rem; color:var(--ink-2); margin:0 0 var(--sp-3) }
+.cv-side h3.spaced{ margin-top:var(--sp-6) }
+
+/* ── READER SHELL ─────────────────────────────────────────── */
+/* .reader-shell (grid cols from theme.css) wraps the contents rail,
+   the gauge column, the article and the on-this-page rail. */
+.gauge-col{
+  position:sticky; top:var(--topbar); height:calc(100vh - var(--topbar));
+  border-right:var(--hair) solid var(--line); position:sticky;
+}
+#article{ padding:var(--sp-7) var(--sp-7) var(--sp-14); min-width:0 }
+
+/* chapter head: numeral, title, meta — sits above .prose */
+.ch-head{ margin-bottom:var(--sp-6) }
+.ch-meta{ display:flex; gap:var(--sp-2); align-items:center; padding-top:var(--sp-2); border-top:var(--hair) solid var(--line) }
+
+/* on-this-page help block */
+.kbd{ margin-top:var(--sp-5); padding-top:var(--sp-3); border-top:var(--hair) solid var(--line) }
+.kbd div{ display:flex; justify-content:space-between; align-items:center; padding:4px 0; color:var(--ink-3); font-size:var(--size-code) }
+kbd{
+  font-family:var(--font-mono); font-size:var(--size-label);
+  border:var(--hair) solid var(--line); background:var(--bg-sink);
+  padding:1px 6px; color:var(--ink-2);
+}
+
+/* ── MOBILE DRAWER ───────────────────────────────────────── */
+.scrim{
+  position:fixed; inset:0; z-index:150; background:var(--scrim); opacity:0;
+  transition:opacity var(--dur) var(--ease); pointer-events:none;
+}
+.scrim.is-open{ opacity:1; pointer-events:auto }
+.contents-rail{ transition:transform var(--dur) var(--ease) }
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.site-foot{
+  border-top:var(--hair) solid var(--line); padding:var(--sp-3) var(--sp-3);
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono); color:var(--ink-3);
+}
+
+/* ── CONTENTS RAIL ───────────────────────────────────────── */
+/* The canonical theme styles .toc-item but not the sub-section links
+   under the active chapter, and .toc-item is an <a> here (the prototype
+   used <button>), so underlines must be suppressed explicitly. */
+.toc-item{ text-decoration:none }
+.contents-rail h4{ padding:0 var(--sp-3) }
+.toc-sub{ padding:0 var(--sp-3) var(--sp-1) var(--sp-3) }
+.toc-sub a{
+  display:block; width:100%; text-align:left;
+  padding:5px 0 5px 42px; font-size:var(--size-code);
+  color:var(--ink-3); text-decoration:none; line-height:1.4;
+  transition:color var(--dur-fast) var(--ease);
+}
+.toc-sub a:hover{ color:var(--accent) }
+
+/* ── UTILITIES ─────────────────────────────────────────── */
+.flush{ margin:0 }
+.tabular{ font-variant-numeric:tabular-nums }
+.results-scroll{ overflow-y:auto }
+.onpage-rail{ border-left:var(--hair) solid var(--line); padding:var(--sp-7) var(--sp-3) }
+.pager a.is-disabled{ pointer-events:none; opacity:.3 }
+.onpage-empty{ color:var(--ink-3); font-size:var(--size-ui); margin:0 }
+.search-empty{ padding:13px 20px; color:var(--ink-3); font-size:var(--size-ui) }
+
+/* The canonical .overlay is display:flex, which would override the
+   HTML [hidden] attribute. Drive visibility with a class instead. */
+.overlay{ display:none }
+.overlay.is-open{ display:flex }
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width:var(--bp-tablet)){
+  .cover{ grid-template-columns:1fr }
+  .cover-main{ grid-column:1; border-right:0; border-bottom:var(--hair) solid var(--line) }
+  .cover-side{ grid-column:1 }
+}
+@media (max-width:var(--bp-mobile)){
+  .menu-btn{ display:inline-flex }
+  .topbar{ grid-template-columns:48px 1fr auto }
+  .topbar .brand{ padding-left:var(--sp-2); border-right:0 }
+  .topbar .brand b{ display:none }
+  .contents-rail{
+    position:fixed; top:var(--topbar); left:0; bottom:0; width:var(--rail);
+    background:var(--bg); border-right:var(--hair) solid var(--line);
+    transform:translateX(-100%); z-index:160; overflow-y:auto;
+  }
+  .contents-rail.is-open{ transform:translateX(0) }
+  #article{ padding:var(--sp-5) var(--sp-3) var(--sp-10) }
+}

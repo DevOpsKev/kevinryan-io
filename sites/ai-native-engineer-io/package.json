@@ -3,8 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
     "docker:build": "docker build --no-cache -t ai-native-engineer-io:local -f Dockerfile ../..",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down"
+  },
+  "dependencies": {
+    "astro": "^5.18.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "typescript": "^5.9.0"
   }
 }

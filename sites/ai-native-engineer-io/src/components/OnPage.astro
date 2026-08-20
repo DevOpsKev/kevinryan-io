@@ -1,0 +1,33 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+const { headings } = Astro.props;
+const sections = headings.filter((h) => h.depth === 2);
+---
+
+<aside class="sticky-rail onpage-rail" id="aside">
+  <h4>On this page</h4>
+  <div id="onpage">
+    {sections.length === 0 ? (
+      <p class="onpage-empty">Nothing to jump to yet.</p>
+    ) : (
+      sections.map((s) => (
+        <a class="onpage-item" href={`#${s.slug}`} data-for={s.slug}>{s.text}</a>
+      ))
+    )}
+  </div>
+  <div class="kbd">
+    <div><span>Next chapter</span><kbd>→</kbd></div>
+    <div><span>Previous</span><kbd>←</kbd></div>
+    <div><span>Search</span><kbd>/</kbd></div>
+    <div><span>Contents</span><kbd>g</kbd></div>
+    <div><span>Theme</span><kbd>t</kbd></div>
+  </div>
+</aside>

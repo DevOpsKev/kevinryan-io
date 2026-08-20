@@ -3,6 +3,9 @@ services:
     build:
       context: ../..
       dockerfile: sites/ai-native-engineer-io/Dockerfile
+      args:
+        COMMIT_SHA: local
+        COMMIT_DATE: local
     container_name: ai-native-engineer-io
     ports:
       - "8087:8080"

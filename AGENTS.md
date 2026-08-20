@@ -12,21 +12,22 @@ This is a monorepo hosting multiple sites for Kevin Ryan (AI-Native Engineering 
 - **hq.kevinryan.io** — authenticated internal app. Next.js 16 (dynamic, **not** statically exportable) with Auth0, an Anthropic-backed chat API (`/api/chat`), health check (`/api/healthz`), and Auth0 middleware proxy.
 - **aiimmigrants.com** — static HTML holding page for the *AI Immigrants* book (no build step, no Node.js tooling).
 - **distributedequity.org** — static HTML site for the Distributed Equity License (no build step, no Node.js tooling).
-- **ai-native-engineer.io** — static HTML marketing page for *The AI-Native Engineer* (no build step, no Node.js tooling).
+- **ai-native-engineer.io** — the *AI-Native Engineer* book. Astro 5 (plain, no Starlight) generating per-chapter pages from markdown content collections, served as a static export. Custom layout consumes the locked `design-assets/theme.css` (Nord palette, Swiss grid) so the book design is matched exactly.
 
 ### Stack
 
 - Next.js 16 (App Router) — kevinryan.io (static export) and hq.kevinryan.io (dynamic server)
 - Astro Starlight — docs.kevinryan.io
+- Astro (plain) — ai-native-engineer.io
 - React 19 (kevinryan.io, hq.kevinryan.io)
-- TypeScript (strict mode, kevinryan.io / docs-kevinryan.io / hq.kevinryan.io)
+- TypeScript (strict mode, kevinryan.io / docs-kevinryan.io / hq.kevinryan.io / ai-native-engineer.io)
 - Tailwind CSS 4 — kevinryan.io
 - pnpm workspace
 - Static sites served by nginx on K3s via Flux CD GitOps
 
 ## Key Constraints
 
-Applicable to all **static** sites (kevinryan.io, brand-kevinryan-io, aiimmigrants-com, distributedequity-org, ai-native-engineer-io, docs-kevinryan-io):
+Applicable to all **static** sites (kevinryan.io, brand-kevinryan-io, aiimmigrants-com, distributedequity-org, docs-kevinryan-io):
 
 - No server-side runtime dependencies
 - All pages must be statically exportable (Next.js `output: 'export'` for kevinryan.io; Astro static build for docs-kevinryan.io)
@@ -179,7 +180,7 @@ kevin-ryan-platform/
 │   ├── brand-kevinryan-io/        # Plain manifests (static HTML)
 │   ├── aiimmigrants-com/          # Plain manifests (static HTML)
 │   ├── distributedequity-org/     # Plain manifests (static HTML)
-│   ├── ai-native-engineer-io/     # Plain manifests (static HTML)
+│   ├── ai-native-engineer-io/     # Plain manifests (Astro static export)
 │   ├── directus/                  # Headless CMS (shared)
 │   ├── external-secrets/          # ESO controller ensemble
 │   ├── external-secrets-store/    # ExternalSecret + SecretStore CRs
@@ -220,8 +221,15 @@ kevin-ryan-platform/
 │   │   ├── Dockerfile
 │   │   ├── nginx.conf
 │   │   └── docker-compose.yml
-│   └── ai-native-engineer-io/ # ai-native-engineer.io — static HTML
-│       ├── public/
+│   └── ai-native-engineer-io/ # ai-native-engineer.io — Astro (markdown book)
+│       ├── src/            # Astro app, content collections, layouts
+│       │   ├── content/chapters/  # one markdown file per chapter
+│       │   ├── components/  # Cover, ChapterReader, Gauge, TopRail, ...
+│       │   ├── layouts/      # BookLayout (imports canonical theme.css)
+│       │   ├── pages/        # index.astro (cover), [slug].astro, search-index.json.ts
+│       │   └── styles/       # layout.css (page chrome on top of theme tokens)
+│       ├── design-assets/   # locked theme source of truth (tokens.jsonc, theme.css, THEME-SPEC.md)
+│       ├── public/          # favicon.svg
 │       ├── Dockerfile
 │       ├── nginx.conf
 │       └── docker-compose.yml
@@ -236,7 +244,7 @@ To onboard a new site into Flux CD:
 2. Create `k8s/flux-system/<site-name>-sync.yaml` — a `Kustomization` CR pointing `spec.path` at `./k8s/<site-name>`.
 3. Add `<site-name>-sync.yaml` to the `resources` list in `k8s/flux-system/kustomization.yaml`.
 
-> **Note:** `brand-kevinryan-io`, `aiimmigrants-com`, `distributedequity-org`, and `ai-native-engineer-io` are pure static HTML sites with no build step.
+> **Note:** `brand-kevinryan-io`, `aiimmigrants-com`, and `distributedequity-org` are pure static HTML sites with no build step.
 > TypeScript, Next.js, Astro, Tailwind, ESLint, and related conventions do **not** apply to them.
 > The root `build` and `lint` scripts use `--if-present` to skip these packages automatically.
 

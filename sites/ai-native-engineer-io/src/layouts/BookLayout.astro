@@ -1,0 +1,58 @@
+---
+import '../../design-assets/theme.css';
+import '../styles/layout.css';
+import TopRail from '../components/TopRail.astro';
+import Search from '../components/Search.astro';
+import { COMMIT_SHA } from '../lib/provenance';
+
+interface Props {
+  locus: string;
+  onCover?: boolean;
+  prevSlug?: string;
+  nextSlug?: string;
+  title?: string;
+}
+const { locus, onCover = false, prevSlug, nextSlug, title } = Astro.props;
+const pageTitle = title ?? 'The AI-Native Engineer';
+---
+
+<!doctype html>
+<html lang="en-GB" data-theme="dark" data-measure="normal">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="color-scheme" content="dark light" />
+
+    {/* Set theme + measure before first paint to avoid a flash. N2: the
+        switch is explicit and user-controlled, persisted in localStorage. */}
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('ane-theme');
+          if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+          var m = localStorage.getItem('ane-measure');
+          if (m === 'narrow' || m === 'normal' || m === 'wide') document.documentElement.dataset.measure = m;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress-hair" id="progress"></div>
+
+    <TopRail locus={locus} onCover={onCover} prevSlug={prevSlug} nextSlug={nextSlug} />
+
+    <slot />
+
+    <Search />
+
+    <footer class="site-foot">
+      {COMMIT_SHA} © 2026 ai-native-engineer.io — Kevin Ryan &amp; Associates · This site is licensed under CC BY 4.0 + DEL v1.0
+    </footer>
+
+    <script>
+      import '../scripts/reader.ts';
+    </script>
+  </body>
+</html>

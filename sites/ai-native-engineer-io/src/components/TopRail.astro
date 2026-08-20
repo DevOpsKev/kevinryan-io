@@ -1,0 +1,45 @@
+---
+// The persistent top rail: brand, locus, and the tool cluster.
+// `locus` describes the current view ("Front cover" / "§ 02 …").
+interface Props {
+  locus: string;
+  onCover?: boolean;
+  prevSlug?: string;
+  nextSlug?: string;
+}
+const { locus, onCover = false, prevSlug, nextSlug } = Astro.props;
+---
+
+<header class="topbar" id="top">
+  <div class="brand">
+    <button class="tool menu-btn" id="menu-btn" aria-label="Open contents" aria-controls="toc">☰</button>
+    {onCover ? (
+      <span class="brand-link" aria-label="The AI-Native Engineer">
+        <span class="glyph" aria-hidden="true"></span>
+        <b>The AI-Native Engineer</b>
+      </span>
+    ) : (
+      <a href="/" class="brand-link" aria-label="The AI-Native Engineer, front cover">
+        <span class="glyph" aria-hidden="true"></span>
+        <b>The AI-Native Engineer</b>
+      </a>
+    )}
+  </div>
+  <div class="locus t-meta">
+    <span id="locus-text">{locus}</span>
+  </div>
+  <div class="tools">
+    <button class="tool" id="btn-search" aria-label="Search the book">⌕ <span>Search</span></button>
+    <button class="tool" id="btn-measure" aria-label="Change text size" aria-pressed="false">Aa</button>
+    <button class="tool" id="btn-theme" aria-label="Switch theme" aria-pressed="false">◐</button>
+  </div>
+</header>
+
+{/*
+  Keyboard navigation between chapter pages. The reader script reads
+  these to turn ArrowRight/ArrowLeft into location changes, preserving
+  the prototype's keyboard contract (B36).
+*/}
+{prevSlug && <link rel="prev" href={`/${prevSlug}`} />}
+{nextSlug && <link rel="next" href={`/${nextSlug}`} />}
+<div id="page-nav" data-prev={prevSlug} data-next={nextSlug} aria-hidden="true" hidden></div>

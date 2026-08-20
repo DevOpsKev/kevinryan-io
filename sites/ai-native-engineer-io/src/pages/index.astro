@@ -1,0 +1,11 @@
+---
+import BookLayout from '../layouts/BookLayout.astro';
+import Cover from '../components/Cover.astro';
+import { chapters } from '../lib/chapters';
+
+const list = await chapters();
+---
+
+<BookLayout locus="Front cover" onCover>
+  <Cover chapters={list} />
+</BookLayout>

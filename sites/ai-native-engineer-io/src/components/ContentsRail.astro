@@ -1,0 +1,46 @@
+---
+import type { Chapter } from '../lib/chapters';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  chapters: Chapter[];
+  currentSlug: string;
+  headings: Heading[];
+}
+const { chapters, currentSlug, headings } = Astro.props;
+const sections = headings.filter((h) => h.depth === 2);
+---
+
+<nav class="contents-rail sticky-rail" id="toc" aria-label="Book contents">
+  <h4>Contents</h4>
+  <div id="toc-list">
+    {chapters.map((c) => {
+      const isCurrent = c.id === currentSlug;
+      return (
+        <>
+          <a
+            class="toc-item"
+            href={`/${c.id}`}
+            data-status={c.data.status}
+            aria-current={isCurrent ? 'true' : 'false'}
+          >
+            <span class="n">{c.data.n}</span>
+            <span class="t">{c.data.title}</span>
+          </a>
+          {isCurrent && sections.length > 0 && (
+            <div class="toc-sub">
+              {sections.map((s) => (
+                <a href={`#${s.slug}`}>{s.text}</a>
+              ))}
+            </div>
+          )}
+        </>
+      );
+    })}
+  </div>
+</nav>
