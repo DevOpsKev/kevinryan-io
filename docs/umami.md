@@ -28,6 +28,7 @@ Every site in the platform includes the Umami tracking script. Each site has a u
 | Docs | docs.kevinryan.io | `7982fbc0-012b-4c04-8ec3-a9de42462351` |
 | AI Immigrants | aiimmigrants.com | `c9c48aa2-f7c6-495f-bbed-5837392834ba` |
 | Distributed Equity | distributedequity.org | `0b17c94d-4711-4454-9c5b-ea437abaaf87` |
+| The AI-Native Engineer | ai-native-engineer.io | `38d895e8-552c-4dc8-a3f0-a493d49d75e2` |
 
 ### Script Snippet
 
@@ -72,6 +73,13 @@ head: [
 ```html
 <script defer src="https://analytics.kevinryan.io/script.js"
         data-website-id="c41e7b1b-81ea-422d-ba9b-9ac2e73f2192"></script>
+```
+
+**Astro plain (ai-native-engineer.io)** — a `<script>` tag in the layout `<head>`, since this site uses a custom layout rather than Starlight's `head` config:
+
+```html
+<script defer src="https://analytics.kevinryan.io/script.js"
+        data-website-id="38d895e8-552c-4dc8-a3f0-a493d49d75e2"></script>
 ```
 
 ## Architecture

@@ -25,6 +25,11 @@ const pageTitle = title ?? 'The AI-Native Engineer';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="color-scheme" content="dark light" />
 
+    {/* Umami analytics — identical script to the other sites; only the
+        website id changes (docs/umami.md). Self-hosted at
+        analytics.kevinryan.io, no third-party request. */}
+    <script defer src="https://analytics.kevinryan.io/script.js" data-website-id="38d895e8-552c-4dc8-a3f0-a493d49d75e2"></script>
+
     {/* Set theme + measure before first paint to avoid a flash. N2: the
         switch is explicit and user-controlled, persisted in localStorage. */}
     <script is:inline>
