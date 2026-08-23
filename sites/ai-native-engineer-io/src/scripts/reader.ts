@@ -147,16 +147,25 @@ function initKeyboard() {
   const next = nav?.dataset.next;
 
   document.addEventListener('keydown', (e) => {
+    // Escape closes the search overlay and is swallowed so the browser
+    // never sees it — otherwise the OS minimises the frontmost window on
+    // a stray Escape. When the overlay is closed, Escape passes through
+    // untouched so the browser/OS shortcut still works.
+    if (e.key === 'Escape') {
+      if (isSearchOpen()) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSearch();
+      }
+      return;
+    }
     const target = e.target as HTMLElement | null;
     if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
-      if (e.key === 'Escape') closeSearch();
       return;
     }
     if (e.key === '/') {
       e.preventDefault();
       openSearch();
-    } else if (e.key === 'Escape') {
-      closeSearch();
     } else if (e.key === 't') {
       $<HTMLButtonElement>('#btn-theme')?.click();
     } else if (e.key === 'g') {
@@ -227,6 +236,10 @@ function openSearch() {
   }
   renderResults('');
   loadIndex().then(() => renderResults(input?.value ?? ''));
+}
+
+function isSearchOpen(): boolean {
+  return $('#search')?.classList.contains('is-open') ?? false;
 }
 
 function closeSearch() {
