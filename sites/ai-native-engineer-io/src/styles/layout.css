@@ -51,23 +51,43 @@
 .actions{ display:flex; flex-wrap:wrap; gap:calc(var(--sp-1) * 1.5); margin-bottom:var(--sp-5) }
 .actions + .t-meta{ margin:0 }
 
-.cv-side h3{ font-family:var(--font-mono); font-size:var(--size-label); letter-spacing:var(--track-mono-xwide); text-transform:uppercase; color:var(--ink-3); margin:0 0 var(--sp-2); font-weight:var(--w-medium) }
-.cv-side h3 + p,
-.cv-side p{ font-size:0.9375rem; color:var(--ink-2); margin:0 0 var(--sp-3) }
-.cv-side h3.spaced{ margin-top:var(--sp-6) }
+/* The side column is .cover-side in the markup. These rules were written
+   against .cv-side and were therefore inert, which is why the rail headings
+   were rendering as full display headings instead of mono rail labels. */
+.cover-side h3{
+  font-family:var(--font-mono); font-size:var(--size-label);
+  letter-spacing:var(--track-mono-xwide); text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 var(--sp-2); font-weight:var(--w-medium);
+  padding-bottom:var(--sp-1); border-bottom:var(--hair) solid var(--line);
+}
+.cover-side p{ font-size:0.9375rem; line-height:1.6; color:var(--ink-2); margin:0 0 var(--sp-4) }
+.cover-side h3.spaced{ margin-top:var(--sp-6) }
+.cover-index{ margin-bottom:var(--sp-2) }
 
 /* ── READER SHELL ─────────────────────────────────────────── */
 /* .reader-shell (grid cols from theme.css) wraps the contents rail,
-   the gauge column, the article and the on-this-page rail. */
-.gauge-col{
-  position:sticky; top:var(--topbar); height:calc(100vh - var(--topbar));
-  border-right:var(--hair) solid var(--line); position:sticky;
+   the gauge column, the article and the on-this-page rail.
+   The column rules are drawn on the shell itself rather than as borders
+   on the rails. The rails are sticky and one viewport tall, so their
+   borders stopped dead at 100vh on any chapter longer than the fold. */
+.reader-shell{
+  background-image:
+    linear-gradient(var(--line),var(--line)),
+    linear-gradient(var(--line),var(--line));
+  background-size:var(--hair) 100%, var(--hair) 100%;
+  background-position:calc(var(--rail) + var(--gauge)) 0, calc(100% - var(--aside)) 0;
+  background-repeat:no-repeat;
 }
+.gauge-col{ position:sticky; top:var(--topbar); height:calc(100vh - var(--topbar)) }
 #article{ padding:var(--sp-7) var(--sp-7) var(--sp-14); min-width:0 }
 
 /* chapter head: numeral, title, meta — sits above .prose */
-.ch-head{ margin-bottom:var(--sp-6) }
-.ch-meta{ display:flex; gap:var(--sp-2); align-items:center; padding-top:var(--sp-2); border-top:var(--hair) solid var(--line) }
+.ch-head{ margin-bottom:var(--sp-7); max-width:var(--measure) }
+.ch-meta{
+  display:flex; flex-wrap:wrap; gap:var(--sp-2); align-items:center;
+  padding-top:var(--sp-2); border-top:var(--hair) solid var(--line);
+}
+.ch-head h1{ margin-bottom:var(--sp-3) }
 
 /* on-this-page help block */
 .kbd{ margin-top:var(--sp-5); padding-top:var(--sp-3); border-top:var(--hair) solid var(--line) }
@@ -95,26 +115,32 @@ kbd{
 
 /* ── CONTENTS RAIL ───────────────────────────────────────── */
 /* The canonical theme styles .toc-item but not the sub-section links
-   under the active chapter, and .toc-item is an <a> here (the prototype
-   used <button>), so underlines must be suppressed explicitly. */
-.toc-item{ text-decoration:none }
-.contents-rail h4{ padding:0 var(--sp-3) }
-.toc-sub{ padding:0 var(--sp-3) var(--sp-1) var(--sp-3) }
+   under the active chapter. Underlines are handled at the base now. */
+.contents-rail{ padding-bottom:var(--sp-4) }
+.contents-rail h4{ padding:var(--sp-3) var(--sp-3) 0 }
+.toc-sub{
+  padding:2px var(--sp-3) var(--sp-2) var(--sp-3);
+  border-left:var(--border-emphasis) solid var(--accent);
+  background:var(--bg-sink);
+}
 .toc-sub a{
   display:block; width:100%; text-align:left;
   padding:5px 0 5px 42px; font-size:var(--size-code);
-  color:var(--ink-3); text-decoration:none; line-height:1.4;
+  color:var(--ink-3); line-height:1.4;
   transition:color var(--dur-fast) var(--ease);
 }
 .toc-sub a:hover{ color:var(--accent) }
+
+/* ── ON THIS PAGE ────────────────────────────────────────── */
+/* The rule down the left of this rail is drawn by .reader-shell so it
+   runs the full height of the page, not just the first viewport. */
+.onpage-rail{ padding:var(--sp-7) var(--sp-3) }
+.onpage-empty{ color:var(--ink-3); font-size:var(--size-ui); margin:0 }
 
 /* ── UTILITIES ─────────────────────────────────────────── */
 .flush{ margin:0 }
 .tabular{ font-variant-numeric:tabular-nums }
 .results-scroll{ overflow-y:auto }
-.onpage-rail{ border-left:var(--hair) solid var(--line); padding:var(--sp-7) var(--sp-3) }
-.pager a.is-disabled{ pointer-events:none; opacity:.3 }
-.onpage-empty{ color:var(--ink-3); font-size:var(--size-ui); margin:0 }
 .search-empty{ padding:13px 20px; color:var(--ink-3); font-size:var(--size-ui) }
 
 /* The canonical .overlay is display:flex, which would override the
@@ -123,21 +149,41 @@ kbd{
 .overlay.is-open{ display:flex }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width:var(--bp-tablet)){
+/* A media query cannot read a custom property, so --bp-tablet and
+   --bp-mobile have to be written out. Both blocks below were previously
+   var() based, which made them invalid and dropped them entirely: that is
+   why the mobile drawer never appeared and the rail stacked full width.
+   The values are 1180px and 900px, matching the tokens in theme.css. */
+@media (max-width:1180px){
   .cover{ grid-template-columns:1fr }
   .cover-main{ grid-column:1; border-right:0; border-bottom:var(--hair) solid var(--line) }
   .cover-side{ grid-column:1 }
+  /* theme.css drops the aside column at this width. Without this the
+     element wraps onto an implicit row underneath the article. */
+  .onpage-rail{ display:none }
+  .reader-shell{ background-position:calc(var(--rail) + var(--gauge)) 0, -100px 0 }
 }
-@media (max-width:var(--bp-mobile)){
+@media (max-width:900px){
   .menu-btn{ display:inline-flex }
-  .topbar{ grid-template-columns:48px 1fr auto }
-  .topbar .brand{ padding-left:var(--sp-2); border-right:0 }
+  .topbar{ grid-template-columns:auto minmax(0,1fr) auto }
+  .topbar .brand{ padding-left:var(--sp-1); border-right:0 }
   .topbar .brand b{ display:none }
+  .topbar .locus{ padding:0 var(--sp-2) }
+  /* The tool cluster keeps its glyphs and drops its labels. */
+  .topbar .tools .tool span{ display:none }
+  .tool{ padding:0 12px }
   .contents-rail{
     position:fixed; top:var(--topbar); left:0; bottom:0; width:var(--rail);
     background:var(--bg); border-right:var(--hair) solid var(--line);
     transform:translateX(-100%); z-index:160; overflow-y:auto;
   }
   .contents-rail.is-open{ transform:translateX(0) }
+  /* One column at this width: the spine gauge has nowhere to sit and the
+     shell's column rules have nothing to divide. */
+  .gauge-col{ display:none }
+  .reader-shell{ background-image:none }
   #article{ padding:var(--sp-5) var(--sp-3) var(--sp-10) }
+  .cover-main{ padding:var(--sp-6) var(--sp-3) var(--sp-5) }
+  .cover-side{ padding:var(--sp-5) var(--sp-3) var(--sp-8) }
+  .site-foot{ line-height:1.7 }
 }

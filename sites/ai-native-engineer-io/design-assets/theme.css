@@ -127,11 +127,13 @@ html[data-theme="light"]{
 /* Syntax colours. Same names both themes. */
 html[data-theme="dark"]{
   --code-fg:var(--nord4); --code-key:var(--nord9); --code-str:var(--nord14);
-  --code-com:var(--nord3); --code-num:var(--nord13); --code-fn:var(--nord15);
+  /* Comments take the muted ink, not nord3. On --bg-sink nord3 falls to
+     1.8:1 and disappears. The muted ink reads at 4.3:1 and stays quiet. */
+  --code-com:var(--ink-3); --code-num:var(--nord13); --code-fn:var(--nord15);
 }
 html[data-theme="light"]{
   --code-fg:var(--nord1); --code-key:var(--nord10); --code-str:#5F7F4B;
-  --code-com:#8A93A5; --code-num:#9A7B2E; --code-fn:#8D6A87;
+  --code-com:var(--ink-3); --code-num:#9A7B2E; --code-fn:#8D6A87;
 }
 
 /* ───────────────────────────────────────────────────────────────
@@ -151,11 +153,18 @@ body{
   -moz-osx-font-smoothing:grayscale;
   transition:background var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease);
 }
-a{ color:inherit }
+/* Links. Navigation, controls and index rows are surfaces, not citations,
+   so they carry no underline; the browser default is switched off here and
+   opted back into inside .prose, where an underline means "reference".
+   The markdown build turned several former <button> controls into <a>,
+   which is why this has to be stated at the base rather than per component. */
+a{ color:inherit; text-decoration:none }
 button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
 img{ max-width:100%; display:block }
 ::selection{ background:var(--accent); color:var(--accent-ink) }
 :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:var(--radius) }
+html{ scroll-behavior:smooth }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto } }
 
 /* ───────────────────────────────────────────────────────────────
    5. TYPOGRAPHY
@@ -212,6 +221,15 @@ h4,.t-h4{
   font-size:var(--size-caption); letter-spacing:var(--track-mono);
   color:var(--accent); margin-bottom:6px; text-transform:none;
 }
+/* Markdown emits the marker as a sibling of its heading rather than a child,
+   so the heading's own top margin opened a 48px gap between the two and the
+   pair stopped reading as one unit. Move the section space above the marker
+   and close the gap under it. */
+.prose .sec-mark{ margin-top:var(--sp-7) }
+.prose > .sec-mark:first-child{ margin-top:0 }
+/* The anchor target is the h2: close the gap under the marker and set
+   its scroll margin so the heading clears the topbar when jumped to. */
+.prose .sec-mark + h2{ margin-top:0; scroll-margin-top:calc(var(--topbar) + var(--sp-4)) }
 
 .t-lead{ font-size:var(--size-lead); line-height:var(--lh-lead); color:var(--ink-2) }
 p{ margin:0 0 var(--sp-3) }
@@ -227,22 +245,49 @@ em{ font-style:italic; color:var(--ink-2) }
 /* reading column */
 .prose{ max-width:var(--measure) }
 
+/* Links in running prose. The one place an underline is earned. It sits
+   clear of the descenders and thickens on hover rather than changing
+   colour, so the reading colour stays stable. .btn and .fn-ref are
+   excluded: buttons are controls, footnote refs are markers, neither is
+   a citation. */
+.prose a:not(.btn):not(.fn-ref){
+  color:var(--accent);
+  text-decoration:underline;
+  text-decoration-thickness:var(--hair);
+  text-underline-offset:0.18em;
+  text-decoration-color:color-mix(in srgb, var(--accent) 38%, transparent);
+  transition:text-decoration-color var(--dur-fast) var(--ease);
+}
+.prose a:not(.btn):not(.fn-ref):hover{
+  text-decoration-color:var(--accent);
+  text-decoration-thickness:var(--border-emphasis);
+}
+
 /* ───────────────────────────────────────────────────────────────
    6. LISTS
    Marker is a 9px accent rule, not a bullet.
    ─────────────────────────────────────────────────────────────── */
-.prose ul{ margin:0 0 var(--sp-3); padding-left:0; list-style:none }
-.prose ul li{ position:relative; padding-left:var(--sp-3); margin-bottom:var(--sp-1) }
-.prose ul li::before{
+/* Both forms are matched: .prose as the wrapper, and the list itself
+   carrying .prose (the empty-state outline does this). */
+.prose ul,ul.prose{ margin:0 0 var(--sp-3); padding-left:0; list-style:none }
+.prose ul li,ul.prose li{ position:relative; padding-left:var(--sp-3); margin-bottom:var(--sp-1) }
+.prose ul li::before,ul.prose li::before{
   content:""; position:absolute; left:0; top:.72em;
   width:9px; height:var(--hair); background:var(--accent);
 }
-.prose ol{ margin:0 0 var(--sp-3); padding-left:0; list-style:none; counter-reset:o }
-.prose ol li{ position:relative; padding-left:var(--sp-4); margin-bottom:var(--sp-1); counter-increment:o }
-.prose ol li::before{
+.prose ol,ol.prose{ margin:0 0 var(--sp-3); padding-left:0; list-style:none; counter-reset:o }
+.prose ol li,ol.prose li{ position:relative; padding-left:var(--sp-4); margin-bottom:var(--sp-1); counter-increment:o }
+.prose ol li::before,ol.prose li::before{
   content:counter(o,decimal-leading-zero); position:absolute; left:0; top:.1em;
   font-family:var(--font-mono); font-size:var(--size-caption); color:var(--ink-3);
 }
+/* Nested lists indent by one unit and lose the trailing block margin. */
+.prose li > ul,.prose li > ol,ul.prose li > ul,ul.prose li > ol{
+  margin:var(--sp-1) 0 0; padding-left:var(--sp-2);
+}
+/* A paragraph inside a list item is markdown's "loose list" output. */
+.prose li > p{ margin:0 0 var(--sp-1) }
+.prose li > p:last-child{ margin-bottom:0 }
 
 /* ───────────────────────────────────────────────────────────────
    7. RULES AND DIVIDERS
@@ -261,6 +306,11 @@ blockquote,.quote{
   font-size:var(--size-h3); line-height:1.35;
   letter-spacing:var(--track-tight); color:var(--ink);
 }
+/* Markdown wraps quote text in a paragraph, which brought the body font
+   and a trailing margin with it. Hold the display treatment and close
+   the gap at the foot of the quote. */
+blockquote > p{ font:inherit; letter-spacing:inherit; color:inherit; margin:0 0 var(--sp-2) }
+blockquote > p:last-child{ margin-bottom:0 }
 .quote cite{
   display:block; margin-top:var(--sp-2); font-family:var(--font-mono);
   font-size:var(--size-label); font-style:normal; letter-spacing:var(--track-mono);
@@ -473,9 +523,15 @@ figure.fig figcaption b{ color:var(--accent); font-weight:var(--w-medium); text-
 .onpage-item.is-active{ color:var(--accent); border-left-color:var(--accent) }
 
 .pager{ display:grid; grid-template-columns:1fr 1fr; gap:var(--hair); margin-top:var(--sp-10); border-top:var(--hair) solid var(--line) }
-.pager button{ padding:var(--sp-3); text-align:left; transition:background var(--dur-fast) var(--ease) }
-.pager button:hover:not(:disabled){ background:var(--bg-sink) }
-.pager button:disabled{ opacity:.3; cursor:default }
+/* The pager is authored as anchors now, not buttons. Both are matched so
+   the component survives either markup. */
+.pager a,.pager button{
+  display:block; padding:var(--sp-3); text-align:left; color:inherit;
+  transition:background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.pager a:hover,.pager button:hover:not(:disabled){ background:var(--bg-sink) }
+.pager a:hover .nm{ color:var(--accent) }
+.pager button:disabled,.pager .is-disabled{ opacity:.3; cursor:default; pointer-events:none }
 .pager .dir{
   display:block; margin-bottom:6px; font-family:var(--font-mono); font-size:var(--size-label);
   letter-spacing:var(--track-mono-xwide); text-transform:uppercase; color:var(--ink-3);
@@ -507,6 +563,9 @@ figure.fig figcaption b{ color:var(--accent); font-weight:var(--w-medium); text-
 .empty-state{ border:var(--hair) dashed var(--line); padding:var(--sp-6); max-width:var(--measure) }
 .empty-state h4{ font-family:var(--font-display); font-size:1.125rem; text-transform:none; letter-spacing:var(--track-tight); color:var(--ink); margin:0 0 var(--sp-1) }
 .empty-state p{ color:var(--ink-3); font-size:var(--size-ui); margin:0 0 var(--sp-3) }
+/* The outline sits at interface size, not reading size: it is a promise
+   about the chapter, not the chapter. */
+.empty-state ul.prose li{ font-size:var(--size-ui); line-height:1.55; color:var(--ink-2) }
 
 /* ───────────────────────────────────────────────────────────────
    20. OVERLAY AND SEARCH
@@ -530,7 +589,37 @@ figure.fig figcaption b{ color:var(--accent); font-weight:var(--w-medium); text-
 mark{ background:color-mix(in srgb, var(--warn) 30%, transparent); color:var(--ink) }
 
 /* ───────────────────────────────────────────────────────────────
-   21. LAYOUT
+   21. MARKDOWN FALLBACKS
+   Elements the markdown build emits with no authored class. Each one
+   inherits the treatment its authored equivalent already has, so a
+   chapter written in plain markdown lands in the same design.
+   ─────────────────────────────────────────────────────────────── */
+.prose hr{ height:var(--hair); background:var(--line); border:0; margin:var(--sp-6) 0 }
+
+/* A fenced block that was not authored as <figure class="code">. */
+.prose > pre{
+  margin:var(--sp-4) 0; padding:var(--sp-2); overflow-x:auto;
+  background:var(--bg-sink); border:var(--hair) solid var(--line);
+  border-radius:var(--radius);
+  font-family:var(--font-mono); font-size:var(--size-code);
+  line-height:var(--lh-code); color:var(--code-fg);
+}
+.prose > pre code{ background:none; border:0; padding:0; font-size:inherit; color:inherit }
+
+/* An image dropped straight into the flow keeps the figure treatment. */
+.prose img{ border:var(--hair) solid var(--line); margin:var(--sp-4) 0 }
+.prose p > img{ margin:0 }
+
+/* A markdown table is held inside the measure. Long unbroken cell values
+   wrap rather than pushing the reading column wide. */
+.prose table{ max-width:100%; table-layout:auto }
+.prose th,.prose td{ overflow-wrap:break-word }
+
+/* Heading rhythm when h3 follows h2 with no paragraph between. */
+.prose h2 + h3{ margin-top:var(--sp-3) }
+
+/* ───────────────────────────────────────────────────────────────
+   22. LAYOUT
    ─────────────────────────────────────────────────────────────── */
 .grid-12{ display:grid; grid-template-columns:repeat(var(--grid-cols),1fr) }
 .reader-shell{ display:grid; grid-template-columns:var(--rail) var(--gauge) minmax(0,1fr) var(--aside); align-items:start }
