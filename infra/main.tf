@@ -217,17 +217,6 @@ resource "azurerm_key_vault_secret" "anthropic_api_key" {
   key_vault_id = module.keyvault.key_vault_id
 }
 
-resource "azurerm_key_vault_secret" "hq_github_mcp_token" {
-  name         = "hq-github-mcp-token"
-  value        = var.github_mcp_token
-  key_vault_id = module.keyvault.key_vault_id
-}
-
-resource "azurerm_key_vault_secret" "hq_linear_api_key" {
-  name         = "hq-linear-api-key"
-  value        = var.linear_api_key
-  key_vault_id = module.keyvault.key_vault_id
-}
 
 module "registry" {
   source              = "./modules/registry"

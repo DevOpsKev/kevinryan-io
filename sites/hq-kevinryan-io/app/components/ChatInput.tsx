@@ -1,16 +1,8 @@
 'use client'
 
-const HINT_PILLS = [
-  "what's in flight",
-  'last deploy status',
-  'open specs',
-  'platform health',
-]
-
 interface ChatInputProps {
   input: string
   loading: boolean
-  redacted: boolean
   onChange: (value: string) => void
   onSend: (text: string) => void
 }
@@ -18,7 +10,6 @@ interface ChatInputProps {
 export default function ChatInput({
   input,
   loading,
-  redacted,
   onChange,
   onSend,
 }: ChatInputProps) {
@@ -37,35 +28,13 @@ export default function ChatInput({
         backgroundColor: '#0A0A0A',
       }}
     >
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
-        {HINT_PILLS.map((pill) => (
-          <button
-            key={pill}
-            onClick={() => onSend(pill)}
-            disabled={loading}
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.6875rem',
-              color: '#F5F3EF55',
-              backgroundColor: 'transparent',
-              border: '1px solid #333',
-              padding: '0.25rem 0.625rem',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {pill}
-          </button>
-        ))}
-      </div>
       <div style={{ display: 'flex', gap: '0.75rem' }}>
         <textarea
           value={input}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={loading}
-          placeholder={
-            redacted ? 'ask HQ anything (redacted mode)' : 'ask HQ anything'
-          }
+          placeholder="ask HQ anything"
           rows={3}
           style={{
             flex: 1,
