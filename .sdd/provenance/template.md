@@ -9,7 +9,7 @@ draft: true
 
 ---
 
-## Builder Agent Record
+## Implementation Record
 
 ### Actions Taken
 
@@ -22,7 +22,7 @@ draft: true
 
 ### Decisions Made
 
-<!-- Document any decisions the agent made that were NOT explicitly dictated by the spec. Use the table format below. If the spec was fully prescriptive, use the "no autonomous decisions" statement instead. -->
+<!-- Document any decisions made that were NOT explicitly dictated by the spec. Use the table format below. If the spec was fully prescriptive, use the "no autonomous decisions" statement instead. -->
 
 | Decision | Options Considered | Chosen | Rationale |
 |----------|-------------------|--------|-----------|
@@ -33,7 +33,7 @@ draft: true
 
 ### Assumptions
 
-<!-- Decisions made where the spec was silent. The testing agent will specifically target these for scenario generation. Be honest and thorough — undocumented assumptions become invisible bugs. -->
+<!-- Decisions made where the spec was silent. Reviewers will specifically target these for scenario generation. Be honest and thorough — undocumented assumptions become invisible bugs. -->
 
 | # | Assumption | Spec Reference | Rationale |
 |---|-----------|----------------|-----------|
@@ -41,7 +41,7 @@ draft: true
 
 ### Ambiguities
 
-<!-- Places where the spec could be read more than one way. Record your interpretation. The testing agent will generate scenarios to test whether your interpretation was correct. -->
+<!-- Places where the spec could be read more than one way. Record your interpretation. Reviewers will generate scenarios to test whether your interpretation was correct. -->
 
 | # | Ambiguity | Spec Reference | Interpretation | Alternative Reading |
 |---|----------|----------------|----------------|-------------------|
@@ -49,7 +49,7 @@ draft: true
 
 ### Deviations from Spec
 
-<!-- Any points where the agent deviated from what the spec instructed, and why. If none: -->
+<!-- Any points where the implementation deviated from what the spec instructed, and why. If none: -->
 
 No deviations from spec.
 
@@ -67,7 +67,7 @@ No deviations from spec.
 
 **Status:** Complete / Partial
 **Summary:** <what was built>
-**Known limitations:** <anything the builder knows isn't perfect>
+**Known limitations:** <anything the implementer knows isn't perfect>
 
 ### Validation Results
 
@@ -80,17 +80,17 @@ No deviations from spec.
 
 ---
 
-## Testing Agent Record
+## Review Record
 
-<!-- This section is written by the testing agent. The builder agent must not modify this section. On subsequent cycles, the builder reads this section to understand what failed and why. -->
+<!-- This section is written by the reviewer. The implementer must not modify this section. On subsequent cycles, the implementer reads this section to understand what failed and why. -->
 
-**Tested:** <YYYY-MM-DD or ISO timestamp>
+**Reviewed:** <YYYY-MM-DD or ISO timestamp>
 **Agent:** <agent model and interface>
 **Scenarios:** `.sdd/scenarios/spec-NNNN-<slug>.scenarios.md`
 
 ### Findings
 
-<!-- What the testing agent discovered by comparing the spec against the builder's provenance. This is the analysis that drives scenario generation. -->
+<!-- What the reviewer discovered by comparing the spec against the implementation provenance. This is the analysis that drives scenario generation. -->
 
 #### Gaps
 
@@ -102,23 +102,23 @@ No deviations from spec.
 
 #### Assumption Challenges
 
-<!-- Builder assumptions the testing agent is specifically targeting. -->
+<!-- Implementer assumptions the reviewer is specifically targeting. -->
 
-| # | Builder Assumption | Challenge | Scenario |
-|---|-------------------|-----------|----------|
+| # | Implementer Assumption | Challenge | Scenario |
+|---|------------------------|-----------|----------|
 | C1 | <ref to assumption A1, A2 etc.> | <why this assumption may be wrong> | <ref to scenario S-NNN> |
 
 #### Ambiguity Assessments
 
-<!-- Testing agent's view on the builder's interpretation of ambiguities. -->
+<!-- Reviewer's view on the implementer's interpretation of ambiguities. -->
 
-| # | Builder Ambiguity | Assessment | Scenario |
-|---|------------------|------------|----------|
+| # | Implementer Ambiguity | Assessment | Scenario |
+|---|------------------------|------------|----------|
 | D1 | <ref to ambiguity B1, B2 etc.> | <whether the interpretation seems sound> | <ref to scenario S-NNN> |
 
 #### Silences
 
-<!-- Things the builder did not mention that the testing agent expected to see. -->
+<!-- Things the implementer did not mention that the reviewer expected to see. -->
 
 | # | Expected | Observation |
 |---|----------|-------------|
@@ -137,6 +137,6 @@ No deviations from spec.
 
 | Scenario | Recommendation | Action For |
 |----------|---------------|------------|
-| S-NNN | Fix implementation — <description> | Builder Agent |
+| S-NNN | Fix implementation — <description> | Implementer |
 | S-NNN | Clarify spec — <what's ambiguous> | Human / Spec Author |
-| S-NNN | Update provenance — <what's missing> | Builder Agent |
+| S-NNN | Update provenance — <what's missing> | Implementer |

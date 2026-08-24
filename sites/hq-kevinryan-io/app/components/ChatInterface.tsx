@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import type { Message, Segment } from '../types/chat'
+import type { Message } from '../types/chat'
 import ChatHeader from './ChatHeader'
 import ChatInput from './ChatInput'
 import MessageBubble from './MessageBubble'
@@ -19,7 +19,6 @@ interface ChatInterfaceProps {
 
 export default function ChatInterface({ user }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([])
-  const [redacted, setRedacted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState('')
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -28,10 +27,6 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
-
-  useEffect(() => {
-    setMessages([])
-  }, [redacted])
 
   async function sendMessage(text: string) {
     if (!text.trim() || loading) return
@@ -45,7 +40,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: updatedMessages, redacted }),
+        body: JSON.stringify({ messages: updatedMessages }),
       })
 
       if (!res.ok || !res.body) {
@@ -110,45 +105,6 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
         }
         return next
       })
-
-      if (redacted) {
-        setMessages((prev) => {
-          const next = [...prev]
-          const last = next[next.length - 1]
-          if (last?.role === 'assistant') {
-            try {
-              // Strip markdown code fences if Claude wrapped the JSON
-              let rawContent = last.content
-              const fenceMatch = rawContent.match(
-                /^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/,
-              )
-              if (fenceMatch) {
-                rawContent = fenceMatch[1]
-              }
-              const segments: Segment[] = JSON.parse(rawContent)
-              if (
-                Array.isArray(segments) &&
-                segments.every(
-                  (s) =>
-                    typeof s.text === 'string' &&
-                    typeof s.sensitive === 'boolean',
-                )
-              ) {
-                next[next.length - 1] = {
-                  ...last,
-                  segments,
-                  content: segments.map((s) => s.text).join(' '),
-                }
-              }
-            } catch {
-              console.warn(
-                '[HQ] Failed to parse redacted response as JSON, falling back to blanket blur',
-              )
-            }
-          }
-          return next
-        })
-      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Network error'
       setMessages((prev) => [
@@ -170,11 +126,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
         flexDirection: 'column',
       }}
     >
-      <ChatHeader
-        user={user}
-        redacted={redacted}
-        onRedactedChange={setRedacted}
-      />
+      <ChatHeader user={user} />
 
       <main style={{ flex: 1, overflowY: 'auto', padding: '1.5rem 2rem' }}>
         {messages.length === 0 ? (
@@ -204,7 +156,6 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
               <MessageBubble
                 key={i}
                 message={msg}
-                redacted={redacted}
                 isStreaming={
                   loading &&
                   i === messages.length - 1 &&
@@ -263,7 +214,6 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
       <ChatInput
         input={input}
         loading={loading}
-        redacted={redacted}
         onChange={setInput}
         onSend={(text) => void sendMessage(text)}
       />

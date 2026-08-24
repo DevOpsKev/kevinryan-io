@@ -8,35 +8,9 @@ interface User {
 
 interface ChatHeaderProps {
   user: User
-  redacted: boolean
-  onRedactedChange: (value: boolean) => void
 }
 
-const toggleTrackBase: React.CSSProperties = {
-  position: 'relative',
-  display: 'inline-block',
-  width: '2.25rem',
-  height: '1.25rem',
-  borderRadius: '999px',
-  transition: 'background-color 0.2s ease',
-  flexShrink: 0,
-}
-
-const toggleThumb: React.CSSProperties = {
-  position: 'absolute',
-  top: '0.1875rem',
-  width: '0.875rem',
-  height: '0.875rem',
-  borderRadius: '50%',
-  backgroundColor: '#0A0A0A',
-  transition: 'left 0.2s ease',
-}
-
-export default function ChatHeader({
-  user,
-  redacted,
-  onRedactedChange,
-}: ChatHeaderProps) {
+export default function ChatHeader({ user }: ChatHeaderProps) {
   return (
     <header
       style={{
@@ -69,64 +43,6 @@ export default function ChatHeader({
           justifyContent: 'flex-end',
         }}
       >
-        {/* Redact Data toggle */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            cursor: 'pointer',
-          }}
-          onClick={() => onRedactedChange(!redacted)}
-        >
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '0.6875rem',
-              color: redacted ? '#A8E10C' : '#F5F3EF66',
-              letterSpacing: '0.04em',
-              transition: 'color 0.2s ease',
-              userSelect: 'none',
-            }}
-          >
-            REDACT DATA
-          </span>
-          {/* Visual toggle track */}
-          <div
-            role="switch"
-            aria-checked={redacted}
-            aria-label="Redact Data"
-            onKeyDown={(e) => {
-              if (e.key === ' ' || e.key === 'Enter') {
-                e.preventDefault()
-                onRedactedChange(!redacted)
-              }
-            }}
-            tabIndex={0}
-            style={{
-              ...toggleTrackBase,
-              backgroundColor: redacted ? '#A8E10C' : '#2a2a2a',
-              border: `1px solid ${redacted ? '#A8E10C' : '#444'}`,
-            }}
-          >
-            <div
-              style={{
-                ...toggleThumb,
-                left: redacted ? '1.1875rem' : '0.1875rem',
-              }}
-            />
-          </div>
-        </div>
-
-        <div
-          style={{
-            width: '1px',
-            height: '1.25rem',
-            backgroundColor: '#2a2a2a',
-            flexShrink: 0,
-          }}
-        />
-
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={user.picture ?? ''}

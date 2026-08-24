@@ -112,15 +112,5 @@ variable "anthropic_api_key" {
   sensitive   = true
 }
 
-variable "github_mcp_token" {
-  description = "Fine-grained GitHub PAT for HQ GitHub MCP integration — read-only, scoped to DevOpsKev/kevin-ryan-platform"
-  type        = string
-  sensitive   = true
-}
 
-variable "linear_api_key" {
-  description = "Linear API key for HQ project management integration"
-  type        = string
-  sensitive   = true
-}
 
