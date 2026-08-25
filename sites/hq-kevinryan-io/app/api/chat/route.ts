@@ -3,12 +3,8 @@ import path from 'path'
 
 import Anthropic from '@anthropic-ai/sdk'
 
-import { auth0 } from '@/lib/auth0'
-
-interface Message {
-  role: 'user' | 'assistant'
-  content: string
-}
+import { getSession } from '@/lib/auth'
+import type { Message } from '@/lib/types'
 
 const FALLBACK_SYSTEM_PROMPT =
   'You are HQ, the operational assistant for Kevin Ryan & Associates.'
@@ -34,7 +30,7 @@ const BASE_SYSTEM_PROMPT = loadBaseSystemPrompt()
 const client = new Anthropic()
 
 export async function POST(request: Request) {
-  const session = await auth0.getSession()
+  const session = await getSession()
   if (!session) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,

@@ -1,7 +1,10 @@
-import { auth0 } from '@/lib/auth0'
 import { NextRequest } from 'next/server'
 
+import { auth0 } from '@/lib/auth0'
+import { isAuthDisabled } from '@/lib/auth'
+
 export async function proxy(request: NextRequest) {
+  if (isAuthDisabled) return
   return await auth0.middleware(request)
 }
 

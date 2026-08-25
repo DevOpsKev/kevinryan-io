@@ -21,14 +21,8 @@ export default function ChatInput({
   }
 
   return (
-    <div
-      style={{
-        padding: '1rem 2rem',
-        borderTop: '1px solid #1a1a1a',
-        backgroundColor: '#0A0A0A',
-      }}
-    >
-      <div style={{ display: 'flex', gap: '0.75rem' }}>
+    <div className="border-t border-line bg-bg px-8 py-4">
+      <div className="flex gap-3">
         <textarea
           value={input}
           onChange={(e) => onChange(e.target.value)}
@@ -36,37 +30,13 @@ export default function ChatInput({
           disabled={loading}
           placeholder="ask HQ anything"
           rows={3}
-          style={{
-            flex: 1,
-            backgroundColor: '#1a1a1a',
-            border: '1px solid #333',
-            color: '#F5F3EF',
-            fontFamily: "'Archivo', sans-serif",
-            fontSize: '0.9375rem',
-            padding: '0.75rem 1rem',
-            resize: 'none',
-            outline: 'none',
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = '#A8E10C'
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.borderColor = '#333'
-          }}
+          className="flex-1 resize-none rounded-none border border-line-3 bg-panel-2 px-4 py-3 font-body text-[0.9375rem] text-ink outline-none focus:border-accent"
         />
         <button
           onClick={() => onSend(input)}
           disabled={loading || !input.trim()}
-          style={{
-            backgroundColor: loading || !input.trim() ? '#333' : '#A8E10C',
-            border: 'none',
-            padding: '0 1.25rem',
-            cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
-            color: '#0A0A0A',
-            fontSize: '1.25rem',
-            fontWeight: 700,
-          }}
           aria-label="Send message"
+          className="cursor-pointer border-none bg-accent px-5 text-xl font-bold text-bg disabled:cursor-not-allowed disabled:bg-line-3"
         >
           ↑
         </button>

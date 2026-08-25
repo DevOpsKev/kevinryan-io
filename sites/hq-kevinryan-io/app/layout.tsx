@@ -1,5 +1,25 @@
 import type { Metadata } from "next";
+import { Archivo, Bebas_Neue, JetBrains_Mono } from "next/font/google";
+
 import "./globals.css";
+
+const bebas = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-bebas",
+});
+
+const archivo = Archivo({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-archivo",
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jetbrains",
+});
 
 export const metadata: Metadata = {
   title: "HQ — Kevin Ryan",
@@ -12,15 +32,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="en"
+      className={`${bebas.variable} ${archivo.variable} ${mono.variable}`}
+    >
       <body>{children}</body>
     </html>
   );
