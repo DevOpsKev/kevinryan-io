@@ -248,6 +248,18 @@ To onboard a new site into Flux CD:
 > TypeScript, Next.js, Astro, Tailwind, ESLint, and related conventions do **not** apply to them.
 > The root `build` and `lint` scripts use `--if-present` to skip these packages automatically.
 
+## Agent Skills
+
+Project-scope agent skills live in `.pi/skills/` and are version-controlled alongside the code. They are **procedural companions to this file** — AGENTS.md remains the authoritative source; where a skill and this document disagree, AGENTS.md wins.
+
+The `.pi/skills/` path is a Pi convention, but the `SKILL.md` files are plain Markdown and agent-agnostic — any agent or contributor can read them directly.
+
+- `k3s-ssh-tunnel-and-deploy` — open the kr-node1 SSH tunnel and run `kubectl`/`flux` without hanging (non-interactive flags, explicit request timeouts).
+- `terraform-plan-safe` — run `terraform fmt`/`validate`/`plan` against `infra/` with `-input=false` and the `.env.agents` → `TF_VAR_*` source-order flow.
+- `flux-onboard-site` — the executable form of the "Adding a new site" steps above, with `kubectl --dry-run`/`yamllint`/`flux build` validation.
+
+When the steps in "Adding a new site" or "Local credentials" above change, update the corresponding skill in the same commit so they do not drift.
+
 ## When Generating Code
 
 1. Follow TypeScript strict mode conventions
