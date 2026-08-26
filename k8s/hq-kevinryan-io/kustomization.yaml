@@ -4,6 +4,7 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - externalsecret.yaml
+  - configmap-librechat-yaml.yaml
   - pvc-data.yaml
   - pvc-uploads.yaml
   - pvc-images.yaml
