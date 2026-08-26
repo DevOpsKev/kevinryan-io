@@ -14,10 +14,6 @@ spec:
       labels:
         app: librechat-mongodb
     spec:
-      # Pin MongoDB to the worker node alongside LibreChat,
-      # off the control plane.
-      nodeSelector:
-        kubernetes.io/hostname: vm-kevinryan-node2
       containers:
         - name: mongodb
           image: mongo:8.0
