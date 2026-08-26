@@ -24,10 +24,10 @@ html:not(.dark) {
   --gray-400: #737aa2;
   --gray-500: #444a73;
   --gray-600: #3b4261;
-  --gray-700: #2f334d;
+  --gray-700: #1f2335;
   --gray-800: #222436;
   --gray-850: #1f2335;
-  --gray-900: #1a1b26;
+  --gray-900: #222436;
   --brand-purple: #c099ff;
 }
 
@@ -173,10 +173,10 @@ a {
 .bg-gray-400 { background-color: #444a73 !important; }
 .bg-gray-500 { background-color: #444a73 !important; }
 .bg-gray-600 { background-color: #3b4261 !important; }
-.bg-gray-700 { background-color: #1a1b26 !important; }
+.bg-gray-700 { background-color: #1f2335 !important; }
 .bg-gray-800 { background-color: #222436 !important; }
 .bg-gray-850 { background-color: #1f2335 !important; }
-.bg-gray-900 { background-color: #1a1b26 !important; }
+.bg-gray-900 { background-color: #222436 !important; }
 .bg-gray-950 { background-color: #1a1b26 !important; }
 
 /* dark: variants (compiled as .dark .dark\:bg-gray-*) */
@@ -186,11 +186,11 @@ a {
 .dark .dark\:bg-gray-300 { background-color: #3b4261 !important; }
 .dark .dark\:bg-gray-500 { background-color: #3b4261 !important; }
 .dark .dark\:bg-gray-600 { background-color: #3b4261 !important; }
-.dark .dark\:bg-gray-700 { background-color: #1a1b26 !important; }
+.dark .dark\:bg-gray-700 { background-color: #1f2335 !important; }
 .dark .dark\:bg-gray-750 { background-color: #1f2335 !important; }
 .dark .dark\:bg-gray-800 { background-color: #222436 !important; }
 .dark .dark\:bg-gray-850 { background-color: #1f2335 !important; }
-.dark .dark\:bg-gray-900 { background-color: #1a1b26 !important; }
+.dark .dark\:bg-gray-900 { background-color: #222436 !important; }
 .dark .dark\:bg-gray-950 { background-color: #1a1b26 !important; }
 
 /* bg-white in dark context → Moon main bg (covers auth page card etc.) */
