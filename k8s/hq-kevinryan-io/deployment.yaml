@@ -24,7 +24,10 @@ spec:
               set -e
               cp /app/client/dist/index.html /theme-patch/index.html
               # Inject the custom theme stylesheet before </head>.
-              sed -i 's|</head>|<link rel="stylesheet" href="/custom-theme.css"></head>|' /theme-patch/index.html
+              # The ?v= cache-buster defeats the service worker's stale copy so
+              # CSS updates are seen without clearing browser/SW caches. Bump v
+              # whenever custom-theme.css changes.
+              sed -i 's|</head>|<link rel="stylesheet" href="/custom-theme.css?v=2"></head>|' /theme-patch/index.html
               # Paint the loading screen Tokyo Night Moon and force dark.
               sed -i 's|#0d0d0d|#222436|g; s|#ffffff|#222436|g; s|#171717|#222436|g' /theme-patch/index.html
               sed -i 's|<meta name="theme-color" content="[^"]*"|<meta name="theme-color" content="#222436"|' /theme-patch/index.html
