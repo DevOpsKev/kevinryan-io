@@ -1,4 +1,8 @@
 extends: default
+ignore: |
+  # Generated ConfigMap embedding binary favicon PNGs as base64 — long
+  # lines are inherent to the data and cannot be wrapped.
+  k8s/hq-kevinryan-io/configmap-custom-theme.yaml
 rules:
   line-length:
     max: 400
