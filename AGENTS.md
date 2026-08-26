@@ -9,7 +9,7 @@ This is a monorepo hosting multiple sites for Kevin Ryan (AI-Native Engineering 
 - **kevinryan.io** — portfolio site. Next.js 16 (App Router, static export), React 19, Tailwind CSS 4. Marketing sections plus the AI Capabilities Assessment.
 - **brand.kevinryan.io** — static HTML brand guidelines site (no build step, no Node.js tooling).
 - **docs.kevinryan.io** — platform documentation site. Astro Starlight, serves the ADRs, specs, provenance records, and infrastructure guides.
-- **hq.kevinryan.io** — authenticated internal app. Next.js 16 (dynamic, **not** statically exportable) with Auth0, an Anthropic-backed chat API (`/api/chat`), health check (`/api/healthz`), and Auth0 middleware proxy.
+- **hq.kevinryan.io** — LibreChat (vanilla, uncustomized install). Deploys the upstream pre-built multi-container image (`registry.librechat.ai/danny-avila/librechat:latest`) plus an internal MongoDB, behind the existing `hq.kevinryan.io` IngressRoute. No build step, no Next.js source, no Dockerfile. Native email/password auth (Auth0 was dropped); Claude endpoint enabled via the bundled `ANTHROPIC_API_KEY`.
 - **aiimmigrants.com** — static HTML holding page for the *AI Immigrants* book (no build step, no Node.js tooling).
 - **distributedequity.org** — static HTML site for the Distributed Equity License (no build step, no Node.js tooling).
 - **ai-native-engineer.io** — the *AI-Native Engineer* book. Astro 5 (plain, no Starlight) generating per-chapter pages from markdown content collections, served as a static export. Custom layout consumes the locked `design-assets/theme.css` (Nord palette, Swiss grid) so the book design is matched exactly.
@@ -39,7 +39,7 @@ Applicable to all TypeScript/React sites (kevinryan.io, hq.kevinryan-io, docs-ke
 - Maximum component size: 200 lines
 - One component per file
 
-**Exception — hq.kevinryan.io:** This is the only site permitted to run server-side: API routes (`/api/chat`, `/api/healthz`), Auth0 middleware, and Anthropic SDK at runtime. It is deliberately excluded from the static-export and zero-runtime constraints.
+**Exception — hq.kevinryan.io:** This site deploys LibreChat (a pre-built, server-side Node app + MongoDB) from the upstream image — there is no build step, no Dockerfile, and no committed source. It is deliberately excluded from the static-export and zero-runtime constraints, and the shared CI deploy workflow auto-skips it (it filters to sites that have both a `Dockerfile` and a `k8s/<site>/deployment.yaml`). Manifest changes deploy via Flux on push to `main`.
 
 ## Build Commands
 
@@ -195,12 +195,10 @@ kevin-ryan-platform/
 │   │   ├── public/         # Static assets
 │   │   ├── Dockerfile
 │   │   └── nginx.conf
-│   ├── hq-kevinryan-io/    # hq.kevinryan.io — dynamic Next.js (Auth0 + Anthropic)
-│   │   ├── app/            # App Router, api/chat, api/healthz
-│   │   ├── lib/            # auth0, shared utilities
-│   │   ├── proxy.ts        # Auth0 middleware
-│   │   ├── Dockerfile
-│   │   └── next.config.ts
+│   ├── hq-kevinryan-io/    # hq.kevinryan.io — LibreChat (vanilla, pre-built image)
+│   │   ├── librechat.env.example  # committed env template (secrets via ExternalSecret)
+│   │   ├── docker-compose.yml     # local-dev reference (api + mongodb only)
+│   │   └── README.md             # no build step, no Dockerfile, no source
 │   ├── docs-kevinryan-io/  # docs.kevinryan.io — Astro Starlight
 │   │   ├── src/            # Astro content (ADRs, specs, provenance)
 │   │   ├── public/         # Static assets

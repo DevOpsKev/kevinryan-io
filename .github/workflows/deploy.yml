@@ -13,7 +13,6 @@ on:
           - brand-kevinryan-io
           - distributedequity-org
           - docs-kevinryan-io
-          - hq-kevinryan-io
           - kevinryan-io
   push:
     branches: ["main"]

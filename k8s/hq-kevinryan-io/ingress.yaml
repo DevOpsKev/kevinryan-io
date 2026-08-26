@@ -1,7 +1,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: hq-kevinryan-io
+  name: librechat
   namespace: hq-kevinryan-io
 spec:
   entryPoints:
@@ -10,6 +10,6 @@ spec:
     - match: Host(`hq.kevinryan.io`)
       kind: Rule
       services:
-        - name: hq-kevinryan-io
+        - name: librechat
           port: 80
   tls: {}

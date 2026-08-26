@@ -1,0 +1,42 @@
+# Local development reference for hq.kevinryan.io (vanilla LibreChat).
+# This mirrors the Kubernetes deployment in k8s/hq-kevinryan-io/ but for
+# local `docker compose up`. It deploys only the api + mongodb (no
+# Meilisearch, no RAG, no admin panel) — matching the vanilla cluster
+# install.
+#
+# Usage:
+#   cp librechat.env.example .env   # then fill in JWT_SECRET/CREDS_*/ANTHROPIC_API_KEY
+#   docker compose up
+#
+# Then open http://localhost:3080
+
+services:
+  mongodb:
+    image: mongo:8.0
+    restart: unless-stopped
+    volumes:
+      - librechat-mongodb-data:/data/db
+
+  api:
+    image: registry.librechat.ai/danny-avila/librechat:latest
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    ports:
+      - "3080:3080"
+    env_file:
+      - .env
+    environment:
+      # Override the compose-internal Mongo URI to match this file's service name.
+      - MONGO_URI=mongodb://mongodb:27017/LibreChat
+    volumes:
+      - librechat-data:/app/data
+      - librechat-uploads:/app/uploads
+      - librechat-images:/app/client/public/images
+      - ./logs:/app/logs
+
+volumes:
+  librechat-data:
+  librechat-uploads:
+  librechat-images:
+  librechat-mongodb-data:

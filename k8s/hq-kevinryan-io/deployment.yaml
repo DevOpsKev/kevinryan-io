@@ -1,42 +1,75 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hq-kevinryan-io
+  name: librechat
   namespace: hq-kevinryan-io
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hq-kevinryan-io
+      app: librechat
   template:
     metadata:
       labels:
-        app: hq-kevinryan-io
+        app: librechat
     spec:
       containers:
-        - name: hq-kevinryan-io
-          image: kevinryanacr.azurecr.io/hq-kevinryan-io:e293395
+        - name: librechat
+          # Pre-built upstream image, pulled direct — no build step.
+          # The CI deploy workflow auto-skips sites without a Dockerfile.
+          image: registry.librechat.ai/danny-avila/librechat:latest
+          imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 3080
+              name: http
           envFrom:
+            - configMapRef:
+                name: librechat-config
             - secretRef:
-                name: hq-auth0-secrets
+                name: librechat-secrets
+          # tcpSocket is the safe vanilla probe: it confirms the Express server
+          # is bound without depending on a specific health path. Upgrade to
+          # httpGet /health once the path is verified on first rollout.
           livenessProbe:
-            httpGet:
-              path: /api/healthz
-              port: 3000
+            tcpSocket:
+              port: 3080
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 3080
             initialDelaySeconds: 10
             periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /api/healthz
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 5
           resources:
             requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              cpu: 200m
+              cpu: 100m
               memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: librechat-data
+              mountPath: /app/data
+            - name: librechat-uploads
+              mountPath: /app/uploads
+            - name: librechat-images
+              mountPath: /app/client/public/images
+            - name: librechat-logs
+              mountPath: /app/logs
+            - name: librechat-skill
+              mountPath: /app/skill
+      volumes:
+        - name: librechat-data
+          persistentVolumeClaim:
+            claimName: librechat-data
+        - name: librechat-uploads
+          persistentVolumeClaim:
+            claimName: librechat-uploads
+        - name: librechat-images
+          persistentVolumeClaim:
+            claimName: librechat-images
+        # emptyDir for vanilla: logs/skill are not persisted across restarts.
+        - name: librechat-logs
+          emptyDir: {}
+        - name: librechat-skill
+          emptyDir: {}

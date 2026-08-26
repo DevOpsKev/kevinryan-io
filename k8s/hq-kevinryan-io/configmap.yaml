@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: librechat-config
+  namespace: hq-kevinryan-io
+data:
+  # ── Server ──
+  HOST: "0.0.0.0"
+  PORT: "3080"
+  NODE_ENV: "production"
+  # Trust the single Cloudflare → Traefik → pod hop for X-Forwarded-* handling.
+  TRUST_PROXY: "1"
+  NO_INDEX: "true"
+
+  # ── Domain ──
+  DOMAIN_CLIENT: "https://hq.kevinryan.io"
+  DOMAIN_SERVER: "https://hq.kevinryan.io"
+
+  # ── MongoDB (internal, unauthenticated for the vanilla install) ──
+  MONGO_URI: "mongodb://librechat-mongodb.hq-kevinryan-io.svc.cluster.local:27017/LibreChat"
+
+  # ── Search (disabled for vanilla) ──
+  SEARCH: "false"
+  MEILI_NO_ANALYTICS: "true"
+
+  # ── Auth (LibreChat native email/password; Auth0 dropped) ──
+  ALLOW_EMAIL_LOGIN: "true"
+  ALLOW_REGISTRATION: "true"
+  ALLOW_SOCIAL_LOGIN: "false"
+  ALLOW_SOCIAL_REGISTRATION: "false"
+  ALLOW_PASSWORD_RESET: "false"
+  ALLOW_UNVERIFIED_EMAIL_LOGIN: "true"
