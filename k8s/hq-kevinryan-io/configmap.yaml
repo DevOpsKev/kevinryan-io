@@ -8,6 +8,7 @@ data:
   HOST: "0.0.0.0"
   PORT: "3080"
   NODE_ENV: "production"
+  APP_TITLE: "HQ - Kevin Ryan & Associates"
   # Trust the single Cloudflare → Traefik → pod hop for X-Forwarded-* handling.
   TRUST_PROXY: "1"
   NO_INDEX: "true"
