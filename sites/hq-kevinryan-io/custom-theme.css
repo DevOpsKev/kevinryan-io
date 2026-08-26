@@ -1,0 +1,158 @@
+/* ═══════════════════════════════════════════════════════════════
+   hq.kevinryan.io — LibreChat theme override
+   Tokyo Night Moon · lifted verbatim from sites/kevinryan-io globals.css
+   Loaded via <link> injected into index.html (see initContainer).
+   Overrides LibreChat's CSS-variable theming system so both light and
+   dark themes render as Tokyo Night Moon.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Force dark mode on load so there is no light flash. */
+html {
+  background-color: #222436 !important;
+}
+html:not(.dark) {
+  color-scheme: dark;
+}
+
+/* ── Base gray ramp → Moon surfaces ── */
+:root {
+  --gray-20: #c8d3f5;
+  --gray-50: #1f2335;
+  --gray-100: #c8d3f5;
+  --gray-200: #a9b1d6;
+  --gray-300: #828bb8;
+  --gray-400: #737aa2;
+  --gray-500: #444a73;
+  --gray-600: #3b4261;
+  --gray-700: #2f334d;
+  --gray-800: #222436;
+  --gray-850: #1f2335;
+  --gray-900: #1a1b26;
+  --brand-purple: #c099ff;
+}
+
+/* ── Semantic tokens: light theme → Moon ── */
+html {
+  --text-primary: #c8d3f5;
+  --text-secondary: #a9b1d6;
+  --text-secondary-alt: #828bb8;
+  --text-tertiary: #828bb8;
+  --text-warning: #ffc777;
+  --text-destructive: #ff757f;
+  --ring-primary: #82aaff;
+  --header-primary: #1a1b26;
+  --header-hover: #2f334d;
+  --header-button-hover: #2f334d;
+  --surface-active: #2f334d;
+  --surface-active-alt: #2f334d;
+  --surface-hover: #2f334d;
+  --surface-hover-alt: #2f334d;
+  --surface-primary: #222436;
+  --surface-primary-alt: #1f2335;
+  --surface-primary-contrast: #1f2335;
+  --surface-secondary: #1f2335;
+  --surface-secondary-alt: #1f2335;
+  --surface-tertiary: #2f334d;
+  --surface-tertiary-alt: #2f334d;
+  --surface-dialog: #1f2335;
+  --surface-submit: #4fd6be;
+  --surface-submit-hover: #86e1fc;
+  --surface-destructive: #f7768e;
+  --surface-destructive-hover: #ff757f;
+  --surface-chat: #1a1b26;
+  --border-light: #2f334d;
+  --border-medium-alt: #3b4261;
+  --border-medium: #3b4261;
+  --border-heavy: #444a73;
+  --border-xheavy: #737aa2;
+  --border-destructive: #ff757f;
+
+  --background: 226 36% 17%;
+  --foreground: 230 68% 87%;
+  --card: 225 29% 16%;
+  --card-foreground: 230 68% 87%;
+  --primary: 220 100% 75%;
+  --primary-foreground: 226 36% 17%;
+  --secondary: 226 24% 24%;
+  --secondary-foreground: 230 68% 87%;
+  --muted: 226 24% 24%;
+  --muted-foreground: 231 38% 76%;
+  --accent: 270 100% 81%;
+  --accent-foreground: 226 36% 17%;
+  --destructive: 352 100% 74%;
+  --destructive-foreground: 226 36% 17%;
+  --border: 229 24% 30%;
+  --input: 229 24% 24%;
+  --ring: 220 100% 75%;
+  --switch-unchecked: 229 24% 30%;
+}
+
+/* ── Semantic tokens: dark theme → Moon (same values) ── */
+.dark {
+  --text-primary: #c8d3f5;
+  --text-secondary: #a9b1d6;
+  --text-secondary-alt: #828bb8;
+  --text-tertiary: #828bb8;
+  --text-warning: #ffc777;
+  --text-destructive: #ff757f;
+  --ring-primary: #82aaff;
+  --header-primary: #1a1b26;
+  --header-hover: #2f334d;
+  --header-button-hover: #2f334d;
+  --surface-active: #2f334d;
+  --surface-active-alt: #2f334d;
+  --surface-hover: #2f334d;
+  --surface-hover-alt: #2f334d;
+  --surface-primary: #222436;
+  --surface-primary-alt: #1f2335;
+  --surface-primary-contrast: #1f2335;
+  --surface-secondary: #1f2335;
+  --surface-secondary-alt: #1f2335;
+  --surface-tertiary: #2f334d;
+  --surface-tertiary-alt: #2f334d;
+  --surface-dialog: #1f2335;
+  --surface-submit: #4fd6be;
+  --surface-submit-hover: #86e1fc;
+  --surface-destructive: #f7768e;
+  --surface-destructive-hover: #ff757f;
+  --surface-chat: #1a1b26;
+  --border-light: #2f334d;
+  --border-medium-alt: #3b4261;
+  --border-medium: #3b4261;
+  --border-heavy: #444a73;
+  --border-xheavy: #737aa2;
+  --border-destructive: #ff757f;
+
+  --background: 226 36% 17%;
+  --foreground: 230 68% 87%;
+  --card: 225 29% 16%;
+  --card-foreground: 230 68% 87%;
+  --primary: 220 100% 75%;
+  --primary-foreground: 226 36% 17%;
+  --secondary: 226 24% 24%;
+  --secondary-foreground: 230 68% 87%;
+  --muted: 226 24% 24%;
+  --muted-foreground: 231 38% 76%;
+  --accent: 270 100% 81%;
+  --accent-foreground: 226 36% 17%;
+  --destructive: 352 100% 74%;
+  --destructive-foreground: 226 36% 17%;
+  --border: 229 24% 30%;
+  --input: 229 24% 24%;
+  --ring: 220 100% 75%;
+  --switch-unchecked: 229 24% 30%;
+}
+
+/* ── Remove the logo image from the login page ── */
+div:has(> img[src="assets/logo.svg"]) {
+  display: none !important;
+}
+
+/* ── Brand accent: links and primary buttons read as Moon blue/magenta ── */
+a {
+  color: #82aaff;
+}
+.btn-primary {
+  background-color: #82aaff !important;
+  color: #1a1b26 !important;
+}

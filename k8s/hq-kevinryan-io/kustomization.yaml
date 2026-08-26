@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - configmap.yaml
+  - configmap-custom-theme.yaml
   - externalsecret.yaml
   - pvc-data.yaml
   - pvc-uploads.yaml
