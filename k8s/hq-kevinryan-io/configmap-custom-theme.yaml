@@ -58,6 +58,23 @@ data:
       display: none !important;
     }
 
+    /* ═══════════════════════════════════════════════════════════════
+       Login page header: replace "Welcome back" with "HQ" (uppercase).
+       The text comes from the com_auth_welcome_back i18n key rendered in
+       an <h1> in AuthLayout. Hide the original text with font-size:0 and
+       show "HQ" via ::after. Registration and password reset are disabled,
+       so /login is the only reachable auth page this h1 appears on.
+       ═══════════════════════════════════════════════════════════════ */
+    h1.text-3xl.text-center {
+      font-size: 0 !important;
+    }
+    h1.text-3xl.text-center::after {
+      content: "HQ";
+      font-size: 1.875rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
     /* ── Base gray ramp → Moon surfaces ── */
     :root {
       --gray-20: #c8d3f5;
