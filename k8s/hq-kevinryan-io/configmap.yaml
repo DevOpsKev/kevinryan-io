@@ -25,7 +25,9 @@ data:
 
   # ── Auth (LibreChat native email/password; Auth0 dropped) ──
   ALLOW_EMAIL_LOGIN: "true"
-  ALLOW_REGISTRATION: "true"
+  # Registration closed: the initial admin account already exists.
+  # Re-enable temporarily (or use the admin panel) to add users.
+  ALLOW_REGISTRATION: "false"
   ALLOW_SOCIAL_LOGIN: "false"
   ALLOW_SOCIAL_REGISTRATION: "false"
   ALLOW_PASSWORD_RESET: "false"
