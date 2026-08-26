@@ -58,14 +58,7 @@ spec:
               mountPath: /app/logs
             - name: librechat-skill
               mountPath: /app/skill
-            - name: librechat-yaml
-              mountPath: /app/librechat.yaml
-              subPath: librechat.yaml
-              readOnly: true
       volumes:
-        - name: librechat-yaml
-          configMap:
-            name: librechat-yaml
         - name: librechat-data
           persistentVolumeClaim:
             claimName: librechat-data

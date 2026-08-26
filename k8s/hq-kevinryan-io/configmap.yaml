@@ -32,3 +32,8 @@ data:
   ALLOW_SOCIAL_REGISTRATION: "false"
   ALLOW_PASSWORD_RESET: "false"
   ALLOW_UNVERIFIED_EMAIL_LOGIN: "true"
+
+  # ── Anthropic models (direct API; current IDs available on the key) ──
+  # LibreChat v0.8.7 ships a stale default list whose names are retired and
+  # 404. Override with the live model IDs from the Anthropic /v1/models API.
+  ANTHROPIC_MODELS: "claude-opus-5,claude-sonnet-5,claude-fable-5,claude-opus-4-8,claude-opus-4-7,claude-sonnet-4-6,claude-opus-4-6,claude-opus-4-5-20251101,claude-haiku-4-5-20251001,claude-sonnet-4-5-20250929"
