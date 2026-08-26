@@ -10,7 +10,9 @@ data:
        ═══════════════════════════════════════════════════════════════ */
 
     /* Force dark mode on load so there is no light flash. */
-    html {
+    html,
+    body,
+    #root {
       background-color: #222436 !important;
     }
     html:not(.dark) {
