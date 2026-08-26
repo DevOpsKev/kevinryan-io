@@ -80,6 +80,21 @@ data:
       letter-spacing: 0.08em;
     }
 
+    /* ═══════════════════════════════════════════════════════════════
+       Remove LibreChat branding: the lucide Feather icon is the default
+       icon rendered by ConvoIcon/AgentAvatar when no AI/endpoint is
+       selected (landing page, new chat, message endpoint fallback). Hide
+       the feather SVG and its circular container.
+       ═══════════════════════════════════════════════════════════════ */
+    svg.lucide-feather {
+      display: none !important;
+    }
+    /* Hide the circular icon container that wraps a feather icon (landing
+       page, nav, message rows) so no empty circle remains. */
+    div:has(> svg.lucide-feather) {
+      display: none !important;
+    }
+
     /* ── Base gray ramp → Moon surfaces ── */
     :root {
       --gray-20: #c8d3f5;
