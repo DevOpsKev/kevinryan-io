@@ -13,6 +13,10 @@ spec:
       labels:
         app: librechat
     spec:
+      # Keep LibreChat off the control-plane node (node1) to avoid memory
+      # pressure on the API server. node2 is the idle worker.
+      nodeSelector:
+        kubernetes.io/hostname: vm-kevinryan-node2
       containers:
         - name: librechat
           # Pre-built upstream image, pulled direct — no build step.
