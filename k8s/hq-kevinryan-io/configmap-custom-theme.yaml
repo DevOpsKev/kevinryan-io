@@ -240,6 +240,54 @@ data:
     .dark .dark\:border-gray-700 { border-color: #2f334d !important; }
     .dark .dark\:border-gray-800 { border-color: #1f2335 !important; }
     .dark .dark\:border-gray-900 { border-color: #1f2335 !important; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       Auth form: text boxes + submit button.
+       LibreChat's inputs focus to green-500 (#10a37f) and the submit
+       button is green (surface-submit = #047857, text-white). Repaint to
+       Tokyo Night Moon: blue focus, teal/cyan submit with dark ink text.
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* ── Input focus border → Moon blue ── */
+    .focus\:border-green-500:focus,
+    .focus\:border-green-500:focus-visible,
+    .focus-visible\:border-green-500:focus-visible {
+      border-color: #82aaff !important;
+    }
+
+    /* ── Floating label peer-focus → Moon blue ── */
+    .peer-focus\:text-green-600 {
+      color: #82aaff;
+    }
+    .peer-focus\:text-green-600:peer-focus {
+      color: #82aaff !important;
+    }
+    .dark .dark\:peer-focus\:text-green-500 {
+      color: #82aaff;
+    }
+    .dark .dark\:peer-focus\:text-green-500:peer-focus {
+      color: #82aaff !important;
+    }
+
+    /* ── Submit button: green → Moon teal/cyan, dark ink text ── */
+    .bg-surface-submit {
+      background-color: #4fd6be !important;
+    }
+    .hover\:bg-surface-submit-hover:hover {
+      background-color: #86e1fc !important;
+    }
+    /* Button text: white → Moon deepest surface for contrast on teal */
+    button.bg-surface-submit,
+    .bg-surface-submit.text-white,
+    .bg-surface-submit .text-white {
+      color: #1a1b26 !important;
+    }
+
+    /* ── Green accents elsewhere (links, success banners) → Moon teal/blue ── */
+    .text-green-600, .dark .dark\:text-green-500 { color: #4fd6be !important; }
+    .hover\:text-green-700:hover, .dark .dark\:hover\:text-green-400:hover { color: #86e1fc !important; }
+    .border-green-500 { border-color: #4fd6be !important; }
+    .bg-green-500\/10 { background-color: rgba(79, 214, 190, 0.1) !important; }
   logo.svg: |
     <svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>
 kind: ConfigMap
