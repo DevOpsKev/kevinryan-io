@@ -288,6 +288,35 @@ data:
     .hover\:text-green-700:hover, .dark .dark\:hover\:text-green-400:hover { color: #86e1fc !important; }
     .border-green-500 { border-color: #4fd6be !important; }
     .bg-green-500\/10 { background-color: rgba(79, 214, 190, 0.1) !important; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       Auth inputs + submit button: square corners + Moon panel bg.
+       LibreChat's auth inputs are rounded-2xl (1rem radius) on
+       bg-surface-primary, which applyTheme sets inline to near-black in
+       dark mode. Square the corners and repaint the input bg to Moon
+       panel (#1f2335) so the fields read as fields, not voids.
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* ── Auth text inputs: square corners + Moon panel background ── */
+    input.peer.rounded-2xl {
+      border-radius: 0 !important;
+      background-color: #1f2335 !important;
+      border-color: #3b4261 !important;
+      color: #c8d3f5 !important;
+    }
+    input.peer.rounded-2xl::placeholder {
+      color: #828bb8;
+    }
+    /* floating label bg matches the input field */
+    input.peer.rounded-2xl + label {
+      background-color: #1f2335 !important;
+    }
+
+    /* ── Submit button: square corners ── */
+    button[type="submit"].rounded-2xl,
+    button.bg-surface-submit.rounded-2xl {
+      border-radius: 0 !important;
+    }
   logo.svg: |
     <svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>
 kind: ConfigMap
