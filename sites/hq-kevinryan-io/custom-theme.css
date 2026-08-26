@@ -16,6 +16,45 @@ html:not(.dark) {
   color-scheme: dark;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Dark-theme-only: make light theme identical to dark and hide the
+   theme selector so users cannot toggle out of Tokyo Night Moon.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Light theme = dark theme (same Moon values). The html selector above
+   already sets the dark palette; this ensures html:not(.dark) inherits the
+   same surface/ink/line tokens so a stray .light class still renders dark. */
+html:not(.dark) {
+  --text-primary: #c8d3f5;
+  --text-secondary: #a9b1d6;
+  --text-secondary-alt: #828bb8;
+  --text-tertiary: #828bb8;
+  --header-primary: #1a1b26;
+  --header-hover: #2f334d;
+  --header-button-hover: #2f334d;
+  --surface-primary: #222436;
+  --surface-primary-alt: #1f2335;
+  --surface-secondary: #1f2335;
+  --surface-tertiary: #2f334d;
+  --surface-dialog: #1f2335;
+  --surface-chat: #1a1b26;
+  --border-light: #2f334d;
+  --border-medium: #3b4261;
+  --border-heavy: #444a73;
+  --background: 226 36% 17%;
+  --foreground: 230 68% 87%;
+}
+
+/* bg-white in light context → Moon main bg (covers auth page card etc.) */
+.bg-white { background-color: #222436 !important; }
+
+/* Hide the theme selector button (login page bottom-left + settings). */
+button[aria-label="Toggle theme"],
+button[aria-label="Ocultar tema"],
+button[aria-label*="theme" i] {
+  display: none !important;
+}
+
 /* ── Base gray ramp → Moon surfaces ── */
 :root {
   --gray-20: #c8d3f5;
