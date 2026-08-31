@@ -3,7 +3,7 @@ title: "ADR-021: Auth0 for HQ Authentication"
 draft: false
 ---
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-023](adr-023-librechat-theme-overlay.md) — HQ was re-platformed from the custom Next.js app to a vanilla LibreChat install with native email/password auth; the Auth0/GitHub OAuth layer was dropped with it.
 **Date:** 2026-03-17
 **Decision Makers:** Human
 **Prompted By:** HQ (`hq.kevinryan.io`) is transitioning from a static placeholder to a Next.js application with access to sensitive operational data, GitHub repositories, and AI agent capabilities. A single authenticated entry point is required before any dynamic functionality is built.
