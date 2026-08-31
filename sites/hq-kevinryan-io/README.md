@@ -1,22 +1,37 @@
-# hq.kevinryan.io — LibreChat (vanilla)
+# hq.kevinryan.io — LibreChat (upstream image + theme overlay)
 
 This site is **not a source package**. It deploys the upstream, pre-built
-LibreChat image directly — there is no build step, no Next.js source, and no
-Dockerfile. The repo only holds configuration reference files here and the
-Kubernetes manifests under `k8s/hq-kevinryan-io/`.
+LibreChat image directly (digest-pinned, never `:latest`) — there is no
+build step, no Next.js source, and no Dockerfile. The repo holds
+configuration reference files, the **theme overlay source** (CSS + favicons),
+and the Kubernetes manifests under `k8s/hq-kevinryan-io/`.
+
+> **Before changing theming/branding or the LibreChat image**, read the
+> `.pi/skills/librechat-hq-theme-patch/SKILL.md` procedure. The overlay is
+> sed-patched onto the upstream `index.html` and guarded — image bumps
+> require the throwaway-pod guard test.
 
 ## What lives here
 
 | File | Purpose |
 |---|---|
+| `custom-theme.css` | **Theme source of truth** (Tokyo Night Moon overrides). Must stay in sync with the `librechat-custom` ConfigMap. |
+| `favicons/` | kevinryan.io favicons (embedded in the `librechat-custom` ConfigMap, mounted over the LibreChat defaults). |
 | `librechat.env.example` | Template of the LibreChat env vars for the vanilla subset (copy to `.env` for local dev). |
 | `docker-compose.yml` | Local `docker compose up` reference (api + mongodb only). |
 | `README.md` | This file. |
 
 ## What lives in `k8s/hq-kevinryan-io/`
 
-- `deployment.yaml` — LibreChat api Deployment (image
-  `registry.librechat.ai/danny-avila/librechat:latest`, pulled direct).
+- `deployment.yaml` — LibreChat api Deployment (image digest-pinned to
+  `registry.librechat.ai/danny-avila/librechat@sha256:…`). Includes the
+  `patch-index` initContainer that seds `index.html` (theme stylesheet link
+  with `?v=` cache-buster, HQ title, dark-mode forcing) and fails loudly
+  via post-patch guards if upstream drifted.
+- `configmap-custom-theme.yaml` — the `librechat-custom` ConfigMap:
+  `custom-theme.css` (synced from `sites/hq-kevinryan-io/custom-theme.css`),
+  transparent `logo.svg`, and kevinryan.io favicons, mounted over
+  `/app/client/dist/`.
 - `mongodb-statefulset.yaml` + `mongodb-service.yaml` — internal MongoDB
   (unauthenticated for the vanilla install).
 - `configmap.yaml` — non-secret env (`DOMAIN_*`, `MONGO_URI`, `SEARCH=false`,
@@ -64,9 +79,10 @@ az keyvault secret set --vault-name <vault> --name librechat-creds-iv    --value
 `ANTHROPIC_API_KEY` is reused from the existing `anthropic-api-key` Key Vault
 secret.
 
-## Out of scope for the vanilla install
+## Out of scope for the initial install
 
-Meilisearch search, RAG API, admin panel, social/OIDC/SAML login, custom
-branding, `librechat.yaml` presets, MCP/agents, ACR image mirroring, MongoDB
+Meilisearch search, RAG API, admin panel, social/OIDC/SAML login,
+`librechat.yaml` presets, MCP/agents, ACR image mirroring, MongoDB
 authentication, and Auth0-as-OIDC-IdP wiring are deferred to later
-customization passes.
+customization passes. (Custom branding/theming **is** now in scope — see the
+theme overlay above.)

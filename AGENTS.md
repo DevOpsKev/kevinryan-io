@@ -9,7 +9,9 @@ This is a monorepo hosting multiple sites for Kevin Ryan (AI-Native Engineering 
 - **kevinryan.io** — portfolio site. Next.js 16 (App Router, static export), React 19, Tailwind CSS 4. Marketing sections plus the AI Capabilities Assessment.
 - **brand.kevinryan.io** — static HTML brand guidelines site (no build step, no Node.js tooling).
 - **docs.kevinryan.io** — platform documentation site. Astro Starlight, serves the ADRs, specs, provenance records, and infrastructure guides.
-- **hq.kevinryan.io** — LibreChat (vanilla, uncustomized install). Deploys the upstream pre-built multi-container image (`registry.librechat.ai/danny-avila/librechat:latest`) plus an internal MongoDB, behind the existing `hq.kevinryan.io` IngressRoute. No build step, no Next.js source, no Dockerfile. Native email/password auth (Auth0 was dropped); Claude endpoint enabled via the bundled `ANTHROPIC_API_KEY`.
+- **hq.kevinryan.io** — LibreChat (upstream pre-built image + customization overlay). Deploys the upstream multi-container image (digest-pinned in `k8s/hq-kevinryan-io/deployment.yaml`, never `:latest`) plus an internal MongoDB, behind the existing `hq.kevinryan.io` IngressRoute. No build step, no Next.js source, no Dockerfile. Theming/branding (Tokyo Night Moon CSS, HQ title, favicons) is applied as an **overlay layer** — a `patch-index` initContainer that seds `index.html` (with fail-loud post-patch guards) and a `librechat-custom` ConfigMap mounted over `/app/client/dist/`.
+  See the `librechat-hq-theme-patch` skill before touching any of it.
+  Native email/password auth (Auth0 was dropped); Claude endpoint enabled via the bundled `ANTHROPIC_API_KEY`.
 - **aiimmigrants.com** — static HTML holding page for the *AI Immigrants* book (no build step, no Node.js tooling).
 - **distributedequity.org** — static HTML site for the Distributed Equity License (no build step, no Node.js tooling).
 - **ai-native-engineer.io** — the *AI-Native Engineer* book. Astro 5 (plain, no Starlight) generating per-chapter pages from markdown content collections, served as a static export. Custom layout consumes the locked `design-assets/theme.css` (Nord palette, Swiss grid) so the book design is matched exactly.
@@ -39,7 +41,8 @@ Applicable to all TypeScript/React sites (kevinryan.io, hq.kevinryan-io, docs-ke
 - Maximum component size: 200 lines
 - One component per file
 
-**Exception — hq.kevinryan.io:** This site deploys LibreChat (a pre-built, server-side Node app + MongoDB) from the upstream image — there is no build step, no Dockerfile, and no committed source. It is deliberately excluded from the static-export and zero-runtime constraints, and the shared CI deploy workflow auto-skips it (it filters to sites that have both a `Dockerfile` and a `k8s/<site>/deployment.yaml`). Manifest changes deploy via Flux on push to `main`.
+**Exception — hq.kevinryan.io:** This site deploys LibreChat (a pre-built, server-side Node app + MongoDB) from the upstream image — there is no build step, no Dockerfile, and no committed app source. It is deliberately excluded from the static-export and zero-runtime constraints, and the shared CI deploy workflow auto-skips it (it filters to sites that have both a `Dockerfile` and a `k8s/<site>/deployment.yaml`). Manifest changes deploy via Flux on push to `main`.
+It is **not vanilla**: all theming/branding is an overlay (sed-patched `index.html` + ConfigMap-mounted assets) layered on the unmodified upstream image. Any LibreChat image change must go through the `librechat-hq-theme-patch` skill's guard-test procedure — do not bump the image or edit the overlay without it.
 
 ## Build Commands
 
@@ -175,7 +178,7 @@ kevin-ryan-platform/
 │   │   ├── kustomization.yaml
 │   │   └── <site>-sync.yaml # One Kustomization per site + infra stack
 │   ├── kevinryan-io/              # Plain manifests (static export)
-│   ├── hq-kevinryan-io/           # Plain manifests (dynamic Next.js)
+│   ├── hq-kevinryan-io/           # Plain manifests (LibreChat + theme overlay)
 │   ├── docs-kevinryan-io/         # Plain manifests (Astro static)
 │   ├── brand-kevinryan-io/        # Plain manifests (static HTML)
 │   ├── aiimmigrants-com/          # Plain manifests (static HTML)
@@ -195,7 +198,9 @@ kevin-ryan-platform/
 │   │   ├── public/         # Static assets
 │   │   ├── Dockerfile
 │   │   └── nginx.conf
-│   ├── hq-kevinryan-io/    # hq.kevinryan.io — LibreChat (vanilla, pre-built image)
+│   ├── hq-kevinryan-io/    # hq.kevinryan.io — LibreChat (upstream image + theme overlay)
+│   │   ├── custom-theme.css  # theme source of truth (synced into ConfigMap)
+│   │   ├── favicons/         # kevinryan.io favicons (in librechat-custom ConfigMap)
 │   │   ├── librechat.env.example  # committed env template (secrets via ExternalSecret)
 │   │   ├── docker-compose.yml     # local-dev reference (api + mongodb only)
 │   │   └── README.md             # no build step, no Dockerfile, no source
@@ -255,8 +260,9 @@ The `.pi/skills/` path is a Pi convention, but the `SKILL.md` files are plain Ma
 - `k3s-ssh-tunnel-and-deploy` — open the kr-node1 SSH tunnel and run `kubectl`/`flux` without hanging (non-interactive flags, explicit request timeouts).
 - `terraform-plan-safe` — run `terraform fmt`/`validate`/`plan` against `infra/` with `-input=false` and the `.env.agents` → `TF_VAR_*` source-order flow.
 - `flux-onboard-site` — the executable form of the "Adding a new site" steps above, with `kubectl --dry-run`/`yamllint`/`flux build` validation.
+- `librechat-hq-theme-patch` — change hq.kevinryan.io theming/branding or upgrade the digest-pinned LibreChat image, with the mandatory throwaway-pod guard test before any image bump.
 
-When the steps in "Adding a new site" or "Local credentials" above change, update the corresponding skill in the same commit so they do not drift.
+When the steps in "Adding a new site" or "Local credentials" above change, update the corresponding skill in the same commit so they do not drift. The same applies to `librechat-hq-theme-patch` whenever the overlay architecture or the image-bump procedure changes.
 
 ## When Generating Code
 
