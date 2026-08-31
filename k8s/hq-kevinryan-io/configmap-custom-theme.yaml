@@ -59,10 +59,13 @@ data:
     /* bg-white in light context → Moon main bg (covers auth page card etc.) */
     .bg-white { background-color: #222436 !important; }
 
-    /* Hide the theme selector button (login page bottom-left + settings). */
+    /* Hide the theme selector button (login page bottom-left + settings).
+       Exact-match aria-labels only — verified present as literals in the
+       upstream bundle ('Toggle theme', en; 'Ocultar tema', es). The old
+       substring wildcard ([aria-label*="theme" i]) could hide unrelated
+       future upstream buttons whose label merely contains "theme". */
     button[aria-label="Toggle theme"],
-    button[aria-label="Ocultar tema"],
-    button[aria-label*="theme" i] {
+    button[aria-label="Ocultar tema"] {
       display: none !important;
     }
 

@@ -158,9 +158,10 @@ sed/guard layer rather than just re-running the guard test.
   announced correctly by screen readers. The service-worker precache is
   bypassed by rewriting asset URLs in `index.html` with a content-hash
   `?v=`, so browsers with a warm SW cache receive the patched bundle.
-- **Selector overreach:** `button[aria-label*="theme" i]` hides any button
-  whose label contains "theme" — future upstream UI could match it
-  innocently. Verified per image bump as part of the guard test.
+- **Selector overreach (resolved):** `button[aria-label*="theme" i]`
+  hid any button whose label merely contained "theme". Now exact-match
+  only (`"Toggle theme"` / `"Ocultar tema"`, both verified as literals in
+  the upstream bundle); verified per image bump as part of the guard test.
 
 ## Agent Decisions
 
