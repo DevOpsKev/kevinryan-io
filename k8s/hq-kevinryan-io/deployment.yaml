@@ -15,7 +15,13 @@ spec:
     spec:
       initContainers:
         - name: patch-index
-          image: registry.librechat.ai/danny-avila/librechat:latest
+          # Digest-pinned so pod restarts can never silently pull a new
+          # upstream release and no-op the sed patches below. Bump
+          # deliberately: check LibreChat release notes, pull the new digest
+          # (docker manifest inspect), update the guards below if the
+          # index.html shape changed, then bump this digest in a single
+          # commit for both initContainer and container.
+          image: registry.librechat.ai/danny-avila/librechat@sha256:c5db3331b845e1f289f8d04c0c77936c4bbe372f76730a804abc1c37e44d23a9
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -35,15 +41,35 @@ spec:
               sed -i 's|<meta name="theme-color" content="[^"]*"|<meta name="theme-color" content="#222436"|' /theme-patch/index.html
               # Force dark mode so the app never renders light surfaces.
               sed -i 's|<base href="/" />|<base href="/" /><script>try{document.documentElement.classList.add("dark");localStorage.setItem("color-theme","dark");}catch(e){}</script>|' /theme-patch/index.html
+
+              # ── Post-patch guards ──
+              # A sed no-op (upstream changed index.html) would otherwise
+              # deploy an unthemed site silently. Fail the init container
+              # instead so the rollout is loud: pod stuck in
+              # Init:Error/CrashLoopBackOff, Flux shows not-ready.
+              grep -q 'custom-theme.css?v=' /theme-patch/index.html || { echo 'FATAL: stylesheet injection failed — upstream index.html changed'; exit 1; }
+              grep -q '<title>HQ - Kevin Ryan' /theme-patch/index.html || { echo 'FATAL: title replacement failed — upstream index.html changed'; exit 1; }
+              grep -q 'classList.add' /theme-patch/index.html || { echo 'FATAL: dark-mode script injection failed — upstream index.html changed'; exit 1; }
+              grep -q 'name="theme-color" content="#222436"' /theme-patch/index.html || { echo 'FATAL: theme-color replacement failed — upstream index.html changed'; exit 1; }
+              if grep -q '#0d0d0d' /theme-patch/index.html; then
+                echo 'FATAL: loading-screen repaint failed — upstream index.html changed'
+                exit 1
+              fi
           volumeMounts:
             - name: theme-patch
               mountPath: /theme-patch
       containers:
         - name: librechat
           # Pre-built upstream image, pulled direct — no build step.
+          # Digest-pinned to the same digest as the patch-index
+          # initContainer: unpinned :latest + imagePullPolicy: Always meant
+          # any pod restart could pull a new upstream release and silently
+          # break the theme/branding patch layer. Bump both digests together.
           # The CI deploy workflow auto-skips sites without a Dockerfile.
-          image: registry.librechat.ai/danny-avila/librechat:latest
-          imagePullPolicy: Always
+          image: registry.librechat.ai/danny-avila/librechat@sha256:c5db3331b845e1f289f8d04c0c77936c4bbe372f76730a804abc1c37e44d23a9
+          # Digest is immutable — IfNotPresent avoids re-pulling a blob
+          # that can never change.
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3080
               name: http
