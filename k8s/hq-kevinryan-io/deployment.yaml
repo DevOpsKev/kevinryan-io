@@ -84,17 +84,20 @@ spec:
             # Empty string removes the "LibreChat v0.8.x - Every AI for Everyone" footer.
             - name: CUSTOM_FOOTER
               value: ""
-          # tcpSocket is the safe vanilla probe: it confirms the Express server
-          # is bound without depending on a specific health path. Upgrade to
-          # httpGet /health once the path is verified on first rollout.
+          # httpGet /health: verified on the pinned digest
+          # (sha256:c5db3331…): returns 200 "OK". Readiness now reflects app
+          # health, not just a bound socket. Re-verify this endpoint exists
+          # (throwaway pod or live pod exec) whenever the digest is bumped.
           livenessProbe:
-            tcpSocket:
-              port: 3080
+            httpGet:
+              path: /health
+              port: http
             initialDelaySeconds: 20
             periodSeconds: 30
           readinessProbe:
-            tcpSocket:
-              port: 3080
+            httpGet:
+              path: /health
+              port: http
             initialDelaySeconds: 10
             periodSeconds: 10
           resources:
