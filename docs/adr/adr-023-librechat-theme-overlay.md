@@ -173,6 +173,7 @@ sed/guard layer rather than just re-running the guard test.
 | Basename-only `.yamllint` ignore patterns | lint-staged passes absolute paths; gitignore-anchored patterns never matched them — root cause of the historical `--no-verify` commits | Yes |
 | Sed the en-locale `com_auth_welcome_back` string in the compiled JS bundle | LibreChat compiles locales into the bundle (no runtime i18n files exist in the image) — it is the only overlay-compatible way to change the string, and real DOM text fixes the a11y problem | Yes |
 | Rewrite asset URLs in `index.html` with `?v=<sha256-8 of patched bundle>` | The SW precaches app JS by query-less URL; the query makes browsers with a warm SW cache fetch the patched bundle from the network | Yes |
+| Delete the precompressed `.br`/`.gz` siblings of the patched bundle | The static server prefers precompressed siblings when the client sends Accept-Encoding — the plain-`.js` sed alone never reached browsers (Cloudflare served the stale `.br`) | Yes |
 
 ## References
 

@@ -111,6 +111,12 @@ and fails on drift.
 - **The `?v=` rewrite on asset URLs in `index.html` is not optional** — the
   SW precaches the app JS by its query-less URL; without it, browsers with
   a warm SW cache keep serving the unpatched bundle ("Welcome back").
+- **Precompressed `.br`/`.gz` siblings win over the patched `.js`** — the
+  static server serves them when the client sends Accept-Encoding, so the
+  patch also deletes them for the patched file. And after any bundle patch
+  rollout, **purge the Cloudflare cache** — the edge has the stale
+  compressed object cached (s-maxage 86400) for both the query-less and
+  `?v=` URLs.
 - Non-English locales still carry upstream strings — only the en locale is
   patched (compiled bundles, solo English user). Guard-test catches wording
   changes on image bumps.
@@ -119,14 +125,15 @@ and fails on drift.
 
 ## Verification
 
-- Throwaway-pod guard test: all 8 guards PASS against the target digest.
+- Throwaway-pod guard test: all 9 guards PASS against the target digest.
 - `kubectl -n hq-kevinryan-io get pod -l app=librechat` → `1/1 Running`,
   init `patch-index` state `Completed`.
 - `curl -s https://hq.kevinryan.io/` shows: `<title>HQ - Kevin Ryan &
   Associates</title>`, `classList.add("dark")`, `content="#222436"`, the
   current `custom-theme.css?v=<sha256-8>`, and `/assets/*.js?v=<hash>`
   URLs.
-- The served main bundle contains the patched string:
-  `curl -s https://hq.kevinryan.io/assets/index.*.js | grep -o
+- The served main bundle contains the patched string (after a Cloudflare
+  cache purge):
+  `curl -s --compressed https://hq.kevinryan.io/assets/index.*.js | grep -o
   'com_auth_welcome_back:.HQ.'` → `com_auth_welcome_back:`HQ``.
 - `scripts/sync-hq-theme.sh --check` reports "hq theme in sync".

@@ -57,6 +57,13 @@ spec:
               WB_FILES="$(grep -rl 'com_auth_welcome_back:`Welcome back`' /theme-patch/assets || true)"
               [ -n "$WB_FILES" ] || { echo 'FATAL: welcome-back string not found in JS assets — upstream changed the locale bundle'; exit 1; }
               sed -i 's|com_auth_welcome_back:`Welcome back`|com_auth_welcome_back:`HQ`|' $WB_FILES
+              # Remove the precompressed .br/.gz siblings of the patched
+              # file: they still contain the original string, and the static
+              # server prefers them when the client sends Accept-Encoding
+              # (observed live: Cloudflare served the stale .br for both the
+              # query-less and ?v= URLs). Without siblings the patched .js is
+              # served; Cloudflare re-compresses at the edge.
+              for f in $WB_FILES; do rm -f "$f.br" "$f.gz"; done
 
               # ── Bust the service-worker precache for the patched JS ──
               # The SW precaches the app JS by its query-less URL; a request
@@ -87,6 +94,13 @@ spec:
                 echo 'FATAL: unpatched welcome-back string still present'
                 exit 1
               fi
+              # No stale precompressed sibling of the patched bundle.
+              for f in $WB_FILES; do
+                if [ -f "$f.br" ] || [ -f "$f.gz" ]; then
+                  echo 'FATAL: precompressed sibling still present for patched bundle'
+                  exit 1
+                fi
+              done
               # SW-precache bust applied to asset URLs.
               grep -q "?v=$ASSET_V" /theme-patch/index.html || { echo 'FATAL: asset cache-bust failed'; exit 1; }
           volumeMounts:
