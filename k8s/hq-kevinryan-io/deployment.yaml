@@ -29,13 +29,17 @@ spec:
             - |
               set -e
               cp /app/client/dist/index.html /theme-patch/index.html
+              # Copy the hashed JS/CSS assets so the i18n string patch below
+              # can be applied without touching the image. The patched copy
+              # is mounted over /app/client/dist/assets (see volumeMounts).
+              cp -r /app/client/dist/assets /theme-patch/assets
               # Inject the custom theme stylesheet before </head>.
               # The ?v= cache-buster defeats the service worker's stale copy so
               # CSS updates are seen without clearing browser/SW caches. The
               # value is the first 8 hex chars of sha256(custom-theme.css) —
               # derived and rewritten by scripts/sync-hq-theme.sh, never
               # bumped by hand.
-              sed -i 's|</head>|<link rel="stylesheet" href="/custom-theme.css?v=76d5a640"></head>|' /theme-patch/index.html
+              sed -i 's|</head>|<link rel="stylesheet" href="/custom-theme.css?v=538fed5f"></head>|' /theme-patch/index.html
               # Page title: replace the default 'LibreChat' with HQ branding.
               sed -i 's|<title>LibreChat</title>|<title>HQ - Kevin Ryan \& Associates</title>|' /theme-patch/index.html
               # Paint the loading screen Tokyo Night Moon and force dark.
@@ -43,6 +47,25 @@ spec:
               sed -i 's|<meta name="theme-color" content="[^"]*"|<meta name="theme-color" content="#222436"|' /theme-patch/index.html
               # Force dark mode so the app never renders light surfaces.
               sed -i 's|<base href="/" />|<base href="/" /><script>try{document.documentElement.classList.add("dark");localStorage.setItem("color-theme","dark");}catch(e){}</script>|' /theme-patch/index.html
+
+              # ── Branding: replace the login h1 i18n string (en locale) ──
+              # LibreChat compiles locales into the JS bundle (no runtime
+              # i18n files), so the only overlay-compatible way to change
+              # com_auth_welcome_back is to sed the bundle. Real text in the
+              # DOM also fixes the a11y problem: the old CSS font-size:0 hack
+              # left "Welcome back" in the accessibility tree.
+              WB_FILES="$(grep -rl 'com_auth_welcome_back:`Welcome back`' /theme-patch/assets || true)"
+              [ -n "$WB_FILES" ] || { echo 'FATAL: welcome-back string not found in JS assets — upstream changed the locale bundle'; exit 1; }
+              sed -i 's|com_auth_welcome_back:`Welcome back`|com_auth_welcome_back:`HQ`|' $WB_FILES
+
+              # ── Bust the service-worker precache for the patched JS ──
+              # The SW precaches the app JS by its query-less URL; a request
+              # with ?v= bypasses the precache and fetches our patched copy.
+              # The value is the sha256-8 of the patched main bundle, so it
+              # changes on any upstream rebuild or patch change.
+              ASSET_V="$(cd /theme-patch/assets && sha256sum index*.js 2>/dev/null | head -1 | cut -d' ' -f1 | cut -c1-8)"
+              [ -n "$ASSET_V" ] || { echo 'FATAL: could not hash the JS bundle'; exit 1; }
+              sed -i "s|/assets/\([A-Za-z0-9._-]*\.js\)\"|/assets/\1?v=$ASSET_V\"|g; s|/assets/\([A-Za-z0-9._-]*\.css\)\"|/assets/\1?v=$ASSET_V\"|g" /theme-patch/index.html
 
               # ── Post-patch guards ──
               # A sed no-op (upstream changed index.html) would otherwise
@@ -57,6 +80,15 @@ spec:
                 echo 'FATAL: loading-screen repaint failed — upstream index.html changed'
                 exit 1
               fi
+              # Welcome-back patch applied to the JS bundle (real DOM text,
+              # screen readers announce "HQ").
+              grep -rq 'com_auth_welcome_back:`HQ`' /theme-patch/assets || { echo 'FATAL: welcome-back replacement failed'; exit 1; }
+              if grep -rq 'com_auth_welcome_back:`Welcome back`' /theme-patch/assets; then
+                echo 'FATAL: unpatched welcome-back string still present'
+                exit 1
+              fi
+              # SW-precache bust applied to asset URLs.
+              grep -q "?v=$ASSET_V" /theme-patch/index.html || { echo 'FATAL: asset cache-bust failed'; exit 1; }
           volumeMounts:
             - name: theme-patch
               mountPath: /theme-patch
@@ -118,10 +150,15 @@ spec:
               mountPath: /app/logs
             - name: librechat-skill
               mountPath: /app/skill
-            # Custom theme: patched index.html, custom CSS, transparent logo.
+            # Custom theme: patched index.html, patched JS assets,
+            # custom CSS, transparent logo.
             - name: theme-patch
               mountPath: /app/client/dist/index.html
               subPath: index.html
+            # Patched asset bundle (i18n welcome-back string → HQ).
+            - name: theme-patch
+              mountPath: /app/client/dist/assets
+              subPath: assets
             - name: librechat-custom
               mountPath: /app/client/dist/custom-theme.css
               subPath: custom-theme.css

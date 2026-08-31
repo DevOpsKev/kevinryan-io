@@ -20,11 +20,19 @@ no build step, no Dockerfile, no committed app source. All customization is
 an **overlay layer** declared in `k8s/hq-kevinryan-io/deployment.yaml`:
 
 - **`patch-index` initContainer**: copies the image's
-  `/app/client/dist/index.html` into an `emptyDir` and `sed`s in the
-  customization — stylesheet `<link>` with a `?v=N` cache-buster, `HQ - Kevin
-  Ryan & Associates` title, Tokyo Night Moon loading-screen colors,
-  `theme-color` meta, and a dark-mode-forcing `<script>`. **Post-patch
-  guards** then grep for each expected post-condition and `exit 1` with a
+  `/app/client/dist/index.html` **and** `/app/client/dist/assets/` into an
+  `emptyDir`, then `sed`s in the customization: stylesheet `<link>` with a
+  `?v=<sha256-8>` cache-buster, `HQ - Kevin Ryan & Associates` title, Tokyo
+  Night Moon loading-screen colors, `theme-color` meta, a dark-mode-forcing
+  `<script>`, and — in the copied JS bundle — the en-locale login heading
+  `com_auth_welcome_back` "Welcome back" → "HQ" (real DOM text, so screen
+  readers announce "HQ"; locales are compiled into the bundle, there are
+  no runtime i18n files to mount). It then rewrites the asset URLs in
+  `index.html` to `?v=<sha256-8 of the patched bundle>` — the service worker
+  precaches the app JS by its query-less URL, so the `?v=` is what delivers
+  the patched bundle to browsers with a warm SW cache. The patched copies
+  are mounted over `/app/client/dist/`. **Post-patch guards** then grep for
+  each expected post-condition and `exit 1` with a
   `FATAL:` message if any sed no-opped, so upstream drift fails the rollout
   loudly instead of silently deploying an unthemed site.
 - **`librechat-custom` ConfigMap** (`k8s/hq-kevinryan-io/configmap-custom-theme.yaml`):
@@ -100,15 +108,25 @@ and fails on drift.
 - The `?v=` cache-buster is derived from the CSS content hash — hand-editing
   it, or changing the CSS without running the script, leaves stale CSS
   behind the service worker and fails CI.
+- **The `?v=` rewrite on asset URLs in `index.html` is not optional** — the
+  SW precaches the app JS by its query-less URL; without it, browsers with
+  a warm SW cache keep serving the unpatched bundle ("Welcome back").
+- Non-English locales still carry upstream strings — only the en locale is
+  patched (compiled bundles, solo English user). Guard-test catches wording
+  changes on image bumps.
 - `kubectl`/`flux` hang without the kr-node1 SSH tunnel (see
   `k3s-ssh-tunnel-and-deploy`); always use `--request-timeout=30s`.
 
 ## Verification
 
-- Throwaway-pod guard test: all 5 guards PASS against the target digest.
+- Throwaway-pod guard test: all 8 guards PASS against the target digest.
 - `kubectl -n hq-kevinryan-io get pod -l app=librechat` → `1/1 Running`,
   init `patch-index` state `Completed`.
 - `curl -s https://hq.kevinryan.io/` shows: `<title>HQ - Kevin Ryan &
-  Associates</title>`, `classList.add("dark")`, `content="#222436"`, and the
-  current `custom-theme.css?v=<sha256-8>` (first 8 hex of the CSS sha256).
+  Associates</title>`, `classList.add("dark")`, `content="#222436"`, the
+  current `custom-theme.css?v=<sha256-8>`, and `/assets/*.js?v=<hash>`
+  URLs.
+- The served main bundle contains the patched string:
+  `curl -s https://hq.kevinryan.io/assets/index.*.js | grep -o
+  'com_auth_welcome_back:.HQ.'` → `com_auth_welcome_back:`HQ``.
 - `scripts/sync-hq-theme.sh --check` reports "hq theme in sync".

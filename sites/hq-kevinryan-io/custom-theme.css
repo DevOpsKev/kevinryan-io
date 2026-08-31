@@ -56,19 +56,14 @@ button[aria-label*="theme" i] {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Login page header: replace "Welcome back" with "HQ" (uppercase).
-   The text comes from the com_auth_welcome_back i18n key rendered in
-   an <h1> in AuthLayout. Hide the original text with font-size:0 and
-   show "HQ" via ::after. Registration and password reset are disabled,
-   so /login is the only reachable auth page this h1 appears on.
+   Login page header.
+   The h1 text itself is "HQ": the en-locale i18n string
+   (com_auth_welcome_back) is patched in the JS bundle by the
+   patch-index initContainer — real DOM text, so screen readers
+   announce "HQ". This rule only adds brand letter-spacing; the old
+   font-size:0 + ::after hack is gone.
    ═══════════════════════════════════════════════════════════════ */
 h1.text-3xl.text-center {
-  font-size: 0 !important;
-}
-h1.text-3xl.text-center::after {
-  content: "HQ";
-  font-size: 1.875rem;
-  font-weight: 600;
   letter-spacing: 0.08em;
 }
 
