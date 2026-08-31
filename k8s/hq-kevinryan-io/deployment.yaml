@@ -31,9 +31,11 @@ spec:
               cp /app/client/dist/index.html /theme-patch/index.html
               # Inject the custom theme stylesheet before </head>.
               # The ?v= cache-buster defeats the service worker's stale copy so
-              # CSS updates are seen without clearing browser/SW caches. Bump v
-              # whenever custom-theme.css changes.
-              sed -i 's|</head>|<link rel="stylesheet" href="/custom-theme.css?v=10"></head>|' /theme-patch/index.html
+              # CSS updates are seen without clearing browser/SW caches. The
+              # value is the first 8 hex chars of sha256(custom-theme.css) —
+              # derived and rewritten by scripts/sync-hq-theme.sh, never
+              # bumped by hand.
+              sed -i 's|</head>|<link rel="stylesheet" href="/custom-theme.css?v=76d5a640"></head>|' /theme-patch/index.html
               # Page title: replace the default 'LibreChat' with HQ branding.
               sed -i 's|<title>LibreChat</title>|<title>HQ - Kevin Ryan \& Associates</title>|' /theme-patch/index.html
               # Paint the loading screen Tokyo Night Moon and force dark.

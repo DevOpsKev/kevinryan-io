@@ -171,6 +171,7 @@ Entries in `.env.agents`:
 kevin-ryan-platform/
 ├── .github/workflows/      # CI/CD (shared)
 ├── infra/                  # Terraform (shared across all sites)
+├── scripts/                # Helper scripts (sync-hq-theme.sh — regenerates the hq theme ConfigMap)
 ├── k8s/                    # Kubernetes manifests
 │   ├── flux-system/        # Flux CD entry point (peer to site dirs)
 │   │   ├── gotk-components.yaml
@@ -199,7 +200,8 @@ kevin-ryan-platform/
 │   │   ├── Dockerfile
 │   │   └── nginx.conf
 │   ├── hq-kevinryan-io/    # hq.kevinryan.io — LibreChat (upstream image + theme overlay)
-│   │   ├── custom-theme.css  # theme source of truth (synced into ConfigMap)
+│   │   ├── custom-theme.css  # theme source of truth (sync script regenerates the ConfigMap)
+│   │   ├── logo.svg          # transparent login-logo overlay (ConfigMap source)
 │   │   ├── favicons/         # kevinryan.io favicons (in librechat-custom ConfigMap)
 │   │   ├── librechat.env.example  # committed env template (secrets via ExternalSecret)
 │   │   ├── docker-compose.yml     # local-dev reference (api + mongodb only)

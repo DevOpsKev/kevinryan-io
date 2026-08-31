@@ -15,7 +15,8 @@ and the Kubernetes manifests under `k8s/hq-kevinryan-io/`.
 
 | File | Purpose |
 |---|---|
-| `custom-theme.css` | **Theme source of truth** (Tokyo Night Moon overrides). Must stay in sync with the `librechat-custom` ConfigMap. |
+| `custom-theme.css` | **Theme source of truth** (Tokyo Night Moon overrides). The ConfigMap is generated from it by `scripts/sync-hq-theme.sh`. |
+| `logo.svg` | Transparent 1×1 SVG overlaid on LibreChat's login logo (ConfigMap source). |
 | `favicons/` | kevinryan.io favicons (embedded in the `librechat-custom` ConfigMap, mounted over the LibreChat defaults). |
 | `librechat.env.example` | Template of the LibreChat env vars for the vanilla subset (copy to `.env` for local dev). |
 | `docker-compose.yml` | Local `docker compose up` reference (api + mongodb only). |
@@ -29,9 +30,11 @@ and the Kubernetes manifests under `k8s/hq-kevinryan-io/`.
   with `?v=` cache-buster, HQ title, dark-mode forcing) and fails loudly
   via post-patch guards if upstream drifted.
 - `configmap-custom-theme.yaml` — the `librechat-custom` ConfigMap:
-  `custom-theme.css` (synced from `sites/hq-kevinryan-io/custom-theme.css`),
-  transparent `logo.svg`, and kevinryan.io favicons, mounted over
-  `/app/client/dist/`.
+  **generated** by `scripts/sync-hq-theme.sh` from
+  `sites/hq-kevinryan-io/` (`custom-theme.css`, `logo.svg`, favicons) —
+  never edit by hand. Mounted over `/app/client/dist/`. The same script
+  derives the `?v=<sha256-8>` cache-buster in `deployment.yaml`; CI
+  (`.github/workflows/validate.yml`) fails on drift.
 - `mongodb-statefulset.yaml` + `mongodb-service.yaml` — internal MongoDB
   (unauthenticated for the vanilla install).
 - `configmap.yaml` — non-secret env (`DOMAIN_*`, `MONGO_URI`, `SEARCH=false`,

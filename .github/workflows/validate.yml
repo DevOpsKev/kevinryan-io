@@ -1,0 +1,44 @@
+name: Validate
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "k8s/**"
+      - "sites/hq-kevinryan-io/**"
+      - "scripts/**"
+      - ".github/workflows/validate.yml"
+  pull_request:
+    paths:
+      - "k8s/**"
+      - "sites/hq-kevinryan-io/**"
+      - "scripts/**"
+      - ".github/workflows/validate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  manifests:
+    name: Lint manifests + hq theme drift check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Install yamllint
+        run: python3 -m pip install --user yamllint
+
+      - name: Lint Kubernetes manifests and workflows
+        run: yamllint -s .github/workflows/ k8s/
+
+      - name: Install kubectl (client-only use — no cluster access)
+        run: |
+          VER="$(curl -fsSL https://dl.k8s.io/release/stable.txt)"
+          curl -fsSLo /tmp/kubectl "https://dl.k8s.io/release/${VER}/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+          kubectl version --client=true
+
+      - name: hq theme drift check
+        run: scripts/sync-hq-theme.sh --check

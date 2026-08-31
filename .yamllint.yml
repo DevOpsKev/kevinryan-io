@@ -1,8 +1,15 @@
 extends: default
 ignore: |
+  # NOTE: basename-only patterns (gitignore semantics) so they match BOTH
+  # relative paths (yamllint k8s/...) and the absolute paths lint-staged
+  # passes at commit time — anchored 'k8s/...' patterns never match the
+  # absolute form, which is what drove the old --no-verify habit.
   # Generated ConfigMap embedding binary favicon PNGs as base64 — long
   # lines are inherent to the data and cannot be wrapped.
-  k8s/hq-kevinryan-io/configmap-custom-theme.yaml
+  configmap-custom-theme.yaml
+  # Flux-generated upstream components — not hand-authored, excluded
+  # from indentation/style rules.
+  gotk-components.yaml
 rules:
   line-length:
     max: 400
