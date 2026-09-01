@@ -5,7 +5,7 @@ type Row = { vendor?: string; cred: string; via: string; href?: string }
 
 const ROWS: Row[] = [
   { vendor: 'Anthropic', cred: 'Claude Certified Associate', via: 'Credly', href: 'https://www.credly.com/badges/3ac48a7b-ce0f-49df-b32d-3bf47e8203b3/public_url' },
-  { cred: 'Claude Partner Badge - Claude Code', via: 'Credly', href: 'https://www.credly.com/badges/2922627c-5a15-4d9b-97b7-a6de2149ae09/public_url' },
+  { cred: 'Claude Partner - Claude Code', via: 'Credly', href: 'https://www.credly.com/badges/2922627c-5a15-4d9b-97b7-a6de2149ae09/public_url' },
 
   { vendor: 'GitHub', cred: 'Administration', via: 'Credly', href: 'https://www.credly.com/badges/02e9c449-9385-4c95-9cfa-e72765f0d4de' },
   { cred: 'Actions', via: 'Credly', href: 'https://www.credly.com/badges/b4a9987d-3a31-4cf3-8ee9-53607a4ef572' },
